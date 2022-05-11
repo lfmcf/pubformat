@@ -89,7 +89,8 @@ export default function Dashboard(props) {
                                             <div >
                                                 <Typography style={{ color: 'white', fontSize: '16px' }} variant="h6" component="h6">
                                                     {/* {recyear == 0 ? data.length : data.filter(row => moment(row.receptiondate).year() == recyear).length} */}
-                                                    12
+                                                    {props.all}
+                                                    
                                                 </Typography>
                                                 <Typography style={{ color: 'white', fontSize: '12px' }} variant="h6" component="p">
                                                     Total Dossiers
@@ -106,7 +107,7 @@ export default function Dashboard(props) {
                                         <CardContent>
                                             <Typography style={{ color: 'white', fontSize: '16px' }} variant="h6" component="h6">
                                                 {/* {recyear == 0 ? data.filter(row => row.status === "Delivred").length : data.filter(row => row.status === "Delivred" && moment(row.receptiondate).year() == recyear).length} */}
-                                                23
+                                                {props.livred}
                                             </Typography>
                                             <Typography style={{ color: 'white', fontSize: '12px' }} variant="h6" component="p">
                                                 Delivered
@@ -122,7 +123,7 @@ export default function Dashboard(props) {
                                         <CardContent>
                                             <Typography style={{ color: 'white', fontSize: '16px' }} variant="h6" component="h6">
                                                 {/* {recyear == 0 ? data.filter(row => row.status == "Ongoing").length : data.filter(row => row.status == "Ongoing" && moment(row.receptiondate).year() == recyear).length} */}
-                                                1
+                                                {props.ongoing}
                                             </Typography>
                                             <Typography style={{ color: 'white', fontSize: '12px' }} variant="h6" component="p">
                                                 Ongoing
@@ -138,7 +139,7 @@ export default function Dashboard(props) {
                                         <CardContent>
                                             <Typography style={{ color: 'white', fontSize: '16px' }} variant="h6" component="h6">
                                                 {/* {recyear == 0 ? data.filter(row => row.overrun > 0).length : data.filter(row => row.overrun > 0 && moment(row.receptiondate).year() == recyear).length} */}
-                                                10
+                                                0
                                             </Typography>
                                             <Typography style={{ color: 'white', fontSize: '12px' }} variant="h6" component="p">
                                                 Overrun

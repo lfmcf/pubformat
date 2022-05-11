@@ -228,7 +228,7 @@ const Index = (props) => {
     ]
 
     return (
-        <Authenticated auth={props.auth} header="Invoice status">
+        <Authenticated auth={props.auth} header="ALL FORMS">
             <div className={classes.wrapper}>
                 <Card className={classes.cCard}>
                     <CardHeader title="Data List" className={classes.cHeader} />

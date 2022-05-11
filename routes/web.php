@@ -28,9 +28,11 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->name('dashboard');
+
+Route::get('/dashboard', [ReportController::class, 'dashboard'])->name('dashboard');
 
 Route::get('/ch', [ChController::class, 'create'])->name('ch-create');
 Route::post('addch', [ChController::class, 'store'])->name('addch');

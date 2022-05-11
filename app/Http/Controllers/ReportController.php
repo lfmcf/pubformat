@@ -24,4 +24,30 @@ class ReportController extends Controller
             'list' => $allItems
         ]);
     }
+
+    public function dashboard() {
+
+        $cch = count(Ch::all());
+        $ceu = count(Eu::all());
+        $cgcc = count(Gcc::all());
+
+        $cdch = Ch::where('status', 'Livré')->count();
+        $cdeu = Eu::where('status', 'Livré')->count();
+        $cdgcc = Gcc::where('status', 'Livré')->count();
+
+        $coch = Ch::where('status', 'En cours')->count();
+        $coeu = Eu::where('status', 'En cours')->count();
+        $cogcc = Gcc::where('status', 'En cours')->count();
+        
+
+        $all = $cch + $ceu + $cgcc;
+        $livred = $cdch + $cdgcc + $cdeu;
+        $ongoing = $coch + $coeu + $cogcc;
+
+        return Inertia::render('Dashboard', [
+            'all' => $all,
+            'livred' => $livred,
+            'ongoing' => $ongoing,
+        ]);
+    }
 }
