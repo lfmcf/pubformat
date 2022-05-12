@@ -357,12 +357,12 @@ const Create = (props) => {
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Drug Substance Manufacturer">
-                                    {/* <TextField fullWidth label="Drug Substance Manufacturer" name="substanceManufacturer" value={data.substanceManufacturer} onChange={handleChange} /> */}
-                                    <Select value={[]} multiple input={<OutlinedInput fullWidth name="substanceManufacturer" label="Drug Substance Manufacturer" />}>
+                                    <TextField fullWidth label="Drug Substance Manufacturer" name="substanceManufacturer" value={data.substanceManufacturer} onChange={handleChange} />
+                                    {/* <Select value={[]} multiple input={<OutlinedInput fullWidth name="substanceManufacturer" label="Drug Substance Manufacturer" />}>
                                         <MenuItem value="Option 1">Option 1</MenuItem>
                                         <MenuItem value="Option 2">Option 2</MenuItem>
                                         <MenuItem value="Option 3">Option 3</MenuItem>
-                                    </Select>
+                                    </Select> */}
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>

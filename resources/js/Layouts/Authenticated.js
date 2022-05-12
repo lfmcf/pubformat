@@ -390,7 +390,7 @@ export default function Authenticated({ auth, header, children }) {
                 {children}
 
                 <div className={classes.footer}>
-                    <Typography style={{ color: 'grey', fontSize: '12px' }}> © Groupe Ekemia 2022</Typography>
+                    <Typography style={{ color: 'grey', fontSize: '12px' }}> © GROUPEKEMIA 2022</Typography>
                 </div>
             </div>
         </div>

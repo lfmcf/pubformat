@@ -181,7 +181,7 @@ const Index = (props) => {
                 customBodyRender: (value ,row) => {
                     let bgc = "";
                     if(value === "Livré") {
-                        bgc = "#76ff03"
+                        bgc = "green"
                     }else if(value == "En cours") {
                         bgc = "#2196f3"
                     }else if (value == "En attente"){

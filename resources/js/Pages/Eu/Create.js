@@ -223,14 +223,7 @@ const Create = (props) => {
                         <Grid container spacing={4}>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Submission Country">
-                                    <TextField select fullWidth label="Submission Country" name="submissionCountry" value={data.submissionCountry} onChange={handleChange} >
-                                        <MenuItem value="Bahrain">Bahrain</MenuItem>
-                                        <MenuItem value="Kingdom of Saudi Arabia">Kingdom of Saudi Arabia</MenuItem>
-                                        <MenuItem value="Kuwait">Kuwait</MenuItem>
-                                        <MenuItem value="Qatar">Qatar</MenuItem>
-                                        <MenuItem value="Sultanate of Oman">Sultanate of Oman</MenuItem>
-                                        <MenuItem value="United Arab Emirates">United Arab Emirates</MenuItem>
-                                    </TextField>
+                                    <TextField  fullWidth label="Submission Country" name="submissionCountry" value={data.submissionCountry} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -349,12 +342,12 @@ const Create = (props) => {
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Drug Substance Manufacturer">
-                                    {/* <TextField fullWidth label="Drug Substance Manufacturer" name="substanceManufacturer" value={data.substanceManufacturer} onChange={handleChange} /> */}
-                                    <Select value={[]} multiple input={<OutlinedInput fullWidth label="Drug Substance Manufacturer" />}>
+                                    <TextField fullWidth label="Drug Substance Manufacturer" name="substanceManufacturer" value={data.substanceManufacturer} onChange={handleChange} />
+                                    {/* <Select value={[]} multiple input={<OutlinedInput fullWidth label="Drug Substance Manufacturer" />}>
                                         <MenuItem value="Option 1">Option 1</MenuItem>
                                         <MenuItem value="Option 2">Option 2</MenuItem>
                                         <MenuItem value="Option 3">Option 3</MenuItem>
-                                    </Select>
+                                    </Select> */}
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
