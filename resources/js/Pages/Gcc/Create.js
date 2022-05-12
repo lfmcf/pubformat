@@ -370,4 +370,4 @@ const Create = (props) => {
 
 export default Create;
 
-Create.layout = page => <Authenticated children={page} auth={page.props.auth} header="Create GCC" />
+Create.layout = page => <Authenticated children={page} auth={page.props.auth} header="GCC Form" />

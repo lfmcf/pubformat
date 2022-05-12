@@ -390,4 +390,4 @@ const Create = (props) => {
 
 export default Create;
 
-Create.layout = page => <Authenticated children={page} auth={page.props.auth} header="Create Europe" />
+Create.layout = page => <Authenticated children={page} auth={page.props.auth} header="EU From" />

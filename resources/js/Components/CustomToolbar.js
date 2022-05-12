@@ -52,9 +52,9 @@ function CustomToolbar(props) {
                         'aria-labelledby': 'basic-button',
                     }}
                 >
-                    <MenuItem onClick={() => handleClose('ch')}>CH</MenuItem>
-                    <MenuItem onClick={() =>handleClose('eu')}>EUROPE</MenuItem>
-                    <MenuItem onClick={() => handleClose('gcc')}>GCC</MenuItem>
+                    <MenuItem onClick={() => handleClose('ch')}>CH Form</MenuItem>
+                    <MenuItem onClick={() =>handleClose('eu')}>EU Form</MenuItem>
+                    <MenuItem onClick={() => handleClose('gcc')}>GCC FORM</MenuItem>
                 </Menu>
                 </>
             </Tooltip>

@@ -1,13 +1,121 @@
-import React from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import Authenticated from '@/Layouts/Authenticated';
 import { Head } from '@inertiajs/inertia-react';
-import { Card, CardContent, Paper, Typography, TableCell, Table, TableHead, TableRow, TableBody, IconButton, Collapse, Box, Grid, InputLabel, CardHeader } from '@material-ui/core';
+import { Card, CardContent, Paper, Typography, TableCell, Table, TableHead, TableRow, TableBody, IconButton, Collapse, Box, Grid, InputLabel, CardHeader, TextField } from '@material-ui/core';
 import { Calendar } from 'react-feather';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import AssignmentLateIcon from '@mui/icons-material/AssignmentLate';
 import { makeStyles } from '@material-ui/core/styles';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import DownloadIcon from '@mui/icons-material/Download';
+import NestedMenuItem from "material-ui-nested-menu-item";
+import { Chart, Interval, LineAdvance, Tooltip, Axis, Coordinate, getTheme} from 'bizcharts';
+import moment from 'moment';
+// import { MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
+// import MomentUtils from '@date-io/moment';
+import Select from '@material-ui/core/Select';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import ReactCountryFlag from "react-country-flag";
+
+const groupBy = (items, key) => items.reduce(
+    (result, item) => ({
+        ...result,
+        [item[key]]: [
+            ...(result[item[key]] || []),
+            item,
+        ],
+    }),
+    {},
+);
+
+function Row(props) {
+    const { row } = props;
+    const grow = groupBy(row, "country");
+
+    const [open, setOpen] = React.useState(false);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handlePopoverOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handlePopoverClose = () => {
+        setAnchorEl(null);
+    };
+
+
+
+    const openpop = Boolean(anchorEl);
+
+    return (
+        <React.Fragment>
+            <TableRow >
+                <TableCell>
+                    <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                    </IconButton>
+                </TableCell>
+                <TableCell>{row[0].type}</TableCell>
+                <TableCell>{row.length}</TableCell>
+            </TableRow>
+            <TableRow>
+                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={4}>
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                        <Box margin={1}>
+                            <Table size="small" aria-label="purchases">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell style={{fontWeight:'bold', color:"#6B6B6B"}}>Country</TableCell>
+                                        <TableCell style={{fontWeight:'bold', color:"#6B6B6B"}}>Nom dossier</TableCell>
+                                        <TableCell style={{fontWeight:'bold', color:"#6B6B6B"}}>Sequence</TableCell>
+                                        <TableCell style={{fontWeight:'bold', color:"#6B6B6B"}}>Nombre</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {Object.keys(grow).map((key, index) => (
+                                        <TableRow key={key}>
+                                            <TableCell>{<ReactCountryFlag 
+                                                countryCode={grow[key][0].country} 
+                                                svg title={grow[key][0].country} 
+                                                style={{width: '1.8em',height: '1.8em',}} 
+                                                />
+                                                }
+                                            </TableCell>
+                                            <TableCell >
+                                                <ul>
+                                                    {grow[key].map(element => (
+                                                        <li key={element.id}>{element.dossierName}</li>
+                                                    ))}
+                                                </ul>
+                                            </TableCell>
+                                            <TableCell >
+                                                <ul>
+                                                    {grow[key].map(element => (
+                                                        <li key={element.id}>{element.sequence}</li>
+                                                    ))}
+                                                </ul>
+                                            </TableCell>
+                                            <TableCell>{grow[key].length}</TableCell>
+                                        </TableRow>
+
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </Box>
+                    </Collapse>
+                </TableCell>
+            </TableRow>
+        </React.Fragment>
+    )
+}
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
@@ -63,9 +171,206 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+const theme = getTheme();
+const colors = theme.colors10;
 
+const yearoption = [
+    '2019',
+    '2020',
+    '2021',
+    '2022',
+]
 export default function Dashboard(props) {
+
+    const data  = props.allItems;
+
+    const [anchor, setAnchor] = React.useState(null);
+    const [menuPosition, setMenuPosition] =  React.useState(false);
+    const [selectedIndex1, setSelectedIndex1] = React.useState(0);
+    const [chartIns, setChartIns] = React.useState(null);
+    const [Finaldata, setFinaldata] = React.useState([]);
+    const [year, setYear] = React.useState(2022);
+    
+    const [action, setAction] = React.useState("Publishing");
+    const [tablevalues, setTableValues] = React.useState({});
+    var x = new Date();
+    const [du, setDu] = React.useState(x.setMonth(x.getMonth() - 1));
+    const [au, setAu] = React.useState(new Date());
+    var char = [[], [], [], [], [], [], [], [], [], [], [], []];
+    const tblref = useRef(null)
+
     const classes = useStyles();
+
+    const handleMenuClick = (event) => {
+        setAnchor(event.currentTarget);
+    }
+
+    const handleItemClick = (event) => {
+        setMenuPosition(!menuPosition);
+    };
+
+    const handleCloseMenu = () => {
+        setAnchor(null)
+    }
+
+    const scale = {
+        NumberDossier: { min: 0 }
+    }
+
+    function handleYearChange(event, index) {
+        foldersByDate(event.target.value);
+    }
+
+    useEffect(() => {
+        foldersByDate(year);
+        tableau();
+    }, [data]); 
+
+    function foldersByDate(year) {
+        setFinaldata([])
+        data.map((row) => {
+            var month = moment(row.demandeDate).format('M');
+            var annee = moment(row.demandeDate).format('Y');
+            if (annee == year) {
+                switch (month) {
+                    case "1":
+                        char[0].push({ "month": "jan", "type": row.type });
+                        break;
+                    case "2":
+                        char[1].push({ "month": "Feb", "type": row.type });
+                        break;
+                    case "3":
+                        char[2].push({ "month": "Mar", "type": row.type });
+                        break;
+                    case "4":
+                        char[3].push({ "month": "Apr", "type": row.type });
+                        break;
+                    case "5":
+                        char[4].push({ "month": "Mai", "type": row.type });
+                        break;
+                    case "6":
+                        char[5].push({ "month": "Jun", "type": row.type });
+                        break;
+                    case "7":
+                        char[6].push({ "month": "Jul", "type": row.type });
+                        break;
+                    case "8":
+                        char[7].push({ "month": "aout", "type": row.type });
+                        break;
+                    case "9":
+                        char[8].push({ "month": "Sep", "type": row.type });
+                        break;
+                    case "10":
+                        char[9].push({ "month": "Oct", "type": row.type });
+                        break;
+                    case "11":
+                        char[10].push({ "month": "Nov", "type": row.type });
+                        break;
+                    case "12":
+                        char[11].push({ "month": "Dec", "type": row.type });
+                        break;
+                }
+            }
+
+        });
+        char.forEach(element => {
+            var values = element.reduce((typeSofar, { month, type }) => {
+                if (!typeSofar[type]) typeSofar[type] = [];
+                typeSofar[type].push(type);
+                return typeSofar;
+            }, {});
+
+            for (const [key, value] of Object.entries(values)) {
+                setFinaldata(Finaldata => [...Finaldata, { "month": element[0].month, "type": key, "NombreDossier": value.length }]);
+            }
+        });
+    }
+
+    function downLoadCsv() {
+        
+        var arr = new Array();
+        const workbook = new Excel.Workbook();
+        const worksheet = workbook.addWorksheet("My Sheet");
+       
+        worksheet.columns = [
+            {header: 'Type', key: 'type', width: 10},
+            {header: 'Nombre', key: 'nombre', width: 32},
+        ];
+
+        worksheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell('B1').alignment = { vertical: 'middle', horizontal: 'center' };
+
+        Object.keys(tablevalues).map(function (key, index) {
+            
+            worksheet.addRow({type: key, nombre: tablevalues[key].length});
+            var rn = worksheet.lastRow.number;
+            
+            worksheet.getCell('A' + rn).fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb:'FFFF0000' }
+            }
+            worksheet.getCell('B' + rn).fill = {
+                type: "pattern",
+                pattern: "solid",
+                fgColor: { argb:'FFFF0000' }
+            }
+           
+           // worksheet.lastRow.outlineLevel = tablevalues[key].length;
+            tablevalues[key].forEach(val => {
+                worksheet.addRow();
+                worksheet.lastRow.outlineLevel = tablevalues[key].length;
+                var rowNumber = worksheet.lastRow.number;
+                worksheet.getCell('A' + rowNumber).value = val.country;
+                worksheet.getCell('B' + rowNumber).value = val.dossierName;
+                worksheet.getCell('C' + rowNumber).value = val.sequence;
+               
+            });
+            
+        });
+       
+        workbook.xlsx.writeBuffer().then((buf) => {
+            saveAs(new Blob([buf]), 'total_action.xlsx');
+        });
+
+    }
+
+    const handleDuChange = date => {
+        setDu(date)
+    }
+
+    function handleAuChange(date) {
+        setAu(date)
+    }
+
+    function handleActionChange(e) {
+        setAction(e.target.value)
+
+    }
+
+    useEffect(() => {
+        tableau();
+    }, [action, du, au]);
+
+    function tableau() {
+        var from = moment(du).toDate(), to = moment(au).toDate()
+        if (action != "all") {
+            var tempdata = data.filter(row => (
+                moment(row.demandeDate).isBetween(from, to)
+                && row.action == action
+            ));
+        } else {
+            var tempdata = data.filter(row => (
+                moment(row.demandeDate).isBetween(from, to)
+            ));
+        }
+
+        var res = groupBy(tempdata, "type");
+        
+        setTableValues(res);
+        
+    }
+
     return (
         <Authenticated
             auth={props.auth}
@@ -139,10 +444,10 @@ export default function Dashboard(props) {
                                         <CardContent>
                                             <Typography style={{ color: 'white', fontSize: '16px' }} variant="h6" component="h6">
                                                 {/* {recyear == 0 ? data.filter(row => row.overrun > 0).length : data.filter(row => row.overrun > 0 && moment(row.receptiondate).year() == recyear).length} */}
-                                                0
+                                                {props.waiting}
                                             </Typography>
                                             <Typography style={{ color: 'white', fontSize: '12px' }} variant="h6" component="p">
-                                                Overrun
+                                                Waiting
                                             </Typography>
                                             <div style={{ position: 'absolute', top: '30%', right: '10%' }}>
                                                 <AssignmentLateIcon fontSize='large' color='inherit' style={{ opacity: '0.5' }} />
@@ -153,6 +458,162 @@ export default function Dashboard(props) {
                             </Grid>
                         </Paper>
                     </Grid>
+
+                    <Grid item md={12} xs={12} sm={12}>
+                        <Card className={classes.cCard}>
+                            <CardHeader action={
+                                <IconButton onClick={handleMenuClick} aria-label="settings">
+                                    <MoreVertIcon />
+                                </IconButton>
+
+                            } title="Total Dossiers per Type" className={classes.cHeader} />
+                            <Menu
+                                id="simple-menu"
+                                anchorEl={anchor}
+                                keepMounted
+                                open={Boolean(anchor)}
+                                onClose={handleCloseMenu}
+                            >
+                                <MenuItem onClick={() => saveImg(chartIns)}>
+                                    <DownloadIcon />
+                                    <Typography variant="inherit">Telecharger</Typography>
+                                </MenuItem>
+
+                                <NestedMenuItem label="Année" parentMenuOpen={menuPosition} onClick={handleItemClick}>
+                                    {yearoption.map((option, index) => (
+                                        <MenuItem value={option}
+                                            key={option}
+                                            selected={selectedIndex1 === index}
+                                            onClick={(event) => handleYearChange(event, index)}
+                                        >
+                                            {option}
+                                        </MenuItem>
+                                    ))}
+                                </NestedMenuItem>
+                            </Menu>
+                            <CardContent>
+                                <Chart height={300} 
+                                    padding={[30, 20, 60, 40]}  
+                                    scale={scale}
+                                    data={Finaldata} 
+                                    autoFit
+                                    onGetG2Instance={chartns => {
+                                        setChartIns(chartns)
+                                    }}
+                                >
+                                    <Tooltip shared />
+                                    <Interval
+                                        adjust={[
+                                            {
+                                                type: 'dodge',
+                                                marginRatio: 0,
+                                            },
+                                        ]}
+                                        color={["type", colors]}
+                                        position="month*NombreDossier"
+                                        size={15}
+                                        label="NombreDossier"
+                                    />
+                                    <Axis name='NombreDossier' position='left' />
+                                </Chart>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    <Grid item md={12} xs={12} sm={12}>
+                    
+                    <Card className={classes.cCard}>
+                        <CardHeader action={
+                            <IconButton onClick={downLoadCsv} aria-label="settings">
+                                <DownloadIcon />
+                            </IconButton>
+                            
+                        } title="Total Dossiers per Action" className={classes.cHeader} />
+                        <CardContent>
+                            {/* <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils} locale="fr"> */}
+                                <div className="formulaire actions" className={classes.actions}>
+                                    <div>
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        <DesktopDatePicker
+                                            label="Du"
+                                            inputFormat="MM/dd/yyyy"
+                                            value={du}
+                                            onChange={handleDuChange}
+                                            renderInput={(params) => <TextField  name="deadline" fullWidth {...params} />}
+                                        />
+                                    </LocalizationProvider>
+                                    </div>
+                                    <div>
+                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                        <DesktopDatePicker
+                                            label="Au"
+                                            inputFormat="MM/dd/yyyy"
+                                            value={au}
+                                            onChange={handleAuChange}
+                                            renderInput={(params) => <TextField  name="deadline" fullWidth {...params} />}
+                                        />
+                                    </LocalizationProvider>
+                                    </div>
+                                    {/* <KeyboardDatePicker
+                                        disableToolbar
+                                        autoOk
+                                        variant="inline"
+                                        format="DD/MM/yy"
+                                        margin="normal"
+                                        id="date-picker-inline"
+                                        label="Du"
+                                        value={du}
+                                        onChange={handleDuChange}
+                                        KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                        }}
+                                    /> */}
+                                    {/* <KeyboardDatePicker
+                                        disableToolbar
+                                        autoOk
+                                        variant="inline"
+                                        format="DD/MM/yy"
+                                        margin="normal"
+                                        id="date-picker2-inline"
+                                        label="Au"
+                                        value={au}
+                                        onChange={handleAuChange}
+                                        KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                        }}
+                                    /> */}
+                                    <div>
+                                        <InputLabel shrink>
+                                            Action
+                                    </InputLabel>
+                                        <Select onChange={handleActionChange} value={action}>
+                                            <MenuItem value="Formatting">Formatting</MenuItem>
+                                            <MenuItem value="Publishing">Publishing</MenuItem>
+                                            <MenuItem value="Submission">Submission</MenuItem>
+                                        </Select>
+                                    </div>
+                                </div>
+                            {/* </MuiPickersUtilsProvider> */}
+                            <Table className="mt-2" ref={tblref}>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell></TableCell>
+                                        <TableCell style={{ fontWeight: 600 }}>type</TableCell>
+                                        <TableCell style={{ fontWeight: 600 }}>Nombres</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {Object.keys(tablevalues).map(function (key, index) {
+                                        return (
+                                            <Row key={index} row={tablevalues[key]} />
+                                        )
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
                 </Grid>
             </div>
         </Authenticated>

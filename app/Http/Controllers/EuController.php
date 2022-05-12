@@ -40,7 +40,7 @@ class EuController extends Controller
     public function store(Request $request)
     {
         $row = Eu::create($request->all());
-        return redirect('eu-index')->with('message', 'Votre formulaire a bien été soumis');
+        return redirect('/dossiers')->with('message', 'Votre formulaire a bien été soumis');
     }
 
     /**

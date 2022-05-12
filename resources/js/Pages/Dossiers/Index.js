@@ -140,9 +140,20 @@ const Index = (props) => {
             name:"submissionCountry",
             label: "Country",
             options: {
-                filter: true,
-                filterType: 'multiselect',
-                // sort: false
+                customBodyRender: value => {
+                    const region = new Intl.DisplayNames(['en'], {type: 'region'});
+                    let title = "";
+                    if(value && value.length == 2) {
+                        title = region.of(value.toUpperCase());
+                    }
+                    
+                    return(
+                        <ReactCountryFlag countryCode={value} svg aria-label={value} title={title} style={{
+                            width: '1.8em',
+                            height: '1.8em',
+                        }} />
+                    )
+                }
             }
         },
         {
@@ -207,7 +218,7 @@ const Index = (props) => {
         },
         {
             name:"demandeDate",
-            label: "Demande Date",
+            label: "Sending date",
             options: {
                 filter: true,
                 filterType: 'multiselect',
@@ -231,7 +242,7 @@ const Index = (props) => {
         <Authenticated auth={props.auth} header="ALL FORMS">
             <div className={classes.wrapper}>
                 <Card className={classes.cCard}>
-                    <CardHeader title="Data List" className={classes.cHeader} />
+                    <CardHeader title="Requests List" className={classes.cHeader} />
                     <CardContent>
                         <ThemeProvider theme={thememui()}>
                             <MUIDataTable
