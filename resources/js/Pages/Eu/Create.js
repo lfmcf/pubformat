@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Authenticated from "@/Layouts/Authenticated";
 import { useForm } from '@inertiajs/inertia-react';
 import Card from '@material-ui/core/Card';
@@ -10,9 +10,18 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
 import moment from 'moment';
+import TagsInput from 'react-tagsinput';
+import 'react-tagsinput/react-tagsinput.css';
+import Radio from '@mui/material/Radio';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import RadioGroup from '@mui/material/RadioGroup';
+import Speed from "@/Components/Speed";
+import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Alert from '@mui/material/Alert';
+
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
@@ -59,6 +68,10 @@ const Create = (props) => {
     };
 
     const classes = useStyles();
+    
+    const [show, setShow] = useState(false);
+    const [open, setOpen] = React.useState(false);
+
     const { data, setData, post, processing, errors, clearErrors, reset } = useForm({
         responsable: '',
         eventName: '',
@@ -72,7 +85,7 @@ const Create = (props) => {
         deadline: moment(new Date).format('YYYY-MM-DD HH:mm:ss'),
         status: '',
         type: '',
-        action: '',
+        action: 'Formatting',
         submissionCountry: '',
         uuid: '',
         submissionType: '',
@@ -88,34 +101,109 @@ const Create = (props) => {
         relatedSequence: '',
         submissionDescription: '',
         indication: '',
-        drugSubstanceName: '',
-        substanceManufacturer: '',
-        drugProduct: '',
+        drugSubstanceName: [],
+        substanceManufacturer: [],
+        drugProduct: [],
         dosageForm: '',
         manufacturer: '',
         excipient: '',
+        formtype: 'eu',
+        formstatus: '',
     });
 
     const handleChange = (e) => {
         setData(e.target.name, e.target.value)
     }
 
-    const handleSubmit = (e) => {
+    const handledrugSubstanceNameChange = (tags) => {
+        setData('drugSubstanceName', tags)
+    }
+
+    const handlesubstanceManufacturerChange = (tags) => {
+        setData('substanceManufacturer', tags)
+    }
+
+    const handledrugProductChange = (tags) => {
+        setData('drugProduct', tags)
+    }
+
+    const handleSubmit = (e, formtyp) => {
         e.preventDefault();
+        console.log(formtyp)
+        setData("formstatus", formtyp)
         post(route('addeu'));
     }
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleReset = () => {
+        reset()
+        setOpen(true)
+    }
+
+    function defaultRenderInput({ addTag, ...props }) {
+        let { onChange, value, ...other } = props
+        return (
+            <TextField fullWidth onChange={onChange} value={value} {...other} />
+        )
+    }
+
+    useEffect (() => {
+        if(data.action !== 'Formatting') {
+            setShow(true)
+        }else {
+            setShow(false)
+        }
+    }, [data.action]);
+
+    const action = (
+        <React.Fragment>
+           
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleClose}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
+        </React.Fragment>
+    );
 
 
     return (
         <div className={classes.wrapper}>
+            <Snackbar
+                open={open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                message="Note archived"
+                action={action}
+                anchorOrigin={{vertical: 'top', horizontal:'right'}}
+            >
+                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                    Form has been reset successfully
+                </Alert>
+            </Snackbar>
             <form className={classes.formulaire} onSubmit={handleSubmit}>
+                <div>
+                    <RadioGroup style={{display:'inline'}} name="action" value={data.action} onChange={handleChange}>
+                        <FormControlLabel value="Formatting"  control={<Radio defaultChecked />} label="Formatting" />
+                        <FormControlLabel value="Publishing" control={<Radio />} label="Publishing" />
+                        <FormControlLabel value="Formatting & Publishing" control={<Radio />} label="Formatting & Publishing" />
+                        <FormControlLabel value="Submission PSUR" control={<Radio />} label="Submission PSUR" />
+                        <FormControlLabel value="Submission CESP" control={<Radio />} label="Submission CESP" />
+                    </RadioGroup>
+                </div>
                 <Card className={classes.cCard}>
                     <CardHeader title="GENERAL INFORMATION" className={classes.cHeader} />
                     <CardContent>
                         <Grid container spacing={4}>
                             <Grid item xs={12} md={4}>
-                                <Tooltip title="Responsible">
-                                    <TextField fullWidth label="Responsible" name="responsable" value={data.responsable} onChange={handleChange} />
+                                <Tooltip title="Responsable">
+                                    <TextField fullWidth label="Responsable" name="responsable" value={data.responsable} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -125,7 +213,35 @@ const Create = (props) => {
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Concerned Country">
-                                    <TextField fullWidth label="Concerned Country" name="concernedCountry" value={data.concernedCountry} onChange={handleChange} />
+                                    <TextField select fullWidth label="Concerned Country" name="concernedCountry" value={data.concernedCountry} onChange={handleChange} >
+                                        <MenuItem value="DE">Allemagne</MenuItem>
+                                        <MenuItem value="AT">Autriche</MenuItem>
+                                        <MenuItem value="BE">Belgique</MenuItem>
+                                        <MenuItem value="BG">Bulgarie</MenuItem>
+                                        <MenuItem value="CY">Chypre</MenuItem>
+                                        <MenuItem value="HR">Croatie</MenuItem>
+                                        <MenuItem value="DK">Danemark</MenuItem>
+                                        <MenuItem value="ES">Espagne</MenuItem>
+                                        <MenuItem value="EE">Estonie</MenuItem>
+                                        <MenuItem value="FI">Finlande</MenuItem>
+                                        <MenuItem value="FR">France</MenuItem>
+                                        <MenuItem value="GR">Grèce</MenuItem>
+                                        <MenuItem value="HU">Hongrie</MenuItem>
+                                        <MenuItem value="IE">Irlande</MenuItem>
+                                        <MenuItem value="IT">Italie</MenuItem>
+                                        <MenuItem value="LV">Lettonie</MenuItem>
+                                        <MenuItem value="LT">Lituanie</MenuItem>
+                                        <MenuItem value="LU">Luxembourg</MenuItem>
+                                        <MenuItem value="MT">Malte</MenuItem>
+                                        <MenuItem value="NL">Pays-Bas</MenuItem>
+                                        <MenuItem value="PL">Pologne</MenuItem>
+                                        <MenuItem value="PT">Portugal</MenuItem>
+                                        <MenuItem value="CZ">République tchèque</MenuItem>
+                                        <MenuItem value="RO">Roumanie</MenuItem>
+                                        <MenuItem value="SK">Slovaquie</MenuItem>
+                                        <MenuItem value="SI">Slovénie</MenuItem>
+                                        <MenuItem value="SE">Suède</MenuItem>
+                                    </TextField>
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -205,7 +321,7 @@ const Create = (props) => {
                                     </TextField>
                                 </Tooltip>
                             </Grid>
-                            <Grid item xs={12} md={4}>
+                            {/* <Grid item xs={12} md={4}>
                                 <Tooltip title="Action">
                                     <TextField select fullWidth label="Action" name="action" value={data.action} onChange={handleChange}>
                                         <MenuItem value="Formatting">Formatting</MenuItem>
@@ -213,17 +329,46 @@ const Create = (props) => {
                                         <MenuItem value="Submission">Submission</MenuItem>
                                     </TextField>
                                 </Tooltip>
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                     </CardContent>
                 </Card>
+                {show ? 
                 <Card className={classes.cCard}>
                     <CardHeader title="SEQUENCE INFORMATION" className={classes.cHeader} />
                     <CardContent>
                         <Grid container spacing={4}>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Submission Country">
-                                    <TextField  fullWidth label="Submission Country" name="submissionCountry" value={data.submissionCountry} onChange={handleChange} />
+                                    <TextField select fullWidth label="Submission Country" name="submissionCountry" value={data.submissionCountry} onChange={handleChange} >
+                                        <MenuItem value="DE">Allemagne</MenuItem>
+                                        <MenuItem value="AT">Autriche</MenuItem>
+                                        <MenuItem value="BE">Belgique</MenuItem>
+                                        <MenuItem value="BG">Bulgarie</MenuItem>
+                                        <MenuItem value="CY">Chypre</MenuItem>
+                                        <MenuItem value="HR">Croatie</MenuItem>
+                                        <MenuItem value="DK">Danemark</MenuItem>
+                                        <MenuItem value="ES">Espagne</MenuItem>
+                                        <MenuItem value="EE">Estonie</MenuItem>
+                                        <MenuItem value="FI">Finlande</MenuItem>
+                                        <MenuItem value="FR">France</MenuItem>
+                                        <MenuItem value="GR">Grèce</MenuItem>
+                                        <MenuItem value="HU">Hongrie</MenuItem>
+                                        <MenuItem value="IE">Irlande</MenuItem>
+                                        <MenuItem value="IT">Italie</MenuItem>
+                                        <MenuItem value="LV">Lettonie</MenuItem>
+                                        <MenuItem value="LT">Lituanie</MenuItem>
+                                        <MenuItem value="LU">Luxembourg</MenuItem>
+                                        <MenuItem value="MT">Malte</MenuItem>
+                                        <MenuItem value="NL">Pays-Bas</MenuItem>
+                                        <MenuItem value="PL">Pologne</MenuItem>
+                                        <MenuItem value="PT">Portugal</MenuItem>
+                                        <MenuItem value="CZ">République tchèque</MenuItem>
+                                        <MenuItem value="RO">Roumanie</MenuItem>
+                                        <MenuItem value="SK">Slovaquie</MenuItem>
+                                        <MenuItem value="SI">Slovénie</MenuItem>
+                                        <MenuItem value="SE">Suède</MenuItem>
+                                    </TextField>
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -325,57 +470,72 @@ const Create = (props) => {
                             </Grid>
                         </Grid>
                     </CardContent>
-                </Card>
+                </Card> : ''}
+                {show ? 
                 <Card className={classes.cCard}>
                     <CardHeader title="PRODUCT INFORMATION - METADATA" className={classes.cHeader} />
                     <CardContent>
                         <Grid container spacing={4}>
-                            <Grid item xs={12} md={4}>
+                            <Grid item xs={12} md={6}>
                                 <Tooltip title="Indication">
                                     <TextField fullWidth label="Indication" name="indication" value={data.indication} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
-                            <Grid item xs={12} md={4}>
-                                <Tooltip title="Drug substance Name">
-                                    <TextField fullWidth label="Drug substance Name" name="drugSubstanceName" value={data.drugSubstanceName} onChange={handleChange} />
-                                </Tooltip>
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <Tooltip title="Drug Substance Manufacturer">
-                                    <TextField fullWidth label="Drug Substance Manufacturer" name="substanceManufacturer" value={data.substanceManufacturer} onChange={handleChange} />
-                                    {/* <Select value={[]} multiple input={<OutlinedInput fullWidth label="Drug Substance Manufacturer" />}>
-                                        <MenuItem value="Option 1">Option 1</MenuItem>
-                                        <MenuItem value="Option 2">Option 2</MenuItem>
-                                        <MenuItem value="Option 3">Option 3</MenuItem>
-                                    </Select> */}
-                                </Tooltip>
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <Tooltip title="Drug Product">
-                                    <TextField fullWidth label="Drug Product" name="drugProduct" value={data.drugProduct} onChange={handleChange} />
-                                </Tooltip>
-                            </Grid>
-                            <Grid item xs={12} md={4}>
+                            <Grid item xs={12} md={6}>
                                 <Tooltip title="Dosage Form">
                                     <TextField fullWidth label="Dosage Form" name="dosageForm" value={data.dosageForm} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
-                            <Grid item xs={12} md={4}>
+                            <Grid item xs={12} md={6}>
                                 <Tooltip title="Manufacturer">
                                     <TextField fullWidth label="Manufacturer" name="manufacturer" value={data.manufacturer} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
-                            <Grid item xs={12} md={4}>
+                            <Grid item xs={12} md={6}>
                                 <Tooltip title="Excipient / Compendial Excipient">
                                     <TextField fullWidth label="Excipient / Compendial Excipient" name="excipient" value={data.excipient} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
+                            <Grid item xs={12} md={6}>
+                                <Tooltip title="Drug substance Name">
+                                    <TagsInput
+                                        value={data.drugSubstanceName}
+                                        inputProps={{ placeholder: 'Add Drug substance Name'}}
+                                        onChange={handledrugSubstanceNameChange}
+                                        renderInput={defaultRenderInput}
+                                    />
+                                </Tooltip>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <Tooltip title="Drug Substance Manufacturer">
+                                    <TagsInput
+                                        value={data.substanceManufacturer}
+                                        inputProps={{ placeholder: 'Add Drug substance Manufacturer'}}
+                                        onChange={handlesubstanceManufacturerChange}
+                                        renderInput={defaultRenderInput}
+                                    />
+                                </Tooltip>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <Tooltip title="Drug Product">
+                                    <TagsInput
+                                        value={data.drugProduct}
+                                        inputProps={{ placeholder: 'Add Drug Product'}}
+                                        onChange={handledrugProductChange}
+                                        renderInput={defaultRenderInput}
+                                    />
+                                </Tooltip>
+                            </Grid>
+                            
+                            
                         </Grid>
                     </CardContent>
-                </Card>
-                <Button variant="contained" color="primary" className="mt-3" type="submit">Add</Button>
-                <Button variant="contained" onClick={() => reset()} color="secondary" style={{marginLeft:'5px'}}>Reset</Button>
-                <Button variant="contained" onClick={() => window.history.back()} style={{marginLeft:'5px'}}>Retour</Button>
+                </Card> : ''}
+                <Speed reset={handleReset} handleSubmit={handleSubmit} />
+                {/* <Button variant="contained" style={{marginLeft:'5px',backgroundColor:'green'}} type="submit" onClick={(e) => handleSubmit(e,"save")}>Save</Button>
+                <Button variant="contained" color="primary" className="mt-3" type="submit" style={{marginLeft:'5px'}} onClick={(e) => handleSubmit(e,"add")}>submit</Button>
+                <Button variant="contained" onClick={() => reset()} color="secondary" style={{marginLeft:'5px',color:'white'}}>Reset</Button>
+                <Button variant="contained" onClick={() => window.history.back()} style={{marginLeft:'5px'}}>back</Button> */}
             </form>
         </div>
     )
@@ -383,4 +543,4 @@ const Create = (props) => {
 
 export default Create;
 
-Create.layout = page => <Authenticated children={page} auth={page.props.auth} header="EU From" />
+Create.layout = page => <Authenticated children={page} auth={page.props.auth} header="EU From - CREATE" />

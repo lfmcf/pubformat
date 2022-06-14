@@ -49,6 +49,8 @@ class CreateEusTable extends Migration
             $table->string('dosageForm')->nullable();
             $table->string('manufacturer')->nullable();
             $table->string('excipient')->nullable();
+            $table->string('formtype')->nullable();
+            $table->string('formstatus')->nullable();
             $table->timestamps();
         });
     }

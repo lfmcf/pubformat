@@ -17,6 +17,7 @@ class CreateChesTable extends Migration
             $table->id();
             $table->string('responsable')->nullable();
             $table->string('eventName')->nullable();
+            $table->string('concernedCountry')->default('CH');
             $table->string('referenceDeficiencyLetter')->nullable();
             $table->string('ProductNameFini')->nullable();
             $table->string('substanceNameActive')->nullable();
@@ -48,6 +49,8 @@ class CreateChesTable extends Migration
             $table->string('dosageForm')->nullable();
             $table->string('manufacturer')->nullable();
             $table->string('excipient')->nullable();
+            $table->string('formtype')->nullable();
+            $table->string('formstatus')->nullable();
             $table->timestamps();
         });
     }

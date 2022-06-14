@@ -43,6 +43,7 @@
         "moment": "^2.29.3",
         "mui-datatables": "^4.2.2",
         "react-country-flag": "^3.0.2",
-        "react-feather": "^2.0.9"
+        "react-feather": "^2.0.9",
+        "react-tagsinput": "^3.19.0"
     }
 }

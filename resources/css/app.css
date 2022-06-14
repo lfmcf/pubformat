@@ -10,3 +10,12 @@ body {
 label, input, td, select, li {
     font-family: "Open Sans", sans-serif !important;
 }
+
+tr {
+    height: 10px !important;
+}
+
+tr td {
+    height: auto !important;
+    padding: 8px 16px !important;
+}

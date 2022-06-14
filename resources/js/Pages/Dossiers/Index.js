@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {Card, Table, TableHead, TableRow, TableCell, Paper, makeStyles, IconButton, TableContainer, TableBody, MuiThemeProvider} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-// import CreateIcon from '@material-ui/icons/Create';
+//import CreateIcon from '@material-ui/icons/Create';
 import MUIDataTable from "mui-datatables";
 import moment from 'moment';
 import ReactCountryFlag from "react-country-flag";
@@ -16,7 +16,8 @@ import Authenticated from '@/Layouts/Authenticated';
 import { Inertia } from '@inertiajs/inertia';
 import axios from 'axios';
 import CustomToolbar from '@/Components/Customtoolbar';
-import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -60,8 +61,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Index = (props) => {
 
-
-    console.log(props.list)
+    
     const classes = useStyles();
     const [display,setDisplay] = useState(false);
 
@@ -107,12 +107,22 @@ const Index = (props) => {
                 useDisplayedRowsOnly: false
             }
         },
+        onRowsDelete: (rowsDeleted, dataRows) => {
+            const idsToDelete = rowsDeleted.data.map(d => props.list[d.dataIndex]);
+            idsToDelete.map(row => {
+                console.log(row.formtype)
+                if(row.formtype === 'ch') {
+
+                }
+        })
+            
+        },
         customToolbar: () => {
             return(
                 <CustomToolbar handleClick={handleNavigate} />
             )
         },
-        expandableRows: true,
+       
 
     }
 
@@ -120,13 +130,65 @@ const Index = (props) => {
         {
             name: 'id',
             options: {
-                display: false,
                 filter: false,
                 viewColumns: false,
-                sort: true,
+                sort: false,
+                display: false,
             }
-
         },
+        {
+           
+            name: "",
+            label: '',
+            options: {
+                customBodyRender: (value, row) => {
+                    //console.log(row)
+                    var link;
+                    if(row.rowData[2] == "ch"){
+                        link = 'ch/'+row.rowData[0]+'/edit';
+                    }else if(row.rowData[2] == "eu") {
+                        link = 'eu/'+row.rowData[0]+'/edit';
+                    }else if(row.rowData[2] == "gcc") {
+                        link = 'gcc/'+row.rowData[0]+'/edit';
+                    }
+                    return (
+                        <IconButton onClick={() => Inertia.get(link)} as="button">
+                            <EditIcon />
+                        </IconButton>
+                    );
+                },
+                download : false,
+                filter: false,
+                sort: false,
+                display: true,
+            }
+        },
+        {
+            name: 'formtype',
+            options: {
+                filter: false,
+                viewColumns: false,
+                sort: false,
+                display: false,
+            }
+        },
+        // {
+        //     name: 'formstatus',
+        //     label: 'ACTION',
+        //     options: {
+        //         filter: false,
+        //         viewColumns: false,
+        //         sort: false,
+        //         display: true,
+        //         customBodyRender: (value) => {
+        //             if(value == "add") {
+        //                 return "Submitted"
+        //             }else {
+        //                 return "Saved"
+        //             }
+        //         }
+        //     }
+        // },
         {
             name:"ProductNameFini",
             label: "Product",
@@ -137,7 +199,7 @@ const Index = (props) => {
             }
         },
         {
-            name:"submissionCountry",
+            name:"concernedCountry",
             label: "Country",
             options: {
                 customBodyRender: value => {
@@ -175,13 +237,17 @@ const Index = (props) => {
             }
         },
         {
+            name: "action",
+            label: "Action"
+        },
+        {
             name:"status",
             label: "Status",
             options: {
                 customBodyRender: (value ,row) => {
                     let bgc = "";
                     if(value === "Livré") {
-                        bgc = "green"
+                        bgc = "#00e676"
                     }else if(value == "En cours") {
                         bgc = "#2196f3"
                     }else if (value == "En attente"){
@@ -229,6 +295,16 @@ const Index = (props) => {
         {
             name:"deadline",
             label: "Dead Line",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+                customBodyRender: value => moment(new Date(value)).format("DD-MM-YYYY"),
+                // sort: false
+            }
+        },
+        {
+            name:"created_at",
+            label: "created at",
             options: {
                 filter: true,
                 filterType: 'multiselect',

@@ -15,11 +15,10 @@ class ReportController extends Controller
         $ch = Ch::all();
         $eu = Eu::all();
         $gcc = Gcc::all();
-        // $allItems = new \Illuminate\Database\Eloquent\Collection;
-        // $allItems = $allItems->merge($ch);
-        // $allItems = $allItems->merge($eu);
-        $allItems = collect($ch)->merge($gcc)->merge($eu);
-        $allItems->sortBy('created_at', SORT_REGULAR, true);
+
+        $allItems = collect($ch)->merge($eu)->merge($gcc)->sortByDesc('created_at');
+        $allItems = $allItems->values();
+        
         return Inertia::render('Dossiers/Index', [
             'list' => $allItems
         ]);
