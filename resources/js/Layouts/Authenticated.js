@@ -7,6 +7,7 @@ import { InertiaLink } from '@inertiajs/inertia-react';
 import { Paper, Typography, Breadcrumbs, IconButton} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Home, Server, PieChart, TrendingUp, BarChart2, Settings, LogOut, User, ChevronDown, Activity } from 'react-feather';
+import Echo from 'laravel-echo';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -242,6 +243,11 @@ export default function Authenticated({ auth, header, children }) {
     const handleClick = () => {
         setOpenMenu(!openMenu)
     };
+    
+
+//    window.Echo.private('App.Models.User.' + auth.user.id).notification((notification) => {
+//     console.log(notification.type)
+// });
 
     return (
         <div className={classes.paper}>
@@ -281,6 +287,12 @@ export default function Authenticated({ auth, header, children }) {
                                             <Server size="15" />
                                         </span>
                                         <span className={classes.pcodedMtext}> List</span>
+                                    </NavLink>
+                                    <NavLink href={route('teams.index')} active={route().current('teams.index')}>
+                                        <span className={classes.pcodedMicon}>
+                                            <Server size="15" />
+                                        </span>
+                                        <span className={classes.pcodedMtext}> Teams</span>
                                     </NavLink>
                                     {/*<NavLink href={route('eu-index')} active={route().current('eu-index')}>
                                          <span className={classes.pcodedMicon}>

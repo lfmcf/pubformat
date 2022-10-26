@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\GccMail;
 use App\Models\Gcc;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -45,123 +47,132 @@ class GccController extends Controller
         $data['drugSubstanceName'] = json_encode($request->drugSubstanceName);
         $data['substanceManufacturer'] = json_encode($request->substanceManufacturer);
         $data['drugProduct'] = json_encode($request->drugProduct);
+        $data['formstatus'] = $request->query('formstatus');
         $row = Gcc::create($data);
 
-        $generalInformation = array(
-            'Responsable',
-            'Event Name',
-            'Concerned Country',
-            'Reference of deficiency letter',
-            'Product Name',
-            'Substance Name',
-            'Chrono N/Dossier Reference',
-            'Documents Count',
-            'Sending Date',
-            'Deadline',
-            'Status',
-            'Type',
-            'Action'
-        );
-        $sequenceInformation = array(
-            'Submission Country',
-            'ATC',
-            'Submission Type',
-            'Procedure Tracking Number',
-            'Submission Unit',
-            'Agency Code',
-            'Procedure Type',
-            'Invented Name',
-            'INN',
-            'Sequence',
-            'Related Sequence',
-            'Submission Description'
-        );
-        $metadate = array(
-            'Indication',
-            'Drug substance Name',
-            'Drug Substance Manufacturer',
-            'Drug Product',
-            'Dosage Form',
-            'Manufacturer',
-            'Excipient / Compendial Excipient'
-        );
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('GENERAL INFORMATION');
-        $sheet->getStyle('1:1')->getFont()->setBold(true);
-
-        $sheet->fromArray($generalInformation, NULL, 'A1');
-
-        $sheet->fromArray([
-            $request->responsable,
-            $request->eventName,
-            $request->concernedCountry,
-            $request->referenceDeficiencyLetter,
-            $request->ProductNameFini,
-            $request->substanceNameActive,
-            $request->dossierReference,
-            $request->documentsNumber,
-            date("d-m-Y", strtotime($request->demandeDate)),
-            date("d-m-Y", strtotime($request->deadline)),
-            $request->status,
-            $request->type,
-            $request->action
-        ], NULL, 'A2');
-
-        $spreadsheet->createSheet();
-        $spreadsheet->setActiveSheetIndex(1);
-        $sheet = $spreadsheet->getActiveSheet()->setTitle('SEQUENCE INFORMATION');
-        $sheet->fromArray($sequenceInformation, NULL, 'A1');
-
-        $sheet->fromArray([
-            $request->submissionCountry,
-            $request->atc,
-            $request->submissionType,
-            $request->trackingNumber,
-            $request->submissionUnit,
-            $request->agencyCode,
-            $request->procedureType,
-            $request->inventedName,
-            $request->inn,
-            $request->sequence,
-            $request->relatedSequence,
-            $request->submissionDescription
-        ], NULL, 'A2');
-
-        $spreadsheet->createSheet();
-        $spreadsheet->setActiveSheetIndex(2);
-        $sheet = $spreadsheet->getActiveSheet()->setTitle('PRODUCT INFORMATION');
-        $sheet->fromArray($metadate, NULL, 'A1');
-
-        $sheet->fromArray([
-            $request->indication,
-            "",
-            "",
-            "",
-            $request->dosageForm,
-            $request->manufacturer,
-            $request->excipient,
-        ]);
-
-        foreach ($request->drugSubstanceName as $cnt => $dstn) {
-            $cnt += 2;
-            $sheet->setCellValue('B' . $cnt, $dstn);
+        if($request->query('formstatus') === 'add') {
+            $generalInformation = array(
+                'Responsable',
+                'Event Name',
+                'Concerned Country',
+                'Reference of deficiency letter',
+                'Product Name',
+                'Substance Name',
+                'Chrono N/Dossier Reference',
+                'Documents Count',
+                'Sending Date',
+                'Deadline',
+                'Status',
+                'Type',
+                'Action'
+            );
+            $sequenceInformation = array(
+                'Submission Country',
+                'ATC',
+                'Submission Type',
+                'Procedure Tracking Number',
+                'Submission Unit',
+                'Agency Code',
+                'Procedure Type',
+                'Invented Name',
+                'INN',
+                'Sequence',
+                'Related Sequence',
+                'Submission Description'
+            );
+            $metadate = array(
+                'Indication',
+                'Drug substance Name',
+                'Drug Substance Manufacturer',
+                'Drug Product',
+                'Dosage Form',
+                'Manufacturer',
+                'Excipient / Compendial Excipient'
+            );
+    
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->setTitle('GENERAL INFORMATION');
+            $sheet->getStyle('1:1')->getFont()->setBold(true);
+    
+            $sheet->fromArray($generalInformation, NULL, 'A1');
+    
+            $sheet->fromArray([
+                $request->responsable,
+                $request->eventName,
+                $request->concernedCountry,
+                $request->referenceDeficiencyLetter,
+                $request->ProductNameFini,
+                $request->substanceNameActive,
+                $request->dossierReference,
+                $request->documentsNumber,
+                date("d-m-Y", strtotime($request->demandeDate)),
+                date("d-m-Y", strtotime($request->deadline)),
+                $request->status,
+                $request->type,
+                $request->action
+            ], NULL, 'A2');
+    
+            $spreadsheet->createSheet();
+            $spreadsheet->setActiveSheetIndex(1);
+            $sheet = $spreadsheet->getActiveSheet()->setTitle('SEQUENCE INFORMATION');
+            $sheet->fromArray($sequenceInformation, NULL, 'A1');
+    
+            $sheet->fromArray([
+                $request->submissionCountry,
+                $request->atc,
+                $request->submissionType,
+                $request->trackingNumber,
+                $request->submissionUnit,
+                $request->agencyCode,
+                $request->procedureType,
+                $request->inventedName,
+                $request->inn,
+                $request->sequence,
+                $request->relatedSequence,
+                $request->submissionDescription
+            ], NULL, 'A2');
+    
+            $spreadsheet->createSheet();
+            $spreadsheet->setActiveSheetIndex(2);
+            $sheet = $spreadsheet->getActiveSheet()->setTitle('PRODUCT INFORMATION');
+            $sheet->fromArray($metadate, NULL, 'A1');
+    
+            $sheet->fromArray([
+                $request->indication,
+                "",
+                "",
+                "",
+                $request->dosageForm,
+                $request->manufacturer,
+                $request->excipient,
+            ]);
+    
+            foreach ($request->drugSubstanceName as $cnt => $dstn) {
+                $cnt += 2;
+                $sheet->setCellValue('B' . $cnt, $dstn);
+            }
+    
+            foreach ($request->substanceManufacturer as $cn => $smf) {
+                $cn += 2;
+                $sheet->setCellValue('C' . $cn, $smf);
+            }
+    
+            foreach ($request->drugProduct as $c => $dp) {
+                $c += 2;
+                $sheet->setCellValue('D' . $c, $dp);
+            }
+    
+            $writer = new Xlsx($spreadsheet);
+            $date = date('d-m-y');
+            $name = "eu_form - " . $date . '.xlsx';
+            $writer->save($name);
+            Mail::send(new GccMail($name, $request->comments));
+            return redirect('/dossiers')->with('message', 'Votre formulaire a bien été soumis');
         }
 
-        foreach ($request->substanceManufacturer as $cn => $smf) {
-            $cn += 2;
-            $sheet->setCellValue('C' . $cn, $smf);
-        }
+        return redirect('/dossiers')->with('message', 'Votre formulaire a bien été sauvegarder');
 
-        foreach ($request->drugProduct as $c => $dp) {
-            $c += 2;
-            $sheet->setCellValue('D' . $c, $dp);
-        }
-
-        $writer = new Xlsx($spreadsheet);
-        $writer->save("ch_execl");
-        return redirect('/dossiers')->with('message', 'Votre formulaire a bien été soumis');
     }
 
     /**

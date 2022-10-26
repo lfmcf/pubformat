@@ -21,7 +21,11 @@ import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
-
+import { EditorState, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import draftToHtml from 'draftjs-to-html';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import Select from 'react-select';
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
@@ -71,6 +75,14 @@ const Create = (props) => {
     
     const [show, setShow] = useState(false);
     const [open, setOpen] = React.useState(false);
+    const [editorState, setEditorState] = useState(() => 
+        EditorState.createEmpty()
+    );
+
+    const onEditorStateChange = async (editorState) => {
+        await setEditorState(editorState);
+        setData('comments', draftToHtml(convertToRaw(editorState.getCurrentContent())));
+    }
 
     const { data, setData, post, processing, errors, clearErrors, reset } = useForm({
         responsable: '',
@@ -109,6 +121,7 @@ const Create = (props) => {
         excipient: '',
         formtype: 'eu',
         formstatus: '',
+        comments: '',
     });
 
     const handleChange = (e) => {
@@ -129,9 +142,8 @@ const Create = (props) => {
 
     const handleSubmit = (e, formtyp) => {
         e.preventDefault();
-        console.log(formtyp)
-        setData("formstatus", formtyp)
-        post(route('addeu'));
+        post(route('addeu', { 'formstatus': formtyp }));
+       
     }
 
     const handleClose = () => {
@@ -213,7 +225,7 @@ const Create = (props) => {
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Concerned Country">
-                                    <TextField select fullWidth label="Concerned Country" name="concernedCountry" value={data.concernedCountry} onChange={handleChange} >
+                                    {/* <TextField select fullWidth label="Concerned Country" name="concernedCountry" value={data.concernedCountry} onChange={handleChange} >
                                         <MenuItem value="DE">Allemagne</MenuItem>
                                         <MenuItem value="AT">Autriche</MenuItem>
                                         <MenuItem value="BE">Belgique</MenuItem>
@@ -241,7 +253,41 @@ const Create = (props) => {
                                         <MenuItem value="SK">Slovaquie</MenuItem>
                                         <MenuItem value="SI">Slovénie</MenuItem>
                                         <MenuItem value="SE">Suède</MenuItem>
-                                    </TextField>
+                                    </TextField> */}
+                                    <Select options={[
+                                        { label: 'Allemagne', value: 'DE' },
+                                        { label: 'Autriche', value: 'AT' },
+                                        { label: 'Belgique', value: 'BE' },
+                                        { label: 'Bulgarie', value: 'BG' },
+                                        { label: 'Chypre', value: 'CY' },
+                                        { label: 'Croatie', value: 'HR' },
+                                        { label: 'Danemark', value: 'DK' },
+                                        { label: 'Espagne', value: 'ES' },
+                                        { label: 'Estonie', value: 'EE' },
+                                        { label: 'Finlande', value: 'FI' },
+                                        { label: 'France', value: 'FR' },
+                                        { label: 'Grèce', value: 'GR' },
+                                        { label: 'Hongrie', value: 'HU' },
+                                        { label: 'Irlande', value: 'IE' },
+                                        { label: 'Italie', value: 'IT' },
+                                        { label: 'Lettonie', value: 'LV' },
+                                        { label: 'Lituanie', value: 'LT' },
+                                        { label: 'Luxembourg', value: 'LU' },
+                                        { label: 'Malte', value: 'MT' },
+                                        { label: 'Pays-Bas', value: 'NL' },
+                                        { label: 'Pologne', value: 'PL' },
+                                        { label: 'Portugal', value: 'PT' },
+                                        { label: 'République tchèque', value: 'CZ' },
+                                        { label: 'Roumanie', value: 'RO' },
+                                        { label: 'Slovaquie', value: 'SK' },
+                                        { label: 'Slovénie', value: 'SI' },
+                                        { label: 'Suède', value: 'SE' },
+                                    ]}
+                                        name="concernedCountry"
+                                        onChange={handleChange}
+                                        placeholder=''
+                                        isClearable
+                                    />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -266,7 +312,7 @@ const Create = (props) => {
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Documents Count">
-                                    <TextField fullWidth label="Documents Count" type="number" name="documentsNumber" value={data.documentsNumber} onChange={handleChange} />
+                                    <TextField fullWidth label="Documents Count" type="text" name="documentsNumber" value={data.documentsNumber} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -275,7 +321,7 @@ const Create = (props) => {
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DesktopDatePicker
                                             label="Sending date"
-                                            inputFormat="MM/dd/yyyy"
+                                            inputFormat="dd-MMM-yyyy"
                                             value={data.demandeDate}
                                             onChange={(val) => handleDateChange('demandeDate', val)}
                                             renderInput={(params) => <TextField name="demandeDate" fullWidth {...params} />}
@@ -289,7 +335,7 @@ const Create = (props) => {
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DesktopDatePicker
                                             label="Deadline"
-                                            inputFormat="MM/dd/yyyy"
+                                            inputFormat="dd-MMM-yyyy"
                                             value={data.deadline}
                                             onChange={(val) => handleDateChange('deadline', val)}
                                             renderInput={(params) => <TextField  name="deadline" fullWidth {...params} />}
@@ -299,16 +345,28 @@ const Create = (props) => {
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Status">
-                                    <TextField select fullWidth label="Status" name="status" value={data.status} onChange={handleChange} >
+                                    {/* <TextField select fullWidth label="Status" name="status" value={data.status} onChange={handleChange} >
                                         <MenuItem value="En cours">En cours</MenuItem>
                                         <MenuItem value="Livré">Livré</MenuItem>
                                         <MenuItem value="En attente">En attente</MenuItem>
-                                    </TextField>
+                                    </TextField> */}
+                                    <Select options={[
+                                        { label: 'En cours', value: 'En cours' },
+                                        { label: 'Livré', value: 'Livré' },
+                                        { label: 'En attente', value: 'En attente' },
+                                    ]}
+                                        name="status"
+                                        onChange={handleChange}
+                                        placeholder=''
+                                        isClearable
+                                        menuPortalTarget={document.body}
+                                        styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                    />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Type">
-                                    <TextField select fullWidth label="Type" name="type" value={data.type} onChange={handleChange} >
+                                    {/* <TextField select fullWidth label="Type" name="type" value={data.type} onChange={handleChange} >
                                         <MenuItem value="Variation">Variation</MenuItem>
                                         <MenuItem value="Baseline">Baseline</MenuItem>
                                         <MenuItem value="Marquage CE">Marquage CE</MenuItem>
@@ -318,7 +376,25 @@ const Create = (props) => {
                                         <MenuItem value="Clinical study report">Clinical study report</MenuItem>
                                         <MenuItem value="PSUR/Safety report">PSUR/Safety report</MenuItem>
                                         <MenuItem value="Rationnel/RtQ">Rationnel/RtQ</MenuItem>
-                                    </TextField>
+                                    </TextField> */}
+                                    <Select options={[
+                                        { label: 'Variation', value: 'Variation' },
+                                        { label: 'Baseline', value: 'Baseline' },
+                                        { label: 'Marquage CE', value: 'Marquage CE' },
+                                        { label: 'Module 2', value: 'Module 2' },
+                                        { label: 'Module 3', value: 'Module 3' },
+                                        { label: 'Clincal documents', value: 'Clincal documents' },
+                                        { label: 'Clinical study report', value: 'Clinical study report' },
+                                        { label: 'PSUR/Safety report', value: 'PSUR/Safety report' },
+                                        { label: 'Rationnel/RtQ', value: 'Rationnel/RtQ' },
+                                    ]}
+                                        name="type"
+                                        onChange={handleChange}
+                                        placeholder=''
+                                        isClearable
+                                        menuPortalTarget={document.body}
+                                        styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                    />
                                 </Tooltip>
                             </Grid>
                             {/* <Grid item xs={12} md={4}>
@@ -340,7 +416,7 @@ const Create = (props) => {
                         <Grid container spacing={4}>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Submission Country">
-                                    <TextField select fullWidth label="Submission Country" name="submissionCountry" value={data.submissionCountry} onChange={handleChange} >
+                                    {/* <TextField select fullWidth label="Submission Country" name="submissionCountry" value={data.submissionCountry} onChange={handleChange} >
                                         <MenuItem value="DE">Allemagne</MenuItem>
                                         <MenuItem value="AT">Autriche</MenuItem>
                                         <MenuItem value="BE">Belgique</MenuItem>
@@ -368,7 +444,41 @@ const Create = (props) => {
                                         <MenuItem value="SK">Slovaquie</MenuItem>
                                         <MenuItem value="SI">Slovénie</MenuItem>
                                         <MenuItem value="SE">Suède</MenuItem>
-                                    </TextField>
+                                    </TextField> */}
+                                    <Select options={[
+                                        { label: 'Allemagne', value: 'DE' },
+                                        { label: 'Autriche', value: 'AT' },
+                                        { label: 'Belgique', value: 'BE' },
+                                        { label: 'Bulgarie', value: 'BG' },
+                                        { label: 'Chypre', value: 'CY' },
+                                        { label: 'Croatie', value: 'HR' },
+                                        { label: 'Danemark', value: 'DK' },
+                                        { label: 'Espagne', value: 'ES' },
+                                        { label: 'Estonie', value: 'EE' },
+                                        { label: 'Finlande', value: 'FI' },
+                                        { label: 'France', value: 'FR' },
+                                        { label: 'Grèce', value: 'GR' },
+                                        { label: 'Hongrie', value: 'HU' },
+                                        { label: 'Irlande', value: 'IE' },
+                                        { label: 'Italie', value: 'IT' },
+                                        { label: 'Lettonie', value: 'LV' },
+                                        { label: 'Lituanie', value: 'LT' },
+                                        { label: 'Luxembourg', value: 'LU' },
+                                        { label: 'Malte', value: 'MT' },
+                                        { label: 'Pays-Bas', value: 'NL' },
+                                        { label: 'Pologne', value: 'PL' },
+                                        { label: 'Portugal', value: 'PT' },
+                                        { label: 'République tchèque', value: 'CZ' },
+                                        { label: 'Roumanie', value: 'RO' },
+                                        { label: 'Slovaquie', value: 'SK' },
+                                        { label: 'Slovénie', value: 'SI' },
+                                        { label: 'Suède', value: 'SE' },
+                                    ]}
+                                        name="submissionCountry"
+                                        onChange={handleChange}
+                                        placeholder=''
+                                        isClearable
+                                    />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -378,7 +488,7 @@ const Create = (props) => {
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Submission Type">
-                                    <TextField select fullWidth label="Submission Type" name="submissionType" value={data.submissionType} onChange={handleChange} >
+                                    {/* <TextField select fullWidth label="Submission Type" name="submissionType" value={data.submissionType} onChange={handleChange} >
                                         <MenuItem value="maa">maa</MenuItem>
                                         <MenuItem value="var-type1a">var-type1a</MenuItem>
                                         <MenuItem value="var-type1ain">var-type1ain</MenuItem>
@@ -386,26 +496,50 @@ const Create = (props) => {
                                         <MenuItem value="var-type2">var-type2</MenuItem>
                                         <MenuItem value="var-nat">var-nat</MenuItem>
                                         <MenuItem value="extension">extension</MenuItem>
-                                    </TextField>
+                                    </TextField> */}
+                                     <Select options={[
+                                        { label: 'var-type1a', value: 'var-type1a' },
+                                        { label: 'var-type1ain', value: 'var-type1ain' },
+                                        { label: 'var-type1b', value: 'var-type1b' },
+                                        { label: 'var-type2', value: 'var-type2' },
+                                        { label: 'var-nat', value: 'var-nat' },
+                                        { label: 'extension', value: 'extension' },
+                                    ]}
+                                        name="submissionType"
+                                        onChange={handleChange}
+                                        placeholder=''
+                                        isClearable
+                                    />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Submission Mode">
-                                    <TextField select fullWidth label="Submission Mode" name="submissionMode" value={data.submissionMode} onChange={handleChange}>
+                                    {/* <TextField select fullWidth label="Submission Mode" name="submissionMode" value={data.submissionMode} onChange={handleChange}>
                                         <MenuItem value="Single">Single</MenuItem>
                                         <MenuItem value="Grouping">Grouping</MenuItem>
                                         <MenuItem value="Worksharing">Worksharing</MenuItem>
-                                    </TextField>
+                                    </TextField> */}
+                                    <Select options={[
+                                        { label: 'Single', value: 'Single' },
+                                        { label: 'Grouping', value: 'Grouping' },
+                                        { label: 'Worksharing', value: 'Worksharing' },
+                                        
+                                    ]}
+                                        name="submissionMode"
+                                        onChange={handleChange}
+                                        placeholder=''
+                                        isClearable
+                                    />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Procedure Tracking Number">
-                                    <TextField fullWidth label="Procedure Tracking Number" type="number" name="trackingNumber" value={data.trackingNumber} onChange={handleChange} />
+                                    <TextField fullWidth label="Procedure Tracking Number" type="text" name="trackingNumber" value={data.trackingNumber} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Submission Unit">
-                                    <TextField select fullWidth label="Submission Unit" name="submissionUnit" value={data.submissionUnit} onChange={handleChange} >
+                                    {/* <TextField select fullWidth label="Submission Unit" name="submissionUnit" value={data.submissionUnit} onChange={handleChange} >
                                         <MenuItem value="initial">initial</MenuItem>
                                         <MenuItem value="validation-response">validation-response</MenuItem>
                                         <MenuItem value="response">response</MenuItem>
@@ -413,7 +547,22 @@ const Create = (props) => {
                                         <MenuItem value="closing">closing</MenuItem>
                                         <MenuItem value="consolidating">consolidating</MenuItem>
                                         <MenuItem value="corrigendum">corrigendum</MenuItem>
-                                    </TextField>
+                                    </TextField> */}
+                                    <Select options={[
+                                        { label: 'initial', value: 'initial' },
+                                        { label: 'validation-response', value: 'validation-response' },
+                                        { label: 'response', value: 'response' },
+                                        { label: 'additional-info', value: 'additional-info' },
+                                        { label: 'closing', value: 'closing' },
+                                        { label: 'consolidating', value: 'consolidating' },
+                                        { label: 'corrigendum', value: 'corrigendum' },
+                                        
+                                    ]}
+                                        name="submissionUnit"
+                                        onChange={handleChange}
+                                        placeholder=''
+                                        isClearable
+                                    />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -435,12 +584,23 @@ const Create = (props) => {
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Procedure Type">
-                                    <TextField select fullWidth label="Procedure Type" name="procedureType" value={data.procedureType} onChange={handleChange} >
+                                    {/* <TextField select fullWidth label="Procedure Type" name="procedureType" value={data.procedureType} onChange={handleChange} >
                                         <MenuItem value="Centralised">Centralised</MenuItem>
                                         <MenuItem value="National">National</MenuItem>
                                         <MenuItem value="Mutual recognition">Mutual recognition</MenuItem>
                                         <MenuItem value="Decentralised">Decentralised</MenuItem>
-                                    </TextField>
+                                    </TextField> */}
+                                    <Select options={[
+                                        { label: 'Centralised', value: 'Centralised' },
+                                        { label: 'National', value: 'National' },
+                                        { label: 'Mutual recognition', value: 'Mutual recognition' },
+                                        { label: 'Decentralised', value: 'Decentralised' },
+                                    ]}
+                                        name="procedureType"
+                                        onChange={handleChange}
+                                        placeholder=''
+                                        isClearable
+                                    />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -531,6 +691,22 @@ const Create = (props) => {
                         </Grid>
                     </CardContent>
                 </Card> : ''}
+                <Card className={classes.cCard}>
+                    <CardHeader title="Commentaires" className={classes.cHeader} />
+                    <CardContent>
+                        <Grid container spacing={4}>
+                            <Grid item xs={12} md={11}>
+                                <Editor
+                                   wrapperClassName="wrapper-class"
+                                   editorClassName="editor-class"
+                                   toolbarClassName="toolbar-class"
+                                   editorState={editorState}
+                                   onEditorStateChange={onEditorStateChange}
+                                />
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                </Card>
                 <Speed reset={handleReset} handleSubmit={handleSubmit} />
                 {/* <Button variant="contained" style={{marginLeft:'5px',backgroundColor:'green'}} type="submit" onClick={(e) => handleSubmit(e,"save")}>Save</Button>
                 <Button variant="contained" color="primary" className="mt-3" type="submit" style={{marginLeft:'5px'}} onClick={(e) => handleSubmit(e,"add")}>submit</Button>

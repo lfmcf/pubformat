@@ -22,7 +22,7 @@ class CreateEusTable extends Migration
             $table->string('ProductNameFini')->nullable();
             $table->string('substanceNameActive')->nullable();
             $table->string('dossierReference')->nullable();
-            $table->integer('documentsNumber')->nullable();
+            $table->string('documentsNumber')->nullable();
             $table->dateTime('demandeDate')->nullable();
             $table->dateTime('deadline')->nullable();
             $table->string('status')->nullable();
@@ -32,7 +32,7 @@ class CreateEusTable extends Migration
             $table->string('uuid')->nullable();
             $table->string('submissionType')->nullable();
             $table->string('submissionMode')->nullable();
-            $table->integer('trackingNumber')->nullable();
+            $table->string('trackingNumber')->nullable();
             $table->string('submissionUnit')->nullable();
             $table->string('applicant')->nullable();
             $table->string('agencyCode')->nullable();
@@ -51,6 +51,7 @@ class CreateEusTable extends Migration
             $table->string('excipient')->nullable();
             $table->string('formtype')->nullable();
             $table->string('formstatus')->nullable();
+            $table->text('comments')->nullable();
             $table->timestamps();
         });
     }

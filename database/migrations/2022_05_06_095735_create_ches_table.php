@@ -21,18 +21,18 @@ class CreateChesTable extends Migration
             $table->string('referenceDeficiencyLetter')->nullable();
             $table->string('ProductNameFini')->nullable();
             $table->string('substanceNameActive')->nullable();
-            $table->integer('dossierReference')->nullable();
-            $table->integer('documentsNumber')->nullable();
+            $table->string('dossierReference')->nullable();
+            $table->string('documentsNumber')->nullable();
             $table->dateTime('demandeDate')->nullable();
             $table->dateTime('deadline')->nullable();
             $table->string('status')->nullable();
             $table->string('type')->nullable();
             $table->string('action')->nullable();
             $table->string('submissionCountry')->nullable();
-            $table->integer('applicationNumber')->nullable();
+            $table->string('applicationNumber')->nullable();
             $table->string('applicationType')->nullable();
-            $table->integer('dmfNumber')->nullable();
-            $table->integer('pmfNumber')->nullable();
+            $table->string('dmfNumber')->nullable();
+            $table->string('pmfNumber')->nullable();
             $table->string('applicant')->nullable();
             $table->string('agencyCode')->nullable();
             $table->string('galenic')->nullable();
@@ -51,6 +51,7 @@ class CreateChesTable extends Migration
             $table->string('excipient')->nullable();
             $table->string('formtype')->nullable();
             $table->string('formstatus')->nullable();
+            $table->text('comments')->nullable();
             $table->timestamps();
         });
     }

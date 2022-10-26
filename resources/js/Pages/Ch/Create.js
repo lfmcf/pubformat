@@ -5,7 +5,6 @@ import Card from '@material-ui/core/Card';
 import { CardHeader, Tooltip, Grid, TextField, OutlinedInput } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { CardContent } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -21,6 +20,12 @@ import Snackbar from '@mui/material/Snackbar';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
+import { EditorState, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import draftToHtml from 'draftjs-to-html';
+//import htmlToDraft from 'html-to-draftjs';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import Select from 'react-select';
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
@@ -69,6 +74,21 @@ const Create = (props) => {
 
     const [show, setShow] = useState(false);
     const [open, setOpen] = React.useState(false);
+    const [editorState, setEditorState] = useState(() => 
+        EditorState.createEmpty()
+    );
+
+    const onEditorStateChange = async (editorState) => {
+        await setEditorState(editorState);
+        setData('comments', draftToHtml(convertToRaw(editorState.getCurrentContent())));
+    }
+
+    const selectStyles = () => ({
+        control: (styles) => ({
+            ...styles,
+            borderColor: 'red',
+        }),
+    });
 
     const classes = useStyles();
     const { data, setData, post, processing, errors, clearErrors, reset } = useForm({
@@ -83,7 +103,7 @@ const Create = (props) => {
         deadline: moment(new Date).format('YYYY-MM-DD HH:mm:ss'),
         status: '',
         type: '',
-        action: 'Formatting',
+        action: 'Publishing',
         submissionCountry: 'CH',
         applicationNumber: '',
         applicationType: '',
@@ -106,11 +126,17 @@ const Create = (props) => {
         manufacturer: '',
         excipient: '',
         formtype: 'ch',
-        formstatus: ''
+        formstatus: '',
+        comments: '',
     });
 
     const handleChange = (e) => {
         setData(e.target.name, e.target.value)
+    }
+
+    const handleSelectChange = (e) => {
+        return false
+        // e.preventDefault()
     }
 
     const handledrugSubstanceNameChange = (tags) => {
@@ -127,9 +153,7 @@ const Create = (props) => {
 
     const handleSubmit = (e, formtyp) => {
         e.preventDefault();
-        console.log(formtyp)
-        setData("formstatus", formtyp)
-        post(route('addch'));
+        post(route('addch', { 'formstatus': formtyp }));
     }
 
     const handleClose = () => {
@@ -169,8 +193,9 @@ const Create = (props) => {
             </IconButton>
         </React.Fragment>
     );
-
+    
     return (
+       
         <div className={classes.wrapper}>
             <Snackbar
                 open={open}
@@ -230,12 +255,12 @@ const Create = (props) => {
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Chrono N°/ Dossier Reference">
-                                    <TextField fullWidth type="number" label="Chrono N°/ Dossier Reference" value={data.dossierReference} name="dossierReference" onChange={handleChange} />
+                                    <TextField fullWidth type="text" label="Chrono N°/ Dossier Reference" value={data.dossierReference} name="dossierReference" onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Documents Count">
-                                    <TextField fullWidth type="number" label="Documents Count" name="documentsNumber" value={data.documentsNumber} onChange={handleChange} />
+                                    <TextField fullWidth type="text" label="Documents Count" name="documentsNumber" value={data.documentsNumber} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -244,7 +269,7 @@ const Create = (props) => {
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DesktopDatePicker
                                             label="Sending date"
-                                            inputFormat="MM/dd/yyyy"
+                                            inputFormat="dd-MMM-yyyy"
                                             value={data.demandeDate}
                                             onChange={(val) => handleDateChange('demandeDate', val)}
                                             renderInput={(params) => <TextField name="demandeDate" fullWidth {...params} />}
@@ -258,7 +283,7 @@ const Create = (props) => {
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DesktopDatePicker
                                             label="Deadline"
-                                            inputFormat="MM/dd/yyyy"
+                                            inputFormat="dd-MMM-yyyy"
                                             value={data.deadline}
                                             onChange={(val) => handleDateChange('deadline', val)}
                                             renderInput={(params) => <TextField  name="deadline" fullWidth {...params} />}
@@ -269,26 +294,46 @@ const Create = (props) => {
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Status">
-                                    <TextField select fullWidth label="Status" name="status" value={data.status} onChange={handleChange} >
+                                    {/* <TextField select fullWidth label="Status" name="status" value={data.status} onChange={handleChange} >
                                         <MenuItem value="En cours">En cours</MenuItem>
                                         <MenuItem value="Livré">Livré</MenuItem>
                                         <MenuItem value="En attente">En attente</MenuItem>
-                                    </TextField>
+                                    </TextField> */}
+                                    <Select options={[
+                                        { label: 'En cours', value: 'En cours' },
+                                        { label: 'Livré', value: 'Livré' },
+                                        { label: 'En attente', value: 'En attente' },
+                                    ]}
+                                        name="status"
+                                        onChange={handleSelectChange}
+                                        placeholder='Status'
+                                        isClearable
+                                        menuPortalTarget={document.body}
+                                        styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                    />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Type">
-                                    <TextField select fullWidth label="Type" name="type" value={data.type} onChange={handleChange} >
-                                        <MenuItem value="Variation">Variation</MenuItem>
-                                        <MenuItem value="Baseline">Baseline</MenuItem>
-                                        <MenuItem value="Marquage CE">Marquage CE</MenuItem>
-                                        <MenuItem value="Module 2">Module 2</MenuItem>
-                                        <MenuItem value="Module 3">Module 3</MenuItem>
-                                        <MenuItem value="Clincal documents">Clincal documents</MenuItem>
-                                        <MenuItem value="Clinical study report">Clinical study report</MenuItem>
-                                        <MenuItem value="PSUR/Safety report">PSUR/Safety report</MenuItem>
-                                        <MenuItem value="Rationnel/RtQ">Rationnel/RtQ</MenuItem>
-                                    </TextField>
+                                    
+                                    <Select options={[
+                                        { label: 'Variation', value: 'Variation' },
+                                        { label: 'Baseline', value: 'Baseline' },
+                                        { label: 'Marquage CE', value: 'Marquage CE' },
+                                        { label: 'Module 2', value: 'Module 2' },
+                                        { label: 'Module 3', value: 'Module 3' },
+                                        { label: 'Clincal documents', value: 'Clincal documents' },
+                                        { label: 'Clinical study report', value: 'Clinical study report' },
+                                        { label: 'PSUR/Safety report', value: 'PSUR/Safety report' },
+                                        { label: 'Rationnel/RtQ', value: 'Rationnel/RtQ' },
+                                    ]}
+                                        name="type"
+                                        onChange={handleChange}
+                                        placeholder='Type'
+                                        isClearable
+                                        menuPortalTarget={document.body}
+                                        styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                    />
                                 </Tooltip>
                             </Grid>
                             {/* <Grid item xs={12} md={4}>
@@ -317,12 +362,12 @@ const Create = (props) => {
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Application Number">
-                                    <TextField fullWidth label="Application Number" type="number" name="applicationNumber" value={data.applicationNumber} onChange={handleChange} />
+                                    <TextField fullWidth label="Application Number" type="text" name="applicationNumber" value={data.applicationNumber} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Application Type">
-                                    <TextField select fullWidth label="Application Type" name="applicationType" value={data.applicationType} onChange={handleChange} >
+                                    {/* <TextField select fullWidth label="Application Type" name="applicationType" value={data.applicationType} onChange={handleChange} >
                                         <MenuItem value="Used for meetings">Used for meetings</MenuItem>
                                         <MenuItem value="New Application - New Active Substance (na-nas)">New Application - New Active Substance (na-nas)</MenuItem>
                                         <MenuItem value="New Application - Known Active Substance (na-bws)">New Application - Known Active Substance (na-bws)</MenuItem>
@@ -345,17 +390,45 @@ const Create = (props) => {
                                         <MenuItem value="Supplemental information (could include, for example, response to content validation issues or answers to question)">Supplemental information (could include, for example, response to content validation issues or answers to question)</MenuItem>
                                         <MenuItem value="Correction of errors detected in a sequence">Correction of errors detected in a sequence</MenuItem>
                                         
-                                    </TextField>
+                                    </TextField> */}
+                                    <Select options={[
+                                        { label: 'Used for meetings', value: 'Used for meetings' },
+                                        { label: 'New Application - New Active Substance (na-nas)', value: 'New Application - New Active Substance (na-nas)' },
+                                        { label: 'New Application - Known Active Substance (na-bws)', value: 'New Application - Known Active Substance (na-bws)' },
+                                        { label: 'New Application - Co-Marketing Medical Product (na-co-marketing)', value: 'New Application - Co-Marketing Medical Product (na-co-marketing)' },
+                                        { label: 'New Application - Parallel Import (na-pi)', value: 'New Application - Parallel Import (na-pi)' },
+                                        { label: 'Variation Type IA', value: 'Variation Type IA' },
+                                        { label: 'Variation Type IA for immediate notification', value: 'Variation Type IA for immediate notification' },
+                                        { label: 'Variation Type IB', value: 'Variation Type IB' },
+                                        { label: 'Variation Type II', value: 'Variation Type II' },
+                                        { label: 'Extension', value: 'Extension' },
+                                        { label: 'Renewal - Prolongation, renouncement of prolongation of Marketing Authorisation', value: 'Renewal - Prolongation, renouncement of prolongation of Marketing Authorisation' },
+                                        { label: 'Follow-up Measure', value: 'Follow-up Measure' },
+                                        { label: 'Submission of PSUR', value: 'Submission of PSUR' },
+                                        { label: 'Withrawal of authorised medicial products', value: 'Withrawal of authorised medicial products' },
+                                        { label: 'Transfer of a Marketing Authorisation, change of name or address of applicant', value: 'Transfer of a Marketing Authorisation, change of name or address of applicant' },
+                                        { label: 'Drug Master File', value: 'Drug Master File' },
+                                        { label: 'Plasma Master File', value: 'Plasma Master File' },
+                                        { label: 'Application for recognition of orphan drug status or fast track status', value: 'Application for recognition of orphan drug status or fast track status' },
+                                        { label: 'Reformat: Baseline eCTD submission. No content change, no review', value: 'Reformat: Baseline eCTD submission. No content change, no review' },
+                                        { label: 'Supplemental information (could include, for example, response to content validation issues or answers to question)', value: 'Supplemental information (could include, for example, response to content validation issues or answers to question)' },
+                                        { label: 'Correction of errors detected in a sequence', value: 'Correction of errors detected in a sequence' },
+                                    ]}
+                                        name="applicationType"
+                                        onChange={handleChange}
+                                        placeholder=''
+                                        isClearable
+                                    />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="DMF Number">
-                                    <TextField fullWidth label="DMF Number" type="number" name="dmfNumber" value={data.dmfNumber} onChange={handleChange} />
+                                    <TextField fullWidth label="DMF Number" type="text" name="dmfNumber" value={data.dmfNumber} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="PMF Number">
-                                    <TextField fullWidth label="PMF Number" type="number" name="pmfNumber" value={data.pmfNumber} onChange={handleChange} />
+                                    <TextField fullWidth label="PMF Number" type="text" name="pmfNumber" value={data.pmfNumber} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -488,10 +561,22 @@ const Create = (props) => {
                     </CardContent>
                 </Card>
                : ''}
-                {/* <Button variant="contained"  style={{marginLeft:'5px',backgroundColor:'green',color:'white'}} type="submit" onClick={(e) => handleSubmit(e,"save")} >Save</Button>
-                <Button variant="contained" style={{marginLeft:'5px'}} color="primary" className="mt-3" type="submit" onClick={(e) => handleSubmit(e,"add")}>Submit</Button>
-                <Button variant="contained" onClick={() => reset()} color="secondary" style={{marginLeft:'5px'}}>Reset</Button>
-                <Button variant="contained" onClick={() => window.history.back()} style={{marginLeft:'5px'}}>Back</Button> */}
+                <Card className={classes.cCard}>
+                    <CardHeader title="Commentaires" className={classes.cHeader} />
+                    <CardContent>
+                        <Grid container spacing={4}>
+                            <Grid item xs={12} md={11}>
+                                <Editor
+                                   wrapperClassName="wrapper-class"
+                                   editorClassName="editor-class"
+                                   toolbarClassName="toolbar-class"
+                                   editorState={editorState}
+                                   onEditorStateChange={onEditorStateChange}
+                                />
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                </Card>
                 <Speed reset={handleReset} handleSubmit={handleSubmit} />
             </form>
         </div>

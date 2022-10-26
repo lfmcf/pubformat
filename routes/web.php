@@ -3,8 +3,10 @@
 use App\Http\Controllers\EuController;
 use App\Http\Controllers\ChController;
 use App\Http\Controllers\GccController;
+use App\Http\Controllers\NewRequestController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -20,6 +22,7 @@ use Inertia\Inertia;
 */
 
 // Route::get('/', function () {
+    
 //     return Inertia::render('Welcome', [
 //         'canLogin' => Route::has('login'),
 //         'canRegister' => Route::has('register'),
@@ -28,14 +31,33 @@ use Inertia\Inertia;
 //     ]);
 // });
 
-// Route::get('/', function () {
-//     return Inertia::render('Dashboard');
-// })->name('dashboard');
+/**
+ * Teamwork routes
+ */
+Route::group(['prefix' => 'teams', 'namespace' => 'Teamwork'], function()
+{
+    Route::get('/teams', [App\Http\Controllers\Teamwork\TeamController::class, 'index'])->name('teams.index');
+    Route::get('teams/create', [App\Http\Controllers\Teamwork\TeamController::class, 'create'])->name('teams.create');
+    Route::post('teams', [App\Http\Controllers\Teamwork\TeamController::class, 'store'])->name('teams.store');
+    Route::get('edit/{id}', [App\Http\Controllers\Teamwork\TeamController::class, 'edit'])->name('teams.edit');
+    Route::put('edit/{id}', [App\Http\Controllers\Teamwork\TeamController::class, 'update'])->name('teams.update');
+    Route::delete('destroy/{id}', [App\Http\Controllers\Teamwork\TeamController::class, 'destroy'])->name('teams.destroy');
+    Route::get('switch/{id}', [App\Http\Controllers\Teamwork\TeamController::class, 'switchTeam'])->name('teams.switch');
 
-Route::get('/', [ReportController::class, 'dashboard']);
+    Route::get('members/{id}', [App\Http\Controllers\Teamwork\TeamMemberController::class, 'show'])->name('teams.members.show');
+    Route::get('members/resend/{invite_id}', [App\Http\Controllers\Teamwork\TeamMemberController::class, 'resendInvite'])->name('teams.members.resend_invite');
+    Route::post('members/{id}', [App\Http\Controllers\Teamwork\TeamMemberController::class, 'invite'])->name('teams.members.invite');
+    Route::delete('members/{id}/{user_id}', [App\Http\Controllers\Teamwork\TeamMemberController::class, 'destroy'])->name('teams.members.destroy');
 
-Route::get('dashboard', [ReportController::class, 'dashboard'])->name('dashboard');
+    Route::get('accept/{token}', [App\Http\Controllers\Teamwork\AuthController::class, 'acceptInvite'])->name('teams.accept_invite');
+});
 
+
+
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::get('/', [ReportController::class, 'dashboard']);
+    Route::get('dashboard', [ReportController::class, 'dashboard'])->name('dashboard');
 Route::get('/ch', [ChController::class, 'create'])->name('ch-create');
 Route::post('addch', [ChController::class, 'store'])->name('addch');
 Route::get('/ch/{id}/edit', [ChController::class, 'edit'])->name('/ch/edit');
@@ -56,4 +78,15 @@ Route::get('/eu/index', [EuController::class, 'index'])->name('eu-index');
 Route::get('/gcc/index', [GccController::class, 'index'])->name('gcc-index');
 Route::get('/dossiers', [ReportController::class, 'list'])->name('dossiers');
 
+Route::post('newrequest', [NewRequestController::class, 'store'])->name('newrequest');
+
+// Route::get('/attach', function() {
+//     return(Auth::user()->teams()->attach(1));
+// });
+
+});
+
 require __DIR__.'/auth.php';
+
+
+

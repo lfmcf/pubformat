@@ -18,7 +18,15 @@ import axios from 'axios';
 import CustomToolbar from '@/Components/Customtoolbar';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
-
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Tooltip from "@material-ui/core/Tooltip";
+import AddIcon from '@mui/icons-material/Add';
+import Select from 'react-select';
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
@@ -64,6 +72,17 @@ const Index = (props) => {
     
     const classes = useStyles();
     const [display,setDisplay] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [region, setRegion] = useState();
+    const [from, setFrom] = useState();
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     const thememui = () => createTheme({
         
@@ -93,6 +112,18 @@ const Index = (props) => {
 
     const handleNavigate = () => {
         // props.history.push({pathname: '/add_dossier'})
+        // Inertia.get('/ch', {'region': region.value, 'from': from.value})
+        Inertia.visit('/ch', {
+            method: 'get',
+            data: {
+                region: region.value,
+                from: from.value,
+            },
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+            
+        })
     }
 
     const options = {
@@ -110,7 +141,7 @@ const Index = (props) => {
         onRowsDelete: (rowsDeleted, dataRows) => {
             const idsToDelete = rowsDeleted.data.map(d => props.list[d.dataIndex]);
             idsToDelete.map(row => {
-                console.log(row.formtype)
+                
                 if(row.formtype === 'ch') {
 
                 }
@@ -118,9 +149,21 @@ const Index = (props) => {
             
         },
         customToolbar: () => {
+            // console.log(props.auth.user.current_team_id)
+            if(props.auth.user.current_team_id == 1 ){
             return(
-                <CustomToolbar handleClick={handleNavigate} />
+                
+                <Tooltip title={"Add New Record"}>
+                    <IconButton id="basic-button"
+                        aria-controls={open ? 'basic-menu' : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? 'true' : undefined}
+                        onClick={handleClickOpen}>
+                        <AddIcon />
+                    </IconButton>
+                </Tooltip>
             )
+            }
         },
        
 
@@ -288,7 +331,7 @@ const Index = (props) => {
             options: {
                 filter: true,
                 filterType: 'multiselect',
-                customBodyRender: value => moment(new Date(value)).format("DD-MM-YYYY"),
+                customBodyRender: value => moment(new Date(value)).format("DD-MMM-YYYY"),
                 // sort: false
             }
         },
@@ -298,20 +341,20 @@ const Index = (props) => {
             options: {
                 filter: true,
                 filterType: 'multiselect',
-                customBodyRender: value => moment(new Date(value)).format("DD-MM-YYYY"),
+                customBodyRender: value => moment(new Date(value)).format("DD-MMM-YYYY"),
                 // sort: false
             }
         },
-        {
-            name:"created_at",
-            label: "created at",
-            options: {
-                filter: true,
-                filterType: 'multiselect',
-                customBodyRender: value => moment(new Date(value)).format("DD-MM-YYYY"),
-                // sort: false
-            }
-        },
+        // {
+        //     name:"created_at",
+        //     label: "created at",
+        //     options: {
+        //         filter: true,
+        //         filterType: 'multiselect',
+        //         customBodyRender: value => moment(new Date(value)).format("DD-MM-YYYY"),
+        //         // sort: false
+        //     }
+        // },
     ]
 
     return (
@@ -339,6 +382,48 @@ const Index = (props) => {
                     </Snackbar> */}
                 </Card>
             </div>
+            <Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
+                <DialogTitle>New Request</DialogTitle>
+                <DialogContent>
+                    <div style={{display:'flex',alignItems:'center',marginBottom:'10px'}}>
+                        <label style={{marginRight:'10px', width:'15%'}}>Select from</label>
+                        <Select options={[
+                            { label: 'Formatting', value: 'Formatting' },
+                            { label: 'Publishing', value: 'Publishing' },
+                            { label: 'Formatting & Publishing', value: 'Formatting & Publishing' },
+                            { label: 'Submission PSUR', value: 'Submission PSUR' },
+                            { label: 'Submission CESP', value: 'Submission CESP' },
+                        ]}
+                            name="from"
+                            onChange={(e) => setFrom(e)}
+                            placeholder='From'
+                            isClearable
+                            menuPortalTarget={document.body}
+                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <label style={{ marginRight: '10px',  width:'15%' }}>Select Region</label>
+                        <Select options={[
+                            { label: 'Europe', value: 'Europe' },
+                            { label: 'GCC', value: 'GCC' },
+                            { label: 'CH', value: 'CH' },
+                            { label: 'Autres', value: 'Autres' },
+                        ]}
+                            name="Region"
+                            onChange={(e) => setRegion(e)}
+                            placeholder='Region'
+                            isClearable
+                            menuPortalTarget={document.body}
+                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                        />
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Annuler</Button>
+                    <Button onClick={handleNavigate}>Valider</Button>
+                </DialogActions>
+            </Dialog>
         </Authenticated>
     )
 }

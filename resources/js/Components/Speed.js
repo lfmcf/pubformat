@@ -44,11 +44,13 @@ export default function Speed(props) {
                     key="Save"
                     icon={<SaveIcon onClick={(e) => props.handleSubmit(e, "save")} />}
                     tooltipTitle="Save"
+                    name="save"
                 />
                 <SpeedDialAction
                     key="Submit"
                     icon={<PublishIcon onClick={(e) => props.handleSubmit(e, "add")} />}
                     tooltipTitle="Submit"
+                    name="submit"
                 />
             </SpeedDial>
         </Box>

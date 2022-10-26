@@ -531,7 +531,7 @@ export default function Dashboard(props) {
                         } title="Total Dossiers per Action" className={classes.cHeader} />
                         <CardContent>
                             {/* <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils} locale="fr"> */}
-                                <div className="formulaire actions" className={classes.actions}>
+                                <div  className={classes.actions}>
                                     <div>
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                                         <DesktopDatePicker

@@ -22,7 +22,7 @@ class CreateGccsTable extends Migration
             $table->string('ProductNameFini')->nullable();
             $table->string('substanceNameActive')->nullable();
             $table->string('dossierReference')->nullable();
-            $table->integer('documentsNumber')->nullable();
+            $table->string('documentsNumber')->nullable();
             $table->date('demandeDate')->nullable();
             $table->date('deadline')->nullable();
             $table->string('status')->nullable();
@@ -31,7 +31,7 @@ class CreateGccsTable extends Migration
             $table->string('submissionCountry')->nullable();
             $table->string('atc')->nullable();
             $table->string('submissionType')->nullable();
-            $table->integer('trackingNumber')->nullable();
+            $table->string('trackingNumber')->nullable();
             $table->string('submissionUnit')->nullable();
             $table->string('agencyCode')->nullable();
             $table->string('procedureType')->nullable();
@@ -49,6 +49,7 @@ class CreateGccsTable extends Migration
             $table->string('excipient')->nullable();
             $table->string('formtype')->nullable();
             $table->string('formstatus')->nullable();
+            $table->text('comments')->nullable();
             $table->timestamps();
         });
     }
