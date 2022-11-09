@@ -7,7 +7,7 @@ import Label from '@/Components/Label';
 import ValidationErrors from '@/Components/ValidationErrors';
 import { Head, Link, useForm } from '@inertiajs/inertia-react';
 
-export default function Login({ status, canResetPassword }) {
+export default function Login({ status, canResetPassword, canRegister }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -37,16 +37,21 @@ export default function Login({ status, canResetPassword }) {
             {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
 
             <ValidationErrors errors={errors} />
+             <div className="mt-10 mx-auto max-w-md">
+                    <h2 className="text-center text-4xl text-indigo-900 font-display font-semibold lg:text-center xl:text-6xl
+                    xl:text-bold">Log in</h2>
+                    <div className="mt-12"></div>
+             </div>
 
             <form onSubmit={submit}>
                 <div>
-                    <Label forInput="email" value="Email" />
+                    <Label className="mb-2 text-sm font-bold text-gray-700 tracking-wide" forInput="email" value="Email Address" />
 
                     <Input
                         type="text"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
+                        className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                         autoComplete="username"
                         isFocused={true}
                         handleChange={onHandleChange}
@@ -54,39 +59,55 @@ export default function Login({ status, canResetPassword }) {
                 </div>
 
                 <div className="mt-4">
-                    <Label forInput="password" value="Password" />
+                    <Label className="mb-2 text-sm font-bold text-gray-700 tracking-wide" forInput="password" value="Password" />
 
                     <Input
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                         autoComplete="current-password"
                         handleChange={onHandleChange}
                     />
+
                 </div>
 
-                <div className="block mt-4">
+                <div className="flex justify-between my-4">
                     <label className="flex items-center">
                         <Checkbox name="remember" value={data.remember} handleChange={onHandleChange} />
 
-                        <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                        <span className="ml-2 text-xs font-display font-semibold text-indigo-600 hover:text-indigo-800 cursor-pointer">Remember me</span>
                     </label>
-                </div>
 
-                <div className="flex items-center justify-end mt-4">
+                    <div className="flex items-center justify-between my-4">
                     {canResetPassword && (
                         <Link
                             href={route('password.request')}
-                            className="underline text-sm text-gray-600 hover:text-gray-900"
+                            className="text-xs font-display font-semibold text-indigo-600 hover:text-indigo-800 cursor-pointer"
                         >
                             Forgot your password?
                         </Link>
                     )}
+                    </div>
+                </div>
 
-                    <Button className="ml-4" processing={processing}>
-                        Log in
-                    </Button>
+                <div>
+                    <button
+                    type='submit'
+                    className="text-center bg-indigo-500 block text-gray-100 p-4 w-full rounded-full tracking-wide font-semibold font-display
+                             focus:outline-none focus:shadow-outline hover:bg-indigo-600 shadow-lg">
+                        Login
+                    </button>
+                </div>
+
+                <div className="mt-12 text-sm font-display font-semibold text-gray-700 text-center">
+                            Don't have an account ?
+                    {canRegister =(
+
+                        <Link
+                         href={route('register')}
+                         className="cursor-pointer text-indigo-600 hover:text-indigo-800">Sign up</Link>
+                    )} 
                 </div>
             </form>
         </Guest>

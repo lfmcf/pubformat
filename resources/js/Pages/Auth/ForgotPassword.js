@@ -24,7 +24,7 @@ export default function ForgotPassword({ status }) {
         <Guest>
             <Head title="Forgot Password" />
 
-            <div className="mb-4 text-sm text-gray-500 leading-normal">
+            <div className="mb-6 text-sm font-bold text-gray-800 tracking-wider ">
                 Forgot your password? No problem. Just let us know your email address and we will email you a password
                 reset link that will allow you to choose a new one.
             </div>
@@ -38,15 +38,18 @@ export default function ForgotPassword({ status }) {
                     type="text"
                     name="email"
                     value={data.email}
-                    className="mt-1 block w-full"
+                    className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                     isFocused={true}
                     handleChange={onHandleChange}
                 />
 
-                <div className="flex items-center justify-end mt-4">
-                    <Button className="ml-4" processing={processing}>
+                <div className="flex items-center justify-end mt-8">
+                    <button
+                        type='submit'
+                        className="text-center bg-indigo-500 block text-gray-100 p-4 w-full rounded-full tracking-wide font-semibold font-display
+                             focus:outline-none focus:shadow-outline hover:bg-indigo-600 shadow-lg" processing={processing}>
                         Email Password Reset Link
-                    </Button>
+                    </button>
                 </div>
             </form>
         </Guest>
