@@ -25,7 +25,7 @@ window.Pusher = Pusher;
 window.Echo = new Echo({
     broadcaster: 'pusher',
     key: 34433,
-    // cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+    cluster: 'mt1',
     wsHost: window.location.hostname,
     wsPort: 6001,
     forceTLS: false,
@@ -34,9 +34,15 @@ window.Echo = new Echo({
 });
 
 
-// window.Echo.private('App.Models.User.' + window.user.id).notification((notification) => {
-//     console.log(notification.type)
-// });
+// window.Echo.join('App.Models.User.' + window.user.id)
+//     .here((users) => {
+//         console.log('users')
+//     })
+
+// window.Echo.private('App.Models.User.' + window.user.id)
+//     .notification((notification) => {
+//         console.log(notification.type)
+//     });
 
 // window.Echo.private('MyPrivateChannel').notification((notification) => {
 //     console.log(notification.type)

@@ -75,6 +75,7 @@ const Index = (props) => {
     const [open, setOpen] = useState(false);
     const [region, setRegion] = useState();
     const [from, setFrom] = useState();
+    const [type, setType] = useState();
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -111,19 +112,46 @@ const Index = (props) => {
     });
 
     const handleNavigate = () => {
-        // props.history.push({pathname: '/add_dossier'})
-        // Inertia.get('/ch', {'region': region.value, 'from': from.value})
-        Inertia.visit('/ch', {
-            method: 'get',
-            data: {
-                region: region.value,
-                from: from.value,
-            },
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            }
+        if (from && from.value == "Formatting") {
+            Inertia.visit('/ch', {
+                method: 'get',
+                data: {from : from.value},
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+
+            })
+        }else if(from && from.value == "Publishing") {
+            Inertia.visit('/publishing', {
+                method: 'get',
+                data: {from : from.value, region: region.value},
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            })
+        }
+        // var data;
+        // switch (from.value)
+        // {
+        //     case "Formatting":
+        //         data = {from : from.value};
+        //         break;
+        //     case "Publishing":
+        //         data = {from: from.value, region: region.value};
+        //         break;
+        //     case "Submission":
+        //         data = {from: from.value, type: type.value};
+        //         break;
+        // }
+        
+        // Inertia.visit('/ch', {
+        //     method: 'get',
+        //     data: data,
+        //     headers: {
+        //         'Content-Type': 'application/x-www-form-urlencoded',
+        //     }
             
-        })
+        // })
     }
 
     const options = {
@@ -390,9 +418,10 @@ const Index = (props) => {
                         <Select options={[
                             { label: 'Formatting', value: 'Formatting' },
                             { label: 'Publishing', value: 'Publishing' },
-                            { label: 'Formatting & Publishing', value: 'Formatting & Publishing' },
-                            { label: 'Submission PSUR', value: 'Submission PSUR' },
-                            { label: 'Submission CESP', value: 'Submission CESP' },
+                            { label: 'Submission', value: 'Submission' },
+                            // { label: 'Formatting & Publishing', value: 'Formatting & Publishing' },
+                            // { label: 'Submission PSUR', value: 'Submission PSUR' },
+                            // { label: 'Submission CESP', value: 'Submission CESP' },
                         ]}
                             name="from"
                             onChange={(e) => setFrom(e)}
@@ -402,7 +431,7 @@ const Index = (props) => {
                             styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                         />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ display: from && from.value == 'Publishing' ? 'flex' : 'none' , alignItems: 'center' }}>
                         <label style={{ marginRight: '10px',  width:'15%' }}>Select Region</label>
                         <Select options={[
                             { label: 'Europe', value: 'Europe' },
@@ -413,6 +442,22 @@ const Index = (props) => {
                             name="Region"
                             onChange={(e) => setRegion(e)}
                             placeholder='Region'
+                            isClearable
+                            menuPortalTarget={document.body}
+                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                        />
+                    </div>
+                    <div style={{ display: from && from.value == 'Submission' ? 'flex' : 'none' , alignItems: 'center' }}>
+                        <label style={{ marginRight: '10px',  width:'15%' }}>Type</label>
+                        <Select options={[
+                            { label: 'PSUR', value: 'PSUR' },
+                            { label: 'CESP', value: 'CESP' },
+                            { label: 'EMA', value: 'EMA' },
+                            { label: 'FDA', value: 'FDA' },
+                        ]}
+                            name="Type"
+                            onChange={(e) => setType(e)}
+                            placeholder='Type'
                             isClearable
                             menuPortalTarget={document.body}
                             styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
