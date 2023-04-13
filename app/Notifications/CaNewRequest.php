@@ -8,8 +8,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class CaNewRequest extends Notification
+class CaNewRequest extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
@@ -20,7 +22,7 @@ class CaNewRequest extends Notification
      *
      * @return void
      */
-    public function __construct(NewRequest $request)
+    public function __construct(string $request)
     {
         $this->request = $request;
     }
@@ -59,16 +61,19 @@ class CaNewRequest extends Notification
     public function toArray($notifiable)
     {
         return [
-            'form' => $this->request['form'],
-            'region' => $this->request['region'],
+            'from' => $this->request
+            // 'form' => $this->request['form'],
+            // 'region' => $this->request['region'],
         ];
     }
 
-    public function toBroadcast($notifiable)
+    public function toBroadcast($notifiable): BroadcastMessage
     {
+        
         return new BroadcastMessage([
-            'form' => $this->request['form'],
-            'region' => $this->request['region'],
+            'from' => $this->request
+            // 'form' => $this->request['form'],
+            // 'region' => $this->request['region'],
         ]);
     }
 }

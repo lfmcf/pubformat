@@ -4,6 +4,7 @@ use App\Http\Controllers\EuController;
 use App\Http\Controllers\ChController;
 use App\Http\Controllers\GccController;
 use App\Http\Controllers\NewRequestController;
+use App\Http\Controllers\PublishingController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
@@ -59,6 +60,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [ReportController::class, 'dashboard']);
     Route::get('dashboard', [ReportController::class, 'dashboard'])->name('dashboard');
 Route::get('/ch', [ChController::class, 'create'])->name('ch-create');
+Route::get('/publishing', [PublishingController::class, 'create'])->name('pub-create');
+Route::post('/getmd', [PublishingController::class, 'getmetadata'])->name('gmd');
 Route::post('addch', [ChController::class, 'store'])->name('addch');
 Route::get('/ch/{id}/edit', [ChController::class, 'edit'])->name('/ch/edit');
 Route::post('updatech', [ChController::class, 'update'])->name('updatech');

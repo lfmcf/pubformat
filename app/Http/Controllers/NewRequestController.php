@@ -39,12 +39,15 @@ class NewRequestController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $user = User::find(1);
+        // $user = User::find(1);
+        $user = User::first();
+        // dd($user);
         
-        $row = NewRequest::create($data);
+        //$row = NewRequest::create($data);
 
-        //auth()->user()->notify(new CaNewRequest($row));
-        Notification::send($user, new CaNewRequest($row));
+        //$user->notify(new CaNewRequest("hello"));
+        // dd(Notification::send($user, new CaNewRequest('hey')));
+        Notification::sendNow($user, new CaNewRequest('hey'));
     }
 
     /**

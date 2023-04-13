@@ -12,7 +12,8 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import Speed from "@/Components/Speed";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import { usePage } from '@inertiajs/inertia-react'
+import { usePage } from '@inertiajs/inertia-react';
+import TextareaAutosize from '@mui/base/TextareaAutosize';
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
@@ -50,19 +51,18 @@ const useStyles = makeStyles((theme) => ({
             left: '-16px'
         },
     },
-    
+
 }));
 
 
 const Gi = (props) => {
-    
-    var params = new URLSearchParams( window.location.search)
-    
+
+    var params = new URLSearchParams(window.location.search)
+
     const classes = useStyles();
 
     const { data, setData, post, processing, errors, clearErrors, reset } = useForm({
         form: params.get('from'),
-        region: params.get('region'),
         responsable: '',
         eventName: '',
         referenceDeficiencyLetter: '',
@@ -70,7 +70,7 @@ const Gi = (props) => {
         substanceNameActive: '',
         dossierReference: '',
         // documentsNumber: '',
-        deadline: moment(new Date).format('YYYY-MM-DD HH:mm:ss'),
+        deadline: moment(new Date),
     })
     const handleChange = (e) => {
         setData(e.target.name, e.target.value)
@@ -90,16 +90,28 @@ const Gi = (props) => {
         setOpen(true)
     }
 
-    return(
-        
+    console.log(data.form)
+
+    return (
+        <Authenticated auth={props.auth} header={"Form - Create " + data.form}>
             <form className={classes.formulaire} onSubmit={handleSubmit}>
                 <Card className={classes.cCard}>
                     <CardHeader title="GENERAL INFORMATION" className={classes.cHeader} />
                     <CardContent>
                         <Grid container spacing={4}>
                             <Grid item xs={12} md={4}>
-                                <Tooltip title="Responsable">
-                                    <TextField fullWidth label="Responsable" name="responsable" value={data.responsable} onChange={handleChange} />
+                                <Tooltip title="Dossier Contact">
+                                    <TextField fullWidth label="Dossier Contact" name="dossier_contact" value={data.dossier_contact} onChange={handleChange} />
+                                </Tooltip>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <Tooltip title="Dossier Name">
+                                    <TextField fullWidth label="Dossier Name" name="dossier_name" value={data.dossier_name} onChange={handleChange} />
+                                </Tooltip>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <Tooltip title="Dossier Type">
+                                    <TextField fullWidth label="Dossier Type" name="dossier_type" value={data.dossier_type} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -107,27 +119,38 @@ const Gi = (props) => {
                                     <TextField fullWidth label="Product Name" name="ProductNameFini" value={data.ProductNameFini} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
-                            <Grid item xs={12} md={4}>
-                                <Tooltip title="Event Name">
-                                    <TextField fullWidth label="Event Name" name="eventName" value={data.eventName} onChange={handleChange} />
-                                </Tooltip>
-                            </Grid>
+                            {/* <Grid item xs={12} md={4}>
+                            <Tooltip title="Event Name">
+                                <TextField fullWidth label="Event Name" name="eventName" value={data.eventName} onChange={handleChange} />
+                            </Tooltip>
+                        </Grid> */}
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Substance Name">
                                     <TextField fullWidth label="Substance Name" name="substanceNameActive" value={data.substanceNameActive} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <DesktopDatePicker
-                                        label="Deadline"
-                                        inputFormat="dd-MMM-yyyy"
-                                        value={data.deadline}
-                                        onChange={(val) => handleDateChange('deadline', val)}
-                                        renderInput={(params) => <TextField name="deadline" fullWidth {...params} />}
-                                    />
-                                </LocalizationProvider>
+                                <Tooltip title="Country">
+                                    <TextField fullWidth label="Country" name="country" value={data.country} onChange={handleChange} />
+                                </Tooltip>
                             </Grid>
+                            <Grid item xs={12} md={5}>
+                                <Tooltip title="Deficiency Letter">
+                                    <TextField fullWidth label="Deficiency Letter" name="deficiency_letter" value={data.deficiency_letter} onChange={handleChange} />
+                                </Tooltip>
+                            </Grid>
+                            <Grid item xs={12} md={5}>
+                                <Tooltip title="Chrono N°/ Dossier Reference">
+                                    <TextField fullWidth type="text" label="Chrono N°/ Dossier Reference" value={data.dossierReference} name="dossierReference" onChange={handleChange} />
+                                </Tooltip>
+                            </Grid>
+                            <Grid item xs={12} md={2}>
+                                <Tooltip title="Document Count">
+                                    <TextField fullWidth label="Document Count" name="document_count" value={data.document_count} onChange={handleChange} />
+                                </Tooltip>
+                            </Grid>
+
+                            
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Type">
                                     <Select options={[
@@ -150,11 +173,7 @@ const Gi = (props) => {
                                     />
                                 </Tooltip>
                             </Grid>
-                            <Grid item xs={12} md={4}>
-                                <Tooltip title="Chrono N°/ Dossier Reference">
-                                    <TextField fullWidth type="text" label="Chrono N°/ Dossier Reference" value={data.dossierReference} name="dossierReference" onChange={handleChange} />
-                                </Tooltip>
-                            </Grid>
+
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Reference of Deficiency Letter">
                                     <TextField fullWidth label="Reference of Deficiency Letter" name="referenceDeficiencyLetter" value={data.referenceDeficiencyLetter} onChange={handleChange} />
@@ -163,16 +182,96 @@ const Gi = (props) => {
                             <Grid item xs={12} md={4}>
                                 <FormControlLabel control={<Checkbox defaultChecked />} label="Core doc" labelPlacement="start" />
                             </Grid>
+
+                        </Grid>
+                    </CardContent>
+                </Card>
+                <Card className={classes.cCard}>
+                    <CardHeader title="Initial Deadline" className={classes.cHeader} />
+                    <CardContent>
+                        <Grid container spacing={4}>
+                            <Grid item xs={12} md={4}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DesktopDatePicker
+                                        label="Deadline"
+                                        inputFormat="dd-MMM-yyyy"
+
+                                        value={data.deadline}
+                                        onChange={(val) => handleDateChange('deadline', val)}
+                                        renderInput={(params) => <TextField name="deadline" fullWidth {...params} />}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
                             
+                        </Grid>
+                    </CardContent>
+                </Card>
+                <Card className={classes.cCard}>
+                    <CardHeader title="Exceptional Deadline" className={classes.cHeader} />
+                    <CardContent>
+                        <Grid container spacing={4}>
+                            <Grid item xs={12} md={4}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DesktopDatePicker
+                                        label="Deadline"
+                                        inputFormat="dd-MMM-yyyy"
+
+                                        value={data.deadline}
+                                        onChange={(val) => handleDateChange('deadline', val)}
+                                        renderInput={(params) => <TextField name="deadline" fullWidth {...params} />}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <TextField fullWidth label="Reason" name="reason" value={data.reason} onChange={handleChange} />
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                </Card>
+                <Card className={classes.cCard}>
+                    <CardHeader title="Operationel Deadline" className={classes.cHeader} />
+                    <CardContent>
+                        <Grid container spacing={4}>
+                            <Grid item xs={12} md={4}>
+                                <Select options={[
+                                    { label: '10h', value: '10h' },
+                                    { label: '12h', value: '12h' },
+                                    { label: '14h', value: '14h' },
+                                    { label: '16h', value: '16h' },
+
+                                ]}
+                                    className="basic"
+                                    classNamePrefix="basic"
+                                    placeholder='Delivery Time'
+                                    menuPortalTarget={document.body} 
+                                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                />
+                            </Grid>
+                        </Grid>
+                    </CardContent>
+                </Card>
+                <Card className={classes.cCard}>
+                    <CardHeader title="Status & Comments" className={classes.cHeader} />
+                    <CardContent>
+                        <Grid container spacing={4}>
+                            <Grid item xs={12} md={6}>
+                                <TextField fullWidth label="Status" name="status" value={data.status} onChange={handleChange} />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField fullWidth label="Attached Document" name="doc" value={data.doc} onChange={handleChange} />
+                            </Grid>
+                            <Grid item xs={12} md={12}>
+                                <TextareaAutosize aria-label="Comment" minRows={3} placeholder="Comment" style={{ width: '100%' }} />
+                            </Grid>
                         </Grid>
                     </CardContent>
                 </Card>
                 <Speed reset={handleReset} handleSubmit={handleSubmit} />
             </form>
-        
+        </Authenticated>
     )
 }
 
 export default Gi;
 
-Gi.layout = page => <Authenticated children={page} auth={page.props.auth} header="Form - CREARTE" />
+//Gi.layout = (page) => <Authenticated children={page} auth={page.props.auth} header={"Form - CREARTE"} />

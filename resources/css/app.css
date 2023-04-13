@@ -20,4 +20,7 @@ tr td {
     padding: 8px 16px !important;
 }
 
+.basic__menu {
+    z-index: 10000;
+}
 

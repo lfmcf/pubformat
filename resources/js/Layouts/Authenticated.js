@@ -235,6 +235,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Authenticated({ auth, header, children }) {
+    
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
     
     const [openMenu, setOpenMenu] = useState(false);
@@ -243,11 +244,17 @@ export default function Authenticated({ auth, header, children }) {
     const handleClick = () => {
         setOpenMenu(!openMenu)
     };
+
+    const userId = auth.user.id;
     
 
-//    window.Echo.private('App.Models.User.' + auth.user.id).notification((notification) => {
-//     console.log(notification.type)
-// });
+    window.Echo.private('App.Models.User.' + userId ).notification((notification) => {
+        console.log(notification.from)
+    });
+
+    // window.Echo.private('App.Models.User.' + auth.user.id).listen('notification', (notification) => {
+    //     console.log("notification")
+    // });
 
     return (
         <div className={classes.paper}>
