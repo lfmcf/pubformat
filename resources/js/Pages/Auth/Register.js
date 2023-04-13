@@ -31,20 +31,20 @@ export default function Register() {
     };
 
     return (
-        <Guest>
+        <Guest className="lg:flex">
             <Head title="Register" />
 
             <ValidationErrors errors={errors} />
 
             <form onSubmit={submit}>
                 <div>
-                    <Label forInput="name" value="Name" />
+                    <Label className="mt-4 mb-2 text-sm font-bold text-gray-700 tracking-wide" forInput="name" value="Name" />
 
                     <Input
                         type="text"
                         name="name"
                         value={data.name}
-                        className="mt-1 block w-full"
+                        className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                         autoComplete="name"
                         isFocused={true}
                         handleChange={onHandleChange}
@@ -53,13 +53,13 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <Label forInput="email" value="Email" />
+                    <Label className="mb-2 text-sm font-bold text-gray-700 tracking-wide" forInput="email" value="Email Address" />
 
                     <Input
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
+                        className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                         autoComplete="username"
                         handleChange={onHandleChange}
                         required
@@ -67,13 +67,13 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <Label forInput="password" value="Password" />
+                    <Label className="mb-2 text-sm font-bold text-gray-700 tracking-wide" forInput="password" value="Password" />
 
                     <Input
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                         autoComplete="new-password"
                         handleChange={onHandleChange}
                         required
@@ -81,26 +81,32 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <Label forInput="password_confirmation" value="Confirm Password" />
+                    <Label className="mb-2 text-sm font-bold text-gray-700 tracking-wide" forInput="password_confirmation" value="Confirm Password" />
 
                     <Input
                         type="password"
                         name="password_confirmation"
                         value={data.password_confirmation}
-                        className="mt-1 block w-full"
+                        className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                         handleChange={onHandleChange}
                         required
                     />
                 </div>
 
-                <div className="flex items-center justify-end mt-4">
-                    <Link href={route('login')} className="underline text-sm text-gray-600 hover:text-gray-900">
-                        Already registered?
-                    </Link>
+                <div>
+                    <button
+                        type='submit'
+                        className="mt-6 text-center bg-indigo-500 block text-gray-100 p-4 w-full rounded-full tracking-wide font-semibold font-display
+                        focus:outline-none focus:shadow-outline hover:bg-indigo-600 shadow-lg" processing={processing}>
+                        Sign up!
+                    </button>
+                </div>
 
-                    <Button className="ml-4" processing={processing}>
-                        Register
-                    </Button>
+
+                <div className="flex items-center justify-end mt-12">
+                    <Link href={route('login')} className="text-xs font-display font-semibold text-indigo-600 hover:text-indigo-800 cursor-pointer">
+                        Already registered?Log in here!
+                    </Link>
                 </div>
             </form>
         </Guest>
