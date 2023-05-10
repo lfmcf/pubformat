@@ -537,6 +537,33 @@ const Publishing = (props) => {
                                     />
                                 </LocalizationProvider>
                             </Grid>
+                            <Grid item xs={12} md={6}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DesktopDatePicker
+                                        label="Adjusted / Extended deadline"
+                                        inputFormat="dd-MMM-yyyy"
+
+                                        value={data.deadline}
+                                        onChange={(val) => handleDateChange('deadline', val)}
+                                        renderInput={(params) => <TextField name="deadline" fullWidth {...params} />}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DesktopDatePicker
+                                        label="Delivery time"
+                                        inputFormat="HH:mm"
+
+                                        //value={data.deadline}
+                                        //onChange={(val) => handleDateChange('deadline', val)}
+                                        renderInput={(params) => <TextField name="deadline" fullWidth {...params} />}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12} md={12}>
+                                <TextField fullWidth label="Remarks" name="remarks" onChange={handleChange} />
+                            </Grid>
                         </Grid>
                         
                     </CardContent>
