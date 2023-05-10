@@ -27,3 +27,15 @@ tr td {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.modal_form {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.modal_label {
+    margin-right: 10px;
+    width: 25%;
+}

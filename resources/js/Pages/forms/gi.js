@@ -62,7 +62,8 @@ const Gi = (props) => {
     const classes = useStyles();
 
     const { data, setData, post, processing, errors, clearErrors, reset } = useForm({
-        form: params.get('from'),
+        form: params.get('form'),
+        region: params.get('region'),
         responsable: '',
         eventName: '',
         referenceDeficiencyLetter: '',
@@ -93,7 +94,7 @@ const Gi = (props) => {
     console.log(data.form)
 
     return (
-        <Authenticated auth={props.auth} header={"Form - Create " + data.form}>
+        <Authenticated auth={props.auth} header={"Form - Create " + data.form + " " + data.region}>
             <form className={classes.formulaire} onSubmit={handleSubmit}>
                 <Card className={classes.cCard}>
                     <CardHeader title="GENERAL INFORMATION" className={classes.cHeader} />
@@ -105,18 +106,51 @@ const Gi = (props) => {
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
-                                <Tooltip title="Dossier Name">
-                                    <TextField fullWidth label="Dossier Name" name="dossier_name" value={data.dossier_name} onChange={handleChange} />
+                                <Tooltip title="Object">
+                                    <TextField fullWidth label="Object" name="dossier_name" value={data.dossier_name} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Dossier Type">
-                                    <TextField fullWidth label="Dossier Type" name="dossier_type" value={data.dossier_type} onChange={handleChange} />
+                                    {/* <TextField fullWidth label="Dossier Type" name="dossier_type" value={data.dossier_type} onChange={handleChange} /> */}
+                                    <Select options={[
+                                        { label: 'Variation Dossier (Rationale and/or M2, M3)', value: 'Variation Dossier (Rationale and/or M2, M3)' },
+                                        { label: 'Responses to Questions Dossier (RTQ and/or M2, M3)', value: 'Responses to Questions Dossier (RTQ and/or M2, M3)' },
+                                        { label: 'IMPD', value: 'IMPD' },
+                                        { label: 'IND', value: 'IND' },
+                                        { label: 'Master file (i.e.: DMF, PSMF …)', value: 'Master file (i.e.: DMF, PSMF …)' },
+                                        { label: 'Module 1', value: 'Module 1' },
+                                        { label: 'Module 2 (sections 2.3, 2.4, 2.5, 2.6 or 2.7)', value: 'Module 2 (sections 2.3, 2.4, 2.5, 2.6 or 2.7)' },
+                                        { label: 'Module 3', value: 'Module 3' },
+                                        { label: 'Module 4', value: 'Module 4' },
+                                        { label: 'Module 5', value: 'Module 5' },
+                                        { label: 'Literature references', value: 'Literature references' },
+                                        { label: 'Nonclinical study reports', value: 'Nonclinical study reports' },
+                                        { label: 'PIP', value: 'PIP' },
+                                        { label: 'RMP', value: 'RMP' },
+                                        { label: 'PBER, PSUR, Safety reports', value: 'PBER, PSUR, Safety reports' },
+                                        { label: 'Variation Rationale document', value: 'Variation Rationale document' },
+                                        { label: 'Responses to Questions document', value: 'Responses to Questions document' },
+                                    ]}
+                                        name="dossier_type"
+                                        onChange={(e) => setData('dossier_type', e.value)}
+                                        placeholder='Dossier type'
+                                        isClearable
+                                        menuPortalTarget={document.body}
+                                        styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                    />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
-                                <Tooltip title="Product Name">
-                                    <TextField fullWidth label="Product Name" name="ProductNameFini" value={data.ProductNameFini} onChange={handleChange} />
+                                <Tooltip title="Product name">
+                                    {/* <TextField fullWidth label="Product Name" name="ProductNameFini" value={data.ProductNameFini} onChange={handleChange} /> */}
+                                    <Select 
+                                        name="ProductNameFini"
+                                        placeholder='Product name'
+                                        isClearable
+                                        menuPortalTarget={document.body}
+                                        styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                    />
                                 </Tooltip>
                             </Grid>
                             {/* <Grid item xs={12} md={4}>
@@ -125,13 +159,27 @@ const Gi = (props) => {
                             </Tooltip>
                         </Grid> */}
                             <Grid item xs={12} md={4}>
-                                <Tooltip title="Substance Name">
-                                    <TextField fullWidth label="Substance Name" name="substanceNameActive" value={data.substanceNameActive} onChange={handleChange} />
+                                <Tooltip title="Substance name">
+                                    {/* <TextField fullWidth label="Substance Name" name="substanceNameActive" value={data.substanceNameActive} onChange={handleChange} /> */}
+                                    <Select 
+                                        name="substanceNameActive"
+                                        placeholder='Substance name'
+                                        isClearable
+                                        menuPortalTarget={document.body}
+                                        styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                    />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Country">
-                                    <TextField fullWidth label="Country" name="country" value={data.country} onChange={handleChange} />
+                                    {/* <TextField fullWidth label="Country" name="country" value={data.country} onChange={handleChange} /> */}
+                                    <Select 
+                                        name="country"
+                                        placeholder='Country'
+                                        isClearable
+                                        menuPortalTarget={document.body}
+                                        styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                    />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={5}>
@@ -151,7 +199,7 @@ const Gi = (props) => {
                             </Grid>
 
                             
-                            <Grid item xs={12} md={4}>
+                            {/* <Grid item xs={12} md={4}>
                                 <Tooltip title="Type">
                                     <Select options={[
                                         { label: 'Variation', value: 'Variation' },
@@ -172,28 +220,40 @@ const Gi = (props) => {
                                         styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                     />
                                 </Tooltip>
-                            </Grid>
+                            </Grid> */}
 
-                            <Grid item xs={12} md={4}>
+                            {/* <Grid item xs={12} md={4}>
                                 <Tooltip title="Reference of Deficiency Letter">
                                     <TextField fullWidth label="Reference of Deficiency Letter" name="referenceDeficiencyLetter" value={data.referenceDeficiencyLetter} onChange={handleChange} />
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
                                 <FormControlLabel control={<Checkbox defaultChecked />} label="Core doc" labelPlacement="start" />
-                            </Grid>
+                            </Grid> */}
 
                         </Grid>
                     </CardContent>
                 </Card>
                 <Card className={classes.cCard}>
-                    <CardHeader title="Initial Deadline" className={classes.cHeader} />
+                    <CardHeader title="Delivery details" className={classes.cHeader} />
                     <CardContent>
                         <Grid container spacing={4}>
-                            <Grid item xs={12} md={4}>
+                            <Grid item xs={12} md={6}>
                                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                                     <DesktopDatePicker
-                                        label="Deadline"
+                                        label="Request date"
+                                        inputFormat="dd-MMM-yyyy HH:mm"
+
+                                        value={data.deadline}
+                                        onChange={(val) => handleDateChange('deadline', val)}
+                                        renderInput={(params) => <TextField name="deadline" fullWidth {...params} />}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DesktopDatePicker
+                                        label="Delivery deadline"
                                         inputFormat="dd-MMM-yyyy"
 
                                         value={data.deadline}
@@ -202,11 +262,10 @@ const Gi = (props) => {
                                     />
                                 </LocalizationProvider>
                             </Grid>
-                            
                         </Grid>
                     </CardContent>
                 </Card>
-                <Card className={classes.cCard}>
+                {/* <Card className={classes.cCard}>
                     <CardHeader title="Exceptional Deadline" className={classes.cHeader} />
                     <CardContent>
                         <Grid container spacing={4}>
@@ -249,7 +308,7 @@ const Gi = (props) => {
                             </Grid>
                         </Grid>
                     </CardContent>
-                </Card>
+                </Card> */}
                 <Card className={classes.cCard}>
                     <CardHeader title="Status & Comments" className={classes.cHeader} />
                     <CardContent>
