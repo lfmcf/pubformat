@@ -173,7 +173,35 @@ const Gi = (props) => {
                             <Grid item xs={12} md={4}>
                                 <Tooltip title="Country">
                                     {/* <TextField fullWidth label="Country" name="country" value={data.country} onChange={handleChange} /> */}
-                                    <Select 
+                                    <Select options={[
+                                        { label: 'Allemagne', value: 'Allemagne' },
+                                        { label: 'Autriche', value: 'Autriche' },
+                                        { label: 'Belgique', value: 'Belgique' },
+                                        { label: 'Bulgarie', value: 'Bulgarie' },
+                                        { label: 'Chypre', value: 'Chypre' },
+                                        { label: 'Chypre', value: 'Chypre' },
+                                        { label: 'Danemark', value: 'Danemark' },
+                                        { label: 'Espagne', value: 'Espagne' },
+                                        { label: 'Estonie', value: 'Estonie' },
+                                        { label: 'Finlande', value: 'Finlande' },
+                                        { label: 'France', value: 'France' },
+                                        { label: 'Grèce', value: 'Grèce' },
+                                        { label: 'Hongrie', value: 'Hongrie' },
+                                        { label: 'Irlande', value: 'Irlande' },
+                                        { label: 'Italie', value: 'Italie' },
+                                        { label: 'Lettonie', value: 'Lettonie' },
+                                        { label: 'Lituanie', value: 'Lituanie' },
+                                        { label: 'Luxembourg', value: 'Luxembourg' },
+                                        { label: 'Malte', value: 'Malte' },
+                                        { label: 'Pays-Bas', value: 'Pays-Bas' },
+                                        { label: 'Pologne', value: 'Pologne' },
+                                        { label: 'Portugal', value: 'Portugal' },
+                                        { label: 'République tchèque', value: 'République tchèque' },
+                                        { label: 'Roumanie', value: 'Roumanie' },
+                                        { label: 'Slovaquie', value: 'Slovaquie' },
+                                        { label: 'Slovénie', value: 'Slovénie' },
+                                        { label: 'Suède', value: 'Suède' },
+                                    ]}
                                         name="country"
                                         placeholder='Country'
                                         isClearable
@@ -261,6 +289,33 @@ const Gi = (props) => {
                                         renderInput={(params) => <TextField name="deadline" fullWidth {...params} />}
                                     />
                                 </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DesktopDatePicker
+                                        label="Adjusted / Extended deadline"
+                                        inputFormat="dd-MMM-yyyy"
+
+                                        value={data.deadline}
+                                        onChange={(val) => handleDateChange('deadline', val)}
+                                        renderInput={(params) => <TextField name="deadline" fullWidth {...params} />}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <DesktopDatePicker
+                                        label="Delivery time"
+                                        inputFormat="HH:mm"
+
+                                        //value={data.deadline}
+                                        //onChange={(val) => handleDateChange('deadline', val)}
+                                        renderInput={(params) => <TextField name="deadline" fullWidth {...params} />}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12} md={12}>
+                                <TextField fullWidth label="Remarks" name="remarks" onChange={handleChange} />
                             </Grid>
                         </Grid>
                     </CardContent>
