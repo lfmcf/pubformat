@@ -15,7 +15,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Authenticated from '@/Layouts/Authenticated';
 import { Inertia } from '@inertiajs/inertia';
 import axios from 'axios';
-import CustomToolbar from '@/Components/Customtoolbar';
+// import CustomToolbar from '@/Components/Customtoolbar';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
@@ -27,6 +27,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Tooltip from "@material-ui/core/Tooltip";
 import AddIcon from '@mui/icons-material/Add';
 import Select from 'react-select';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
@@ -74,7 +76,9 @@ const Index = (props) => {
     const [display,setDisplay] = useState(false);
     const [open, setOpen] = useState(false);
     const [region, setRegion] = useState();
-    const [from, setFrom] = useState();
+    const [coreDoc, setCoreDoc] = useState(false);
+    const [procedure, setProcedure] = useState();
+    const [form, setForm] = useState();
     const [type, setType] = useState();
 
     const handleClickOpen = () => {
@@ -112,19 +116,19 @@ const Index = (props) => {
     });
 
     const handleNavigate = () => {
-        if (from && from.value == "Formatting") {
+        if (form && form.value == "Formatting") {
             Inertia.visit('/ch', {
                 method: 'get',
-                data: {from : from.value},
+                data: {form : form.value, region: region.value, coreDoc: coreDoc},
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
 
             })
-        }else if(from && from.value == "Publishing") {
+        }else if(form && form.value == "Publishing") {
             Inertia.visit('/publishing', {
                 method: 'get',
-                data: {from : from.value, region: region.value},
+                data: {form : form.value, region: region.value, procedure: procedure.value},
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
@@ -413,8 +417,8 @@ const Index = (props) => {
             <Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
                 <DialogTitle>New Request</DialogTitle>
                 <DialogContent>
-                    <div style={{display:'flex',alignItems:'center',marginBottom:'10px'}}>
-                        <label style={{marginRight:'10px', width:'15%'}}>Select from</label>
+                    <div className='modal_form'>
+                        <label className='modal_label'>New request</label>
                         <Select options={[
                             { label: 'Formatting', value: 'Formatting' },
                             { label: 'Publishing', value: 'Publishing' },
@@ -423,31 +427,58 @@ const Index = (props) => {
                             // { label: 'Submission PSUR', value: 'Submission PSUR' },
                             // { label: 'Submission CESP', value: 'Submission CESP' },
                         ]}
-                            name="from"
-                            onChange={(e) => setFrom(e)}
-                            placeholder='From'
+                            name="form"
+                            onChange={(e) => setForm(e)}
+                            placeholder='Form'
                             isClearable
                             menuPortalTarget={document.body}
-                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                            styles={{ 
+                                menuPortal: base => ({ ...base, zIndex: 9999, }),
+                                container : base => ({width : '100%'})
+                            }}
+                            
                         />
                     </div>
-                    <div style={{ display: from && from.value == 'Publishing' ? 'flex' : 'none' , alignItems: 'center' }}>
-                        <label style={{ marginRight: '10px',  width:'15%' }}>Select Region</label>
+                    <div className='modal_form'>
+                        <label className='modal_label'>Region</label>
                         <Select options={[
-                            { label: 'Europe', value: 'Europe' },
+                            { label: 'Eu', value: 'Eu' },
                             { label: 'GCC', value: 'GCC' },
                             { label: 'CH', value: 'CH' },
-                            { label: 'Autres', value: 'Autres' },
+                            { label: 'Asia', value: 'Asia' },
+                            { label: 'US', value: 'US' },
+                            { label: 'Africa', value: 'Africa' },
                         ]}
                             name="Region"
                             onChange={(e) => setRegion(e)}
                             placeholder='Region'
                             isClearable
                             menuPortalTarget={document.body}
-                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container : base => ({width : '100%'}) }}
                         />
                     </div>
-                    <div style={{ display: from && from.value == 'Submission' ? 'flex' : 'none' , alignItems: 'center' }}>
+                    <div className='modal_form' style={{display: form && form.value == 'Publishing' ? 'flex' : 'none'}}>
+                        <label className='modal_label'>Procedure type</label>
+                        <Select options={[
+                            { label: 'Nationale', value: 'Nationale' },
+                            { label: 'Centralized', value: 'Centralized' },
+                            { label: 'Decentralized', value: 'Decentralized' },
+                            { label: 'Mutual Recognition', value: 'Mutual Recognition' },
+                        ]}
+                            name="procedure"
+                            onChange={(e) => setProcedure(e)}
+                            placeholder='Procedure type'
+                            isClearable
+                            menuPortalTarget={document.body}
+                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container : base => ({width : '100%'}) }}
+                        />
+                    </div>
+                    <div className='modal_form' style={{display: form && form.value == 'Formatting' ? 'flex' : 'none'}}>
+                        <label className='modal_label'>Core doc</label>
+                        {/* <FormControlLabel control={} label="Core doc" labelPlacement="start" /> */}
+                        <Checkbox onChange={(e) => setCoreDoc(e.target.checked)} />
+                    </div>
+                    <div style={{ display: form && form.value == 'Submission' ? 'flex' : 'none' , alignItems: 'center' }}>
                         <label style={{ marginRight: '10px',  width:'15%' }}>Type</label>
                         <Select options={[
                             { label: 'PSUR', value: 'PSUR' },
@@ -460,7 +491,7 @@ const Index = (props) => {
                             placeholder='Type'
                             isClearable
                             menuPortalTarget={document.body}
-                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container : base => ({width : '100%'}) }}
                         />
                     </div>
                 </DialogContent>

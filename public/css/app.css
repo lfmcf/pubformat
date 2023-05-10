@@ -1403,6 +1403,17 @@ select {
     transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
 }
 
+.modal_form {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.modal_label {
+    margin-right: 10px;
+    width: 25%;
+}
+
 .hover\:border-gray-300:hover {
     --tw-border-opacity: 1;
     border-color: rgb(209 213 219 / var(--tw-border-opacity));
