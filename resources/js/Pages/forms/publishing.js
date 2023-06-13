@@ -189,7 +189,7 @@ const Publishing = (props) => {
                                         menuPortalTarget={document.body} 
                                         styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                     />
-                                    {/* <TextField fullWidth label="Product Name" name="ProductName" value={data.ProductName} onChange={handleChange} /> */}
+                                    
                                 </Tooltip>
                             </Grid>
                             <Grid item xs={12} md={4}>
@@ -233,7 +233,7 @@ const Publishing = (props) => {
                                         menuPortalTarget={document.body} 
                                         styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                     />
-                                    {/* <TextField fullWidth label="Country" name="country" value={data.country} onChange={handleChange} /> */}
+                                    
                                 </Tooltip>
                             </Grid>
                             {/* <Grid item xs={12} md={3}>

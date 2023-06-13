@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EuController;
 use App\Http\Controllers\ChController;
+use App\Http\Controllers\FormattingController;
 use App\Http\Controllers\GccController;
 use App\Http\Controllers\NewRequestController;
 use App\Http\Controllers\PublishingController;
@@ -57,9 +58,15 @@ Route::group(['prefix' => 'teams', 'namespace' => 'Teamwork'], function()
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/', [ReportController::class, 'dashboard']);
-    Route::get('dashboard', [ReportController::class, 'dashboard'])->name('dashboard');
-Route::get('/ch', [ChController::class, 'create'])->name('ch-create');
+Route::get('/', [ReportController::class, 'dashboard']);
+Route::get('dashboard', [ReportController::class, 'dashboard'])->name('dashboard');
+
+Route::get('/formatting', [FormattingController::class, 'create'])->name('ch-create');
+Route::post('formattingStore', [FormattingController::class, 'store'])->name('formattingStore');
+Route::get('/formatting/{id}/edit', [FormattingController::class, 'edit'])->name('formattingEdit');
+Route::post('updateformatting', [FormattingController::class, 'update'])->name('updateformatting');
+Route::post('comfirmdeadline', [FormattingController::class, 'comfirm'])->name('comfirmdeadline');
+
 Route::get('/publishing', [PublishingController::class, 'create'])->name('pub-create');
 Route::post('/getmd', [PublishingController::class, 'getmetadata'])->name('gmd');
 Route::post('addch', [ChController::class, 'store'])->name('addch');
@@ -79,9 +86,10 @@ Route::post('updategcc', [GccController::class, 'update'])->name('updategcc');
 Route::get('/ch/index', [ChController::class, 'index'])->name('ch-index');
 Route::get('/eu/index', [EuController::class, 'index'])->name('eu-index');
 Route::get('/gcc/index', [GccController::class, 'index'])->name('gcc-index');
-Route::get('/dossiers', [ReportController::class, 'list'])->name('dossiers');
+Route::get('/list', [ReportController::class, 'list'])->name('list');
+Route::get('/tasks', [ReportController::class, 'task'])->name('tasks');
 
-Route::post('newrequest', [NewRequestController::class, 'store'])->name('newrequest');
+
 
 // Route::get('/attach', function() {
 //     return(Auth::user()->teams()->attach(1));
