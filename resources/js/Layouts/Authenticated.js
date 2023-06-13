@@ -1,13 +1,25 @@
 import ApplicationLogo from '../Components/ApplicationLogo';
 import Dropdown from '../Components/Dropdown';
 import NavLink from '../Components/NavLink';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ResponsiveNavLink from '../Components/ResponsiveNavLink';
 import { InertiaLink } from '@inertiajs/inertia-react';
 import { Paper, Typography, Breadcrumbs, IconButton} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Home, Server, PieChart, TrendingUp, BarChart2, Settings, LogOut, User, ChevronDown, Activity } from 'react-feather';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import GroupsIcon from '@mui/icons-material/Groups';
 import Echo from 'laravel-echo';
+import Badge from '@mui/material/Badge';
+import Popover from '@mui/material/Popover';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import moment from 'moment';
+import Divider from '@mui/material/Divider';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -160,7 +172,7 @@ const useStyles = makeStyles((theme) => ({
         '& li': {
             lineHeight: '70px',
             display: 'inline-block',
-            padding: '0 12px'
+            padding: '0 6px'
         },
         '& li:first-child': {
             paddingLeft: '25px'
@@ -182,7 +194,8 @@ const useStyles = makeStyles((theme) => ({
         "&:hover, &.Mui-focusVisible": {
             backgroundColor: "unset",
             color: '#04a9f5'
-        }
+        },
+        padding: '0',
     },
     menu: {
         display: openMenu => openMenu ? 'block': 'none',
@@ -237,20 +250,42 @@ const useStyles = makeStyles((theme) => ({
 export default function Authenticated({ auth, header, children }) {
     
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+
+   
+
+    
     
     const [openMenu, setOpenMenu] = useState(false);
+    const [notCount, setNotCount] = useState(auth.notifications)
     const classes = useStyles(openMenu);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClickp = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     const handleClick = () => {
         setOpenMenu(!openMenu)
     };
 
     const userId = auth.user.id;
-    
 
-    window.Echo.private('App.Models.User.' + userId ).notification((notification) => {
-        console.log(notification.from)
-    });
+    useEffect(() => {
+        window.Echo.private('App.Models.User.' + userId ).notification((notification) => {
+            setNotCount(
+                [...notCount, {...notification}]
+            );
+        });
+    }, []);
+    
+    
 
     // window.Echo.private('App.Models.User.' + auth.user.id).listen('notification', (notification) => {
     //     console.log("notification")
@@ -289,15 +324,21 @@ export default function Authenticated({ auth, header, children }) {
                                     <label>Requests List</label>
                                 </li>
                                  <li>
-                                    <NavLink href={route('dossiers')} active={route().current('dossiers')}>
+                                    <NavLink href={route('list')} active={route().current('list')}>
                                         <span className={classes.pcodedMicon}>
                                             <Server size="15" />
                                         </span>
                                         <span className={classes.pcodedMtext}> List</span>
                                     </NavLink>
+                                    <NavLink href={route('tasks')} active={route().current('tasks')}>
+                                        <span className={classes.pcodedMicon}>
+                                            <PlaylistAddCheckIcon size="15" />
+                                        </span>
+                                        <span className={classes.pcodedMtext}> My tasks</span>
+                                    </NavLink>
                                     <NavLink href={route('teams.index')} active={route().current('teams.index')}>
                                         <span className={classes.pcodedMicon}>
-                                            <Server size="15" />
+                                            <GroupsIcon size="15" />
                                         </span>
                                         <span className={classes.pcodedMtext}> Teams</span>
                                     </NavLink>
@@ -368,6 +409,57 @@ export default function Authenticated({ auth, header, children }) {
                     <ul className={classes.navbarNav + ' ' + classes.mrLeftt}>
                         <li className="navbarlink">
                             <div style={{ position: 'relative' }}>
+                                <IconButton className={classes.iconSettings} onClick={handleClickp}>
+                                    <Badge badgeContent={notCount.length} color="primary">
+                                        <NotificationsIcon size="15" />
+                                    </Badge>
+                                </IconButton>
+                            </div>
+                            <Popover
+                                id={id}
+                                open={open}
+                                anchorEl={anchorEl}
+                                onClose={handleClose}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}
+                            >
+                                {/* <Box sx={{ width: '100%', maxWidth: 500, bgcolor: 'background.paper' }}>
+                                    <nav aria-label="main mailbox folders"> */}
+                                        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                            {notCount.map((not) => {
+                                                return (
+                                                <ListItem key={not.id} alignItems="flex-start" secondaryAction={<div>{moment(not.created_at).format('yyy/m/d HH:ss')}</div>} disableGutters={true} disablePadding>
+                                                    <ListItemButton dense>
+                                                        <ListItemText
+                                                            primary="Formatting form"
+                                                            secondary={
+                                                                <React.Fragment>
+                                                                    <Typography
+                                                                        sx={{ display: 'inline' }}
+                                                                        component="span"
+                                                                        variant="body2"
+                                                                    >
+                                                                        Ali Connors
+                                                                    </Typography>
+                                                                    {"some message here ..."}
+                                                                </React.Fragment>
+                                                            }
+                                                        />
+                                                    </ListItemButton>
+                                                </ListItem>)
+                                               
+                                            })}
+                                            
+                                        </List>
+                                    {/* </nav>
+                                </Box> */}
+                            </Popover>
+                            
+                        </li>
+                        <li className="navbarlink">
+                            <div style={{ position: 'relative' }}>
                                 <IconButton className={classes.iconSettings} onClick={handleClick}>
                                     <Settings size="15" />
                                     <ChevronDown size="15" />
@@ -400,7 +492,7 @@ export default function Authenticated({ auth, header, children }) {
                 </div>
             </header>
             <div className={classes.themeWrapper}>
-                <Breadcrumbs aria-label="breadcrumb">
+                <Breadcrumbs aria-label="breadcrumb" style={{marginBottom:'10px'}}>
                     <InertiaLink style={{ textDecoration: "none", color: '#888' }} href="/">
                         <Home size={14} />
                     </InertiaLink>

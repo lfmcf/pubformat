@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 use Inertia\Inertia;
-use App\Models\Ch;
+use App\Models\Formatting;
 use App\Models\Eu;
 use App\Models\Gcc;
+use App\Models\Ch;
 
 use Illuminate\Http\Request;
 
@@ -12,16 +13,56 @@ class ReportController extends Controller
 {
     public function list()
     {
-        $ch = Ch::all();
-        $eu = Eu::all();
-        $gcc = Gcc::all();
-
-        $allItems = collect($ch)->merge($eu)->merge($gcc)->sortByDesc('created_at');
-        $allItems = $allItems->values();
+        $user = auth()->user();
         
-        return Inertia::render('Dossiers/Index', [
-            'list' => $allItems
-        ]);
+        if($user->current_team_id == 1) {
+            $formattings = Formatting::where('status', 'initiated')->orWhere('status', 'submitted')->get();
+            return Inertia::render('Dossiers/List', [
+                'list' => $formattings
+            ]);
+        }else if($user->current_team_id == 2){
+            $formattings = Formatting::where('status', 'submitted')->orWhere('status', 'pending')->get();
+            return Inertia::render('Dossiers/List', [
+                'list' => $formattings
+            ]);
+        }else {
+            return Inertia::render('Dossiers/List', [
+                'list' => ''
+            ]);
+        }
+        // else if($user->current_team_id == 2) {
+
+        // }
+        
+        // $eu = Eu::all();
+        // $gcc = Gcc::all();
+
+        //$allItems = collect($ch)->merge($eu)->merge($gcc)->sortByDesc('created_at');
+        //$allItems = $allItems->values();
+        
+        
+    }
+
+    public function task()
+    {
+        $user = auth()->user();
+        
+        
+        if($user->current_team_id == 2) {
+            $formattings = Formatting::where('status', 'initiated')->orWhere('status', 'pending')->get();
+            return Inertia::render('Dossiers/Tasks', [
+                'list' => $formattings
+            ]);
+        }else if($user->current_team_id == 3) {
+            $formattings = Formatting::where('status', 'submitted')->orWhere('status', 'pending')->get();
+            return Inertia::render('Dossiers/Tasks', [
+                'list' => $formattings
+            ]);
+        }else {
+            return Inertia::render('Dossiers/Tasks', [
+                'list' => ''
+            ]);
+        }
     }
 
     public function dashboard() {

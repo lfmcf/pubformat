@@ -71,9 +71,9 @@ class CaNewRequest extends Notification implements ShouldBroadcast
     {
         
         return new BroadcastMessage([
-            'from' => $this->request
-            // 'form' => $this->request['form'],
-            // 'region' => $this->request['region'],
+            'data' => ['from' => $this->request],
+            'created_at' => now(),
+            'read_at' => null
         ]);
     }
 }

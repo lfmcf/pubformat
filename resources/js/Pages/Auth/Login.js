@@ -100,7 +100,7 @@ export default function Login({ status, canResetPassword, canRegister }) {
                     </button>
                 </div>
 
-                <div className="mt-12 text-sm font-display font-semibold text-gray-700 text-center">
+                {/* <div className="mt-12 text-sm font-display font-semibold text-gray-700 text-center">
                             Don't have an account ?
                     {canRegister =(
 
@@ -108,7 +108,7 @@ export default function Login({ status, canResetPassword, canRegister }) {
                          href={route('register')}
                          className="cursor-pointer text-indigo-600 hover:text-indigo-800">Sign up</Link>
                     )} 
-                </div>
+                </div> */}
             </form>
         </Guest>
     );
