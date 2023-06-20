@@ -1,7 +1,7 @@
 import Authenticated from "@/Layouts/Authenticated";
 import React, { useState, useEffect } from "react";
 import { useForm } from '@inertiajs/inertia-react';
-import {Tooltip, Grid, TextField, Button, IconButton } from '@material-ui/core';
+import { Tooltip, Grid, TextField, Button, IconButton } from '@material-ui/core';
 import Select from 'react-select';
 import moment from "moment";
 import { makeStyles } from '@material-ui/core/styles';
@@ -131,7 +131,7 @@ const Createmrp = (props) => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const { metadata } = props;
-    
+
     const { data, setData, post, processing, errors, clearErrors, reset } = useForm({
         form: params.get('form'),
         region: params.get('region'),
@@ -172,13 +172,15 @@ const Createmrp = (props) => {
         metadata.map((mtd, i) => {
             // console.log(arr.mt[i].uuid)
             //arr.mt[i].uuid = mtd.uuid
-            arr.mt.push({id: mtd.id,country: mtd.country,uuid: mtd.uuid, submission_type: '', submission_mode: '', trackingNumber: mtd.trackingNumber, 
-            submission_unit: '', applicant: mtd.applicant, agencyCode: mtd.agencyCode, inventedName: mtd.Product, inn: mtd.inn, sequence: '',
-            r_sequence: '', submission_description:'', remarks:''})
+            arr.mt.push({
+                id: mtd.id, country: mtd.country, uuid: mtd.uuid, submission_type: '', submission_mode: '', trackingNumber: mtd.trackingNumber,
+                submission_unit: '', applicant: mtd.applicant, agencyCode: mtd.agencyCode, inventedName: mtd.Product, inn: mtd.inn, sequence: '',
+                r_sequence: '', submission_description: '', remarks: ''
+            })
         })
         setData(arr)
     }, [])
-    
+
     useEffect(() => {
         let date = new Date();
         let hour = date.getHours();
@@ -280,111 +282,111 @@ const Createmrp = (props) => {
                     <Typography>Submission Metadata</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <div style={{display:'flex', justifyContent:'end',marginBottom:'10px'}}>
+                    <div style={{ display: 'flex', justifyContent: 'end', marginBottom: '10px' }}>
                         <IconButton size="small" onClick={handleOpen}>
                             <ModeEditIcon />
                         </IconButton>
                     </div>
-                    
+
                     {data.mt.map((md) => (
-                        md ? 
-                        <Accordion key={md.id} onChange={handleChangesp('p1')}>
-                            <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                                <Typography>{md.country}</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Grid container spacing={4}>
-                                    <Grid item xs={12} md={4}>
-                                        <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">UUID</label>
-                                        <TextField fullWidth variant="outlined" size="small" name="uuid" value={md.uuid} onChange={handleChange} />
-                                    </Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Submission type</label>
-                                        <Select options={[
-                                            { label: 'maa', value: 'maa' },
-                                            { label: 'var-type1a', value: 'var-type1a' },
-                                            { label: 'var-type1ain', value: 'var-type1ain' },
-                                            { label: 'var-type1b', value: 'var-type1b' },
-                                            { label: 'var-type2', value: 'var-type2' },
-                                            { label: 'var-nat', value: 'var-nat' },
-                                            { label: 'extension', value: 'extension' },
-                                            { label: 'rup', value: 'rup' },
-                                            { label: 'psur', value: 'psur' },
-                                            { label: 'psusa', value: 'psusa' },
-                                            { label: 'rmp', value: 'rmp' },
-                                            { label: 'renewal', value: 'renewal' },
-                                            { label: 'pam-sob', value: 'pam-sob' },
-                                            { label: 'pam-anx', value: 'pam-anx' },
-                                            { label: 'pam-mea', value: 'pam-mea' },
-                                            { label: 'pam-leg', value: 'pam-leg' },
-                                            { label: 'pam-sda', value: 'pam-sda' },
-                                            { label: 'pam-capa', value: 'pam-capa' },
-                                            { label: 'pam-p45', value: 'pam-p45' },
-                                            { label: 'pam-p46', value: 'pam-p46' },
-                                            { label: 'pam-paes', value: 'pam-paes' },
-                                            { label: 'pam-rec', value: 'pam-rec' },
-                                            { label: 'pass107n', value: 'pass107n' },
-                                            { label: 'pass107q', value: 'pass107q' },
-                                            { label: 'asmf', value: 'asmf' },
-                                            { label: 'pmf', value: 'pmf' },
-                                            { label: 'referral-20', value: 'referral-20' },
-                                            { label: 'referral-294', value: 'referral-294' },
-                                            { label: 'referral-29p', value: 'referral-29p' },
-                                            { label: 'referral-30', value: 'referral-30' },
-                                            { label: 'referral-31', value: 'referral-31' },
-                                            { label: 'referral-35', value: 'referral-35' },
-                                            { label: 'referral-5-3', value: 'referral-5-3' },
-                                            { label: 'referral-107i', value: 'referral-107i' },
-                                            { label: 'referral-16c1c', value: 'referral-16c1c' },
-                                            { label: 'referral-16c4', value: 'referral-16c4' },
-                                            { label: 'annual-reassessment', value: 'annual-reassessment' },
-                                            { label: 'clin-data-pub-rp', value: 'clin-data-pub-rp' },
-                                            { label: 'clin-data-pub-fv', value: 'clin-data-pub-fv' },
-                                            { label: 'paed-7-8-30', value: 'paed-7-8-30' },
-                                            { label: 'paed-29', value: 'paed-29' },
-                                            { label: 'paed-45', value: 'paed-45' },
-                                            { label: 'paed-46', value: 'paed-46' },
-                                            { label: 'articale-58', value: 'articale-58' },
-                                            { label: 'notification-61-3', value: 'notification-61-3' },
-                                            { label: 'transfer-ma', value: 'transfer-ma' },
-                                            { label: 'lifting-suspension', value: 'lifting-suspension' },
-                                            { label: 'withdrawal', value: 'withdrawal' },
-                                            { label: 'cep', value: 'cep' },
-                                            { label: 'none', value: 'none' },
-                                        ]}
-                                            name='submission_type'
-                                            onChange={(e) => handleSelectChange(e, 'submission_type')}
-                                            className="basic"
-                                            classNamePrefix="basic"
-                                            placeholder=''
-                                            isClearable
-                                            value={data.submission_type}
-                                            menuPortalTarget={document.body}
-                                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Submission mode</label>
-                                        <Select options={[
-                                            { label: 'Single', value: 'Single' },
-                                            { label: 'Grouping', value: 'Grouping' },
-                                            { label: 'Worksharing', value: 'Worksharing' },
-                                        ]}
-                                            name='submission_mode'
-                                            onChange={(e) => handleSelectChange(e, 'submission_mode')}
-                                            className="basic"
-                                            classNamePrefix="basic"
-                                            placeholder=''
-                                            isClearable
-                                            value={data.submission_mode}
-                                            menuPortalTarget={document.body}
-                                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Procedure Tracking N°</label>
-                                        <TextField fullWidth variant="outlined" size="small" name="tracking" value={md.trackingNumber} onChange={handleChange} />
-                                        {/* <Select options={[{}]}
+                        md ?
+                            <Accordion key={md.id} onChange={handleChangesp('p1')}>
+                                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                                    <Typography>{md.country}</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Grid container spacing={4}>
+                                        <Grid item xs={12} md={4}>
+                                            <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">UUID</label>
+                                            <TextField fullWidth variant="outlined" size="small" name="uuid" value={md.uuid} onChange={handleChange} />
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Submission type</label>
+                                            <Select options={[
+                                                { label: 'maa', value: 'maa' },
+                                                { label: 'var-type1a', value: 'var-type1a' },
+                                                { label: 'var-type1ain', value: 'var-type1ain' },
+                                                { label: 'var-type1b', value: 'var-type1b' },
+                                                { label: 'var-type2', value: 'var-type2' },
+                                                { label: 'var-nat', value: 'var-nat' },
+                                                { label: 'extension', value: 'extension' },
+                                                { label: 'rup', value: 'rup' },
+                                                { label: 'psur', value: 'psur' },
+                                                { label: 'psusa', value: 'psusa' },
+                                                { label: 'rmp', value: 'rmp' },
+                                                { label: 'renewal', value: 'renewal' },
+                                                { label: 'pam-sob', value: 'pam-sob' },
+                                                { label: 'pam-anx', value: 'pam-anx' },
+                                                { label: 'pam-mea', value: 'pam-mea' },
+                                                { label: 'pam-leg', value: 'pam-leg' },
+                                                { label: 'pam-sda', value: 'pam-sda' },
+                                                { label: 'pam-capa', value: 'pam-capa' },
+                                                { label: 'pam-p45', value: 'pam-p45' },
+                                                { label: 'pam-p46', value: 'pam-p46' },
+                                                { label: 'pam-paes', value: 'pam-paes' },
+                                                { label: 'pam-rec', value: 'pam-rec' },
+                                                { label: 'pass107n', value: 'pass107n' },
+                                                { label: 'pass107q', value: 'pass107q' },
+                                                { label: 'asmf', value: 'asmf' },
+                                                { label: 'pmf', value: 'pmf' },
+                                                { label: 'referral-20', value: 'referral-20' },
+                                                { label: 'referral-294', value: 'referral-294' },
+                                                { label: 'referral-29p', value: 'referral-29p' },
+                                                { label: 'referral-30', value: 'referral-30' },
+                                                { label: 'referral-31', value: 'referral-31' },
+                                                { label: 'referral-35', value: 'referral-35' },
+                                                { label: 'referral-5-3', value: 'referral-5-3' },
+                                                { label: 'referral-107i', value: 'referral-107i' },
+                                                { label: 'referral-16c1c', value: 'referral-16c1c' },
+                                                { label: 'referral-16c4', value: 'referral-16c4' },
+                                                { label: 'annual-reassessment', value: 'annual-reassessment' },
+                                                { label: 'clin-data-pub-rp', value: 'clin-data-pub-rp' },
+                                                { label: 'clin-data-pub-fv', value: 'clin-data-pub-fv' },
+                                                { label: 'paed-7-8-30', value: 'paed-7-8-30' },
+                                                { label: 'paed-29', value: 'paed-29' },
+                                                { label: 'paed-45', value: 'paed-45' },
+                                                { label: 'paed-46', value: 'paed-46' },
+                                                { label: 'articale-58', value: 'articale-58' },
+                                                { label: 'notification-61-3', value: 'notification-61-3' },
+                                                { label: 'transfer-ma', value: 'transfer-ma' },
+                                                { label: 'lifting-suspension', value: 'lifting-suspension' },
+                                                { label: 'withdrawal', value: 'withdrawal' },
+                                                { label: 'cep', value: 'cep' },
+                                                { label: 'none', value: 'none' },
+                                            ]}
+                                                name='submission_type'
+                                                onChange={(e) => handleSelectChange(e, 'submission_type')}
+                                                className="basic"
+                                                classNamePrefix="basic"
+                                                placeholder=''
+                                                isClearable
+                                                value={data.submission_type}
+                                                menuPortalTarget={document.body}
+                                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Submission mode</label>
+                                            <Select options={[
+                                                { label: 'Single', value: 'Single' },
+                                                { label: 'Grouping', value: 'Grouping' },
+                                                { label: 'Worksharing', value: 'Worksharing' },
+                                            ]}
+                                                name='submission_mode'
+                                                onChange={(e) => handleSelectChange(e, 'submission_mode')}
+                                                className="basic"
+                                                classNamePrefix="basic"
+                                                placeholder=''
+                                                isClearable
+                                                value={data.submission_mode}
+                                                menuPortalTarget={document.body}
+                                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Procedure Tracking N°</label>
+                                            <TextField fullWidth variant="outlined" size="small" name="tracking" value={md.trackingNumber} onChange={handleChange} />
+                                            {/* <Select options={[{}]}
                                             name='tracking'
                                             onChange={(e) => handleSelectChange(e, 'tracking')}
                                             className="basic"
@@ -395,70 +397,70 @@ const Createmrp = (props) => {
                                             menuPortalTarget={document.body}
                                             styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                         /> */}
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Submission unit</label>
+                                            <Select options={[
+                                                { label: 'initial', value: 'initial' },
+                                                { label: 'validation-response', value: 'validation-response' },
+                                                { label: 'response', value: 'response' },
+                                                { label: 'additional-info', value: 'additional-info' },
+                                                { label: 'closing', value: 'closing' },
+                                                { label: 'consolidating', value: 'consolidating' },
+                                                { label: 'corrigendum', value: 'corrigendum' },
+                                                { label: 'reformat', value: 'reformat' },
+                                            ]}
+                                                name='submission_unit'
+                                                onChange={(e) => handleSelectChange(e, 'submission_unit')}
+                                                className="basic"
+                                                classNamePrefix="basic"
+                                                placeholder=''
+                                                isClearable
+                                                value={data.submission_unit}
+                                                menuPortalTarget={document.body}
+                                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Applicant</label>
+                                            <TextField fullWidth variant="outlined" size="small" name="applicant" value={md.applicant} onChange={handleChange} />
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Agency code</label>
+                                            <TextField fullWidth variant="outlined" size="small" name="agency_code" value={md.agencyCode} onChange={handleChange} />
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Invented name</label>
+                                            <TextField fullWidth variant="outlined" size="small" name="Invented name" value={md.inventedName} onChange={handleChange} />
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">INN</label>
+                                            <TextField fullWidth variant="outlined" size="small" name="inn" value={md.inn} onChange={handleChange} />
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Sequence</label>
+                                            <Tooltip title="Sequence">
+                                                <TextField fullWidth variant="outlined" size="small" name="sequence" value={data.sequence} onChange={handleChange} />
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Related Sequence</label>
+                                            <Tooltip title="Related Sequence">
+                                                <TextField fullWidth variant="outlined" size="small" name="r_sequence" value={data.r_sequence} onChange={handleChange} />
+                                            </Tooltip>
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Submission description</label>
+                                            <TextField fullWidth variant="outlined" size="small" name="submission_description" value={data.submission_description} onChange={handleChange} />
+                                        </Grid>
+                                        <Grid item xs={12} md={12}>
+                                            <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Remarks</label>
+                                            <TextareaAutosize aria-label="Comment" minRows={3} style={{ width: '100%' }} />
+                                        </Grid>
                                     </Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Submission unit</label>
-                                        <Select options={[
-                                            { label: 'initial', value: 'initial' },
-                                            { label: 'validation-response', value: 'validation-response' },
-                                            { label: 'response', value: 'response' },
-                                            { label: 'additional-info', value: 'additional-info' },
-                                            { label: 'closing', value: 'closing' },
-                                            { label: 'consolidating', value: 'consolidating' },
-                                            { label: 'corrigendum', value: 'corrigendum' },
-                                            { label: 'reformat', value: 'reformat' },
-                                        ]}
-                                            name='submission_unit'
-                                            onChange={(e) => handleSelectChange(e, 'submission_unit')}
-                                            className="basic"
-                                            classNamePrefix="basic"
-                                            placeholder=''
-                                            isClearable
-                                            value={data.submission_unit}
-                                            menuPortalTarget={document.body}
-                                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Applicant</label>
-                                        <TextField fullWidth variant="outlined" size="small" name="applicant" value={md.applicant} onChange={handleChange} />
-                                    </Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Agency code</label>
-                                        <TextField fullWidth variant="outlined" size="small" name="agency_code" value={md.agencyCode} onChange={handleChange} />
-                                    </Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Invented name</label>
-                                        <TextField fullWidth variant="outlined" size="small" name="Invented name" value={md.inventedName} onChange={handleChange} />
-                                    </Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">INN</label>
-                                        <TextField fullWidth variant="outlined" size="small" name="inn" value={md.inn} onChange={handleChange} />
-                                    </Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Sequence</label>
-                                        <Tooltip title="Sequence">
-                                            <TextField fullWidth variant="outlined" size="small" name="sequence" value={data.sequence} onChange={handleChange} />
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Related Sequence</label>
-                                        <Tooltip title="Related Sequence">
-                                            <TextField fullWidth variant="outlined" size="small" name="r_sequence" value={data.r_sequence} onChange={handleChange} />
-                                        </Tooltip>
-                                    </Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Submission description</label>
-                                        <TextField fullWidth variant="outlined" size="small" name="submission_description" value={data.submission_description} onChange={handleChange} />
-                                    </Grid>
-                                    <Grid item xs={12} md={12}>
-                                        <label className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-shrink MuiFormLabel-filled flabel">Remarks</label>
-                                        <TextareaAutosize aria-label="Comment" minRows={3} style={{ width: '100%' }} />
-                                    </Grid>
-                                </Grid>
-                            </AccordionDetails>
-                        </Accordion>
-                    : ''))}
+                                </AccordionDetails>
+                            </Accordion>
+                            : ''))}
 
                 </AccordionDetails>
             </Accordion>
@@ -616,10 +618,10 @@ const Createmrp = (props) => {
             <Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
                 <DialogTitle>Multi update</DialogTitle>
                 <DialogContent>
-                    {/* <div className='modal_form'>
+                    <div className='modal_form'>
                         <label className='modal_label'>Countries</label>
                         <MySelect
-                            options={metadata.map((mtc) => ({label:mtc.country,value:mtc.country}))}
+                            options={metadata.map((mtc) => ({ label: mtc.country, value: mtc.country }))}
                             isMulti
                             closeMenuOnSelect={false}
                             hideSelectedOptions={false}
@@ -628,7 +630,7 @@ const Createmrp = (props) => {
                             menuPortalTarget={document.body}
                             styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container: base => ({ width: '100%' }) }}
                         />
-                    </div> */}
+                    </div>
                     <div className='modal_form'>
                         <label className='modal_label'>UUID</label>
                         <TextField variant="outlined" size="small" value={metadata[0].uuid} fullWidth />
@@ -636,85 +638,85 @@ const Createmrp = (props) => {
                     <div className='modal_form'>
                         <label className='modal_label'>Submission type</label>
                         <Select options={[
-                                { label: 'maa', value: 'maa' },
-                                { label: 'var-type1a', value: 'var-type1a' },
-                                { label: 'var-type1ain', value: 'var-type1ain' },
-                                { label: 'var-type1b', value: 'var-type1b' },
-                                { label: 'var-type2', value: 'var-type2' },
-                                { label: 'var-nat', value: 'var-nat' },
-                                { label: 'extension', value: 'extension' },
-                                { label: 'rup', value: 'rup' },
-                                { label: 'psur', value: 'psur' },
-                                { label: 'psusa', value: 'psusa' },
-                                { label: 'rmp', value: 'rmp' },
-                                { label: 'renewal', value: 'renewal' },
-                                { label: 'pam-sob', value: 'pam-sob' },
-                                { label: 'pam-anx', value: 'pam-anx' },
-                                { label: 'pam-mea', value: 'pam-mea' },
-                                { label: 'pam-leg', value: 'pam-leg' },
-                                { label: 'pam-sda', value: 'pam-sda' },
-                                { label: 'pam-capa', value: 'pam-capa' },
-                                { label: 'pam-p45', value: 'pam-p45' },
-                                { label: 'pam-p46', value: 'pam-p46' },
-                                { label: 'pam-paes', value: 'pam-paes' },
-                                { label: 'pam-rec', value: 'pam-rec' },
-                                { label: 'pass107n', value: 'pass107n' },
-                                { label: 'pass107q', value: 'pass107q' },
-                                { label: 'asmf', value: 'asmf' },
-                                { label: 'pmf', value: 'pmf' },
-                                { label: 'referral-20', value: 'referral-20' },
-                                { label: 'referral-294', value: 'referral-294' },
-                                { label: 'referral-29p', value: 'referral-29p' },
-                                { label: 'referral-30', value: 'referral-30' },
-                                { label: 'referral-31', value: 'referral-31' },
-                                { label: 'referral-35', value: 'referral-35' },
-                                { label: 'referral-5-3', value: 'referral-5-3' },
-                                { label: 'referral-107i', value: 'referral-107i' },
-                                { label: 'referral-16c1c', value: 'referral-16c1c' },
-                                { label: 'referral-16c4', value: 'referral-16c4' },
-                                { label: 'annual-reassessment', value: 'annual-reassessment' },
-                                { label: 'clin-data-pub-rp', value: 'clin-data-pub-rp' },
-                                { label: 'clin-data-pub-fv', value: 'clin-data-pub-fv' },
-                                { label: 'paed-7-8-30', value: 'paed-7-8-30' },
-                                { label: 'paed-29', value: 'paed-29' },
-                                { label: 'paed-45', value: 'paed-45' },
-                                { label: 'paed-46', value: 'paed-46' },
-                                { label: 'articale-58', value: 'articale-58' },
-                                { label: 'notification-61-3', value: 'notification-61-3' },
-                                { label: 'transfer-ma', value: 'transfer-ma' },
-                                { label: 'lifting-suspension', value: 'lifting-suspension' },
-                                { label: 'withdrawal', value: 'withdrawal' },
-                                { label: 'cep', value: 'cep' },
-                                { label: 'none', value: 'none' },
-                            ]}
-                                name='submission_type'
-                                onChange={(e) => handleSelectChange(e, 'submission_type')}
-                                className="basic"
-                                classNamePrefix="basic"
-                                placeholder=''
-                                isClearable
-                                value={data.submission_type}
-                                
-                                menuPortalTarget={document.body}
-                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container : base => ({width : '100%'}) }}
-                            />
+                            { label: 'maa', value: 'maa' },
+                            { label: 'var-type1a', value: 'var-type1a' },
+                            { label: 'var-type1ain', value: 'var-type1ain' },
+                            { label: 'var-type1b', value: 'var-type1b' },
+                            { label: 'var-type2', value: 'var-type2' },
+                            { label: 'var-nat', value: 'var-nat' },
+                            { label: 'extension', value: 'extension' },
+                            { label: 'rup', value: 'rup' },
+                            { label: 'psur', value: 'psur' },
+                            { label: 'psusa', value: 'psusa' },
+                            { label: 'rmp', value: 'rmp' },
+                            { label: 'renewal', value: 'renewal' },
+                            { label: 'pam-sob', value: 'pam-sob' },
+                            { label: 'pam-anx', value: 'pam-anx' },
+                            { label: 'pam-mea', value: 'pam-mea' },
+                            { label: 'pam-leg', value: 'pam-leg' },
+                            { label: 'pam-sda', value: 'pam-sda' },
+                            { label: 'pam-capa', value: 'pam-capa' },
+                            { label: 'pam-p45', value: 'pam-p45' },
+                            { label: 'pam-p46', value: 'pam-p46' },
+                            { label: 'pam-paes', value: 'pam-paes' },
+                            { label: 'pam-rec', value: 'pam-rec' },
+                            { label: 'pass107n', value: 'pass107n' },
+                            { label: 'pass107q', value: 'pass107q' },
+                            { label: 'asmf', value: 'asmf' },
+                            { label: 'pmf', value: 'pmf' },
+                            { label: 'referral-20', value: 'referral-20' },
+                            { label: 'referral-294', value: 'referral-294' },
+                            { label: 'referral-29p', value: 'referral-29p' },
+                            { label: 'referral-30', value: 'referral-30' },
+                            { label: 'referral-31', value: 'referral-31' },
+                            { label: 'referral-35', value: 'referral-35' },
+                            { label: 'referral-5-3', value: 'referral-5-3' },
+                            { label: 'referral-107i', value: 'referral-107i' },
+                            { label: 'referral-16c1c', value: 'referral-16c1c' },
+                            { label: 'referral-16c4', value: 'referral-16c4' },
+                            { label: 'annual-reassessment', value: 'annual-reassessment' },
+                            { label: 'clin-data-pub-rp', value: 'clin-data-pub-rp' },
+                            { label: 'clin-data-pub-fv', value: 'clin-data-pub-fv' },
+                            { label: 'paed-7-8-30', value: 'paed-7-8-30' },
+                            { label: 'paed-29', value: 'paed-29' },
+                            { label: 'paed-45', value: 'paed-45' },
+                            { label: 'paed-46', value: 'paed-46' },
+                            { label: 'articale-58', value: 'articale-58' },
+                            { label: 'notification-61-3', value: 'notification-61-3' },
+                            { label: 'transfer-ma', value: 'transfer-ma' },
+                            { label: 'lifting-suspension', value: 'lifting-suspension' },
+                            { label: 'withdrawal', value: 'withdrawal' },
+                            { label: 'cep', value: 'cep' },
+                            { label: 'none', value: 'none' },
+                        ]}
+                            name='submission_type'
+                            onChange={(e) => handleSelectChange(e, 'submission_type')}
+                            className="basic"
+                            classNamePrefix="basic"
+                            placeholder=''
+                            isClearable
+                            value={data.submission_type}
+
+                            menuPortalTarget={document.body}
+                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container: base => ({ width: '100%' }) }}
+                        />
                     </div>
                     <div className='modal_form'>
                         <label className='modal_label'>Submission mode</label>
                         <Select options={[
-                                { label: 'Single', value: 'Single' },
-                                { label: 'Grouping', value: 'Grouping' },
-                                { label: 'Worksharing', value: 'Worksharing' },
-                            ]}
-                                name='submission_mode'
-                                onChange={(e) => handleSelectChange(e, 'submission_mode')}
-                                className="basic"
-                                classNamePrefix="basic"
-                                placeholder=''
-                                isClearable
-                                value={data.submission_mode}
-                                menuPortalTarget={document.body}
-                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container : base => ({width : '100%'}) }}
+                            { label: 'Single', value: 'Single' },
+                            { label: 'Grouping', value: 'Grouping' },
+                            { label: 'Worksharing', value: 'Worksharing' },
+                        ]}
+                            name='submission_mode'
+                            onChange={(e) => handleSelectChange(e, 'submission_mode')}
+                            className="basic"
+                            classNamePrefix="basic"
+                            placeholder=''
+                            isClearable
+                            value={data.submission_mode}
+                            menuPortalTarget={document.body}
+                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container: base => ({ width: '100%' }) }}
                         />
                     </div>
                     <div className='modal_form'>
@@ -724,24 +726,24 @@ const Createmrp = (props) => {
                     <div className='modal_form'>
                         <label className='modal_label'>Submission unit</label>
                         <Select options={[
-                                {label: 'initial', value: 'initial'},
-                                {label: 'validation-response', value: 'validation-response'},
-                                {label: 'response', value: 'response'},
-                                {label: 'additional-info', value: 'additional-info'},
-                                {label: 'closing', value: 'closing'},
-                                {label: 'consolidating', value: 'consolidating'},
-                                {label: 'corrigendum', value: 'corrigendum'},
-                                {label: 'reformat', value: 'reformat'},
-                            ]}
-                                name='submission_unit'
-                                onChange={(e) => handleSelectChange(e, 'submission_unit')}
-                                className="basic"
-                                classNamePrefix="basic"
-                                placeholder=''
-                                isClearable
-                                value={data.submission_unit}
-                                menuPortalTarget={document.body}
-                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container : base => ({width : '100%'}) }}
+                            { label: 'initial', value: 'initial' },
+                            { label: 'validation-response', value: 'validation-response' },
+                            { label: 'response', value: 'response' },
+                            { label: 'additional-info', value: 'additional-info' },
+                            { label: 'closing', value: 'closing' },
+                            { label: 'consolidating', value: 'consolidating' },
+                            { label: 'corrigendum', value: 'corrigendum' },
+                            { label: 'reformat', value: 'reformat' },
+                        ]}
+                            name='submission_unit'
+                            onChange={(e) => handleSelectChange(e, 'submission_unit')}
+                            className="basic"
+                            classNamePrefix="basic"
+                            placeholder=''
+                            isClearable
+                            value={data.submission_unit}
+                            menuPortalTarget={document.body}
+                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container: base => ({ width: '100%' }) }}
                         />
                     </div>
                     <div className='modal_form'>
@@ -782,7 +784,7 @@ const Createmrp = (props) => {
                     <Button >Next</Button>
                 </DialogActions>
             </Dialog>
-           
+
         </Authenticated>
     )
 }
