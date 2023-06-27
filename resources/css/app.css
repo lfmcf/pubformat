@@ -1,3 +1,5 @@
+@import 'bootstrap';
+
 * {
     box-sizing: border-box;
 }
@@ -7,7 +9,11 @@ body {
     font-family: "Open Sans", sans-serif !important;
 }
 
-label, input, td, select, li {
+label,
+input,
+td,
+select,
+li {
     font-family: "Open Sans", sans-serif !important;
 }
 
@@ -24,9 +30,10 @@ tr td {
     z-index: 10000;
 }
 
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
+
 
 
 .modal_form {
@@ -43,3 +50,19 @@ tr td {
 .flabel {
     margin-bottom: 5px;
 }
+
+.form_group_label {
+    width: fit-content;
+    color: #646777;
+    max-height: 32px;
+    line-height: 18px;
+    margin-bottom: 5px;
+    font-weight: 100;
+    font-size: 12px;
+    /* text-transform: lowercase; */
+    display: inline-block;
+}
+
+/* .form_group_label::first-letter {
+    text-transform: uppercase;
+} */

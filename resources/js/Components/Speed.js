@@ -20,7 +20,7 @@ export default function Speed(props) {
         <Box sx={{ height: 80, transform: 'translateZ(0px)', flexGrow: 1 }}>
             <SpeedDial
                 ariaLabel="SpeedDial basic example"
-                sx={{ position: 'absolute', bottom: 16, right: 16 }}
+                sx={{ position: 'absolute', bottom: 60, right: 10 }}
                 icon={<SpeedDialIcon />}
             >
                 {/* {actions.map((action) => (
@@ -42,13 +42,13 @@ export default function Speed(props) {
                 />
                 <SpeedDialAction
                     key="Save"
-                    icon={<SaveIcon onClick={(e) => props.handleSubmit(e, "save")} />}
+                    icon={<SaveIcon onClick={(e) => props.showdraftmodel(e, "save")} />}
                     tooltipTitle="Save"
                     name="save"
                 />
                 <SpeedDialAction
                     key="Submit"
-                    icon={<PublishIcon onClick={(e) => props.handleSubmit(e, "add")} />}
+                    icon={<PublishIcon onClick={(e) => props.showsavemodel(e, "add")} />}
                     tooltipTitle="Submit"
                     name="submit"
                 />
