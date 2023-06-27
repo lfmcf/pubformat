@@ -30,15 +30,16 @@ class FormattingController extends Controller
      */
     public function create(Request $request)
     {
+
         $region = $request->query('region');
-        if($region == "EU") {
+        if ($region == "EU") {
             $cc = Continent::where('continent', 'europe')->first('countries');
-        }else if ($region == "Asia") {
+        } else if ($region == "Asia") {
             $cc = Continent::where('continent', 'asia')->first('countries');
-        }else if ($region == "GCC") {
+        } else if ($region == "GCC") {
             $cc = Continent::where('continent', 'gcc')->first('countries');
         }
-        
+
         $countries = json_decode($cc->countries);
         return Inertia::render('formatting/create', [
             'countries' => $countries
@@ -53,23 +54,24 @@ class FormattingController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $formatting = new Formatting();
+        $formatting->form = $request->form;
         $formatting->region = $request->region;
         $formatting->coredoc = $request->coredoc;
         $formatting->dossier_contact = $request->dossier_contact;
         $formatting->object = $request->object;
-        $formatting->dossier_type = $request->dossier_type['value'];
         $formatting->product_name = $request->product_name;
         $formatting->substance_name = $request->substance_name;
-        $formatting->country = $request->country['value'];
+        $formatting->country = $request->country;
+        $formatting->dossier_type = $request->dossier_type;
+        $formatting->document_count = $request->document_count;
         $formatting->deficiency_letter = $request->deficiency_letter;
         $formatting->chrono = $request->chrono;
-        $formatting->document_count = $request->document_count;
         $formatting->remarks = $request->remarks;
-        $formatting->document = $request->document;
-        $formatting->document_remarks = $request->document_remarks;
-        $formatting->request_date = Carbon::now();
+        $formatting->document = $request->doc;
+        $formatting->docremarks = $request->docremarks;
+        $formatting->request_date = date('Y-m-d H:i:s', strtotime(Carbon::now()));
         $formatting->deadline = date('Y-m-d H:i:s', strtotime($request->deadline));
         $formatting->status = 'initiated';
         $formatting->save();
@@ -95,14 +97,14 @@ class FormattingController extends Controller
      * @param  \App\Models\Formatting  $formatting
      * @return \Illuminate\Http\Response
      */
-    public function edit(Formatting $formatting,$id)
+    public function edit(Formatting $formatting, $id)
     {
         $formatting = Formatting::findOrfail($id);
-        if($formatting->region == "EU") {
+        if ($formatting->region == "EU") {
             $cc = Continent::where('continent', 'europe')->first('countries');
-        }else if ($formatting->region == "Asia") {
+        } else if ($formatting->region == "Asia") {
             $cc = Continent::where('continent', 'asia')->first('countries');
-        }else if ($formatting->region == "GCC") {
+        } else if ($formatting->region == "GCC") {
             $cc = Continent::where('continent', 'gcc')->first('countries');
         }
 
@@ -124,8 +126,7 @@ class FormattingController extends Controller
     public function update(Request $request, Formatting $formatting)
     {
         $formatting = Formatting::findOrfail($request->id);
-        if($request->status === 'initiated') 
-        {
+        if ($request->status === 'initiated') {
             $formatting->adjusted_deadline = $request->adjusted_deadline;
             $formatting->status = 'submitted';
             $formatting->save();

@@ -4,7 +4,7 @@ import NavLink from '../Components/NavLink';
 import React, { useState, useEffect } from 'react';
 import ResponsiveNavLink from '../Components/ResponsiveNavLink';
 import { InertiaLink } from '@inertiajs/inertia-react';
-import { Paper, Typography, Breadcrumbs, IconButton} from '@material-ui/core';
+import { Paper, Typography, Breadcrumbs, IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Home, Server, PieChart, TrendingUp, BarChart2, Settings, LogOut, User, ChevronDown, Activity } from 'react-feather';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -30,16 +30,16 @@ const useStyles = makeStyles((theme) => ({
         float: 'unset',
         right: '0',
         marginLeft: '0',
-        minHeight:'100vh',
+        minHeight: '100vh',
         backgroundColor: '#e9edf2'
     },
     themeWrapper: {
         flexGrow: 1,
         height: 'inherit',
-        padding: '30px',
+        padding: '20px 20px 0',
         marginLeft: '264px',
         // height: '100vh',
-        backgroundColor : 'rgb(233, 237, 242)'
+        backgroundColor: 'rgb(233, 237, 242)'
     },
     pcodedNavbar: {
         position: 'fixed',
@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
             color: '#1dc4e9'
         },
     },
-    
+
     pcodedMenuCaption: {
         fontSize: '10px',
         fontWeight: '600',
@@ -167,7 +167,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: '0',
         marginTop: '0',
         display: 'inline-block',
-        flexDirection : 'row',
+        flexDirection: 'row',
         display: 'flex',
         '& li': {
             lineHeight: '70px',
@@ -188,7 +188,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 'auto'
     },
     icon: {
-        
+
     },
     iconSettings: {
         "&:hover, &.Mui-focusVisible": {
@@ -198,20 +198,20 @@ const useStyles = makeStyles((theme) => ({
         padding: '0',
     },
     menu: {
-        display: openMenu => openMenu ? 'block': 'none',
+        display: openMenu => openMenu ? 'block' : 'none',
         minWidth: '290px',
-        position:'absolute',
-        left:'-250px',
-        top:'50px',
-        backgroundColor:'white',
-        borderRadius:'0.25rem'
+        position: 'absolute',
+        left: '-250px',
+        top: '50px',
+        backgroundColor: 'white',
+        borderRadius: '0.25rem'
     },
     proHead: {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         background: '#3f4d67',
-        padding:'0 10px',
+        padding: '0 10px',
         borderRadius: '0.25rem 0.25rem 0 0'
     },
     proBody: {
@@ -237,24 +237,24 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     footer: {
-        display:'flex',
-        alignItems:"center",
+        display: 'flex',
+        alignItems: "center",
         justifyContent: 'center',
         padding: '20px 0',
         [theme.breakpoints.down("md")]: {
             marginLeft: "0 !important"
-        } 
+        }
     },
 }));
 
 export default function Authenticated({ auth, header, children }) {
-    
+
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
-   
 
-    
-    
+
+
+
     const [openMenu, setOpenMenu] = useState(false);
     const [notCount, setNotCount] = useState(auth.notifications)
     const classes = useStyles(openMenu);
@@ -278,14 +278,14 @@ export default function Authenticated({ auth, header, children }) {
     const userId = auth.user.id;
 
     useEffect(() => {
-        window.Echo.private('App.Models.User.' + userId ).notification((notification) => {
+        window.Echo.private('App.Models.User.' + userId).notification((notification) => {
             setNotCount(
-                [...notCount, {...notification}]
+                [...notCount, { ...notification }]
             );
         });
     }, []);
-    
-    
+
+
 
     // window.Echo.private('App.Models.User.' + auth.user.id).listen('notification', (notification) => {
     //     console.log("notification")
@@ -323,7 +323,7 @@ export default function Authenticated({ auth, header, children }) {
                                 <li className={classes.pcodedMenuCaption}>
                                     <label>Requests List</label>
                                 </li>
-                                 <li>
+                                <li>
                                     <NavLink href={route('list')} active={route().current('list')}>
                                         <span className={classes.pcodedMicon}>
                                             <Server size="15" />
@@ -427,36 +427,36 @@ export default function Authenticated({ auth, header, children }) {
                             >
                                 {/* <Box sx={{ width: '100%', maxWidth: 500, bgcolor: 'background.paper' }}>
                                     <nav aria-label="main mailbox folders"> */}
-                                        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                                            {notCount.map((not) => {
-                                                return (
-                                                <ListItem key={not.id} alignItems="flex-start" secondaryAction={<div>{moment(not.created_at).format('yyy/m/d HH:ss')}</div>} disableGutters={true} disablePadding>
-                                                    <ListItemButton dense>
-                                                        <ListItemText
-                                                            primary="Formatting form"
-                                                            secondary={
-                                                                <React.Fragment>
-                                                                    <Typography
-                                                                        sx={{ display: 'inline' }}
-                                                                        component="span"
-                                                                        variant="body2"
-                                                                    >
-                                                                        Ali Connors
-                                                                    </Typography>
-                                                                    {"some message here ..."}
-                                                                </React.Fragment>
-                                                            }
-                                                        />
-                                                    </ListItemButton>
-                                                </ListItem>)
-                                               
-                                            })}
-                                            
-                                        </List>
-                                    {/* </nav>
+                                <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                    {notCount.map((not) => {
+                                        return (
+                                            <ListItem key={not.id} alignItems="flex-start" secondaryAction={<div>{moment(not.created_at).format('yyy/m/d HH:ss')}</div>} disableGutters={true} disablePadding>
+                                                <ListItemButton dense>
+                                                    <ListItemText
+                                                        primary="Formatting form"
+                                                        secondary={
+                                                            <React.Fragment>
+                                                                <Typography
+                                                                    sx={{ display: 'inline' }}
+                                                                    component="span"
+                                                                    variant="body2"
+                                                                >
+                                                                    Ali Connors
+                                                                </Typography>
+                                                                {"some message here ..."}
+                                                            </React.Fragment>
+                                                        }
+                                                    />
+                                                </ListItemButton>
+                                            </ListItem>)
+
+                                    })}
+
+                                </List>
+                                {/* </nav>
                                 </Box> */}
                             </Popover>
-                            
+
                         </li>
                         <li className="navbarlink">
                             <div style={{ position: 'relative' }}>
@@ -492,7 +492,7 @@ export default function Authenticated({ auth, header, children }) {
                 </div>
             </header>
             <div className={classes.themeWrapper}>
-                <Breadcrumbs aria-label="breadcrumb" style={{marginBottom:'10px'}}>
+                <Breadcrumbs aria-label="breadcrumb" style={{ marginBottom: '10px' }}>
                     <InertiaLink style={{ textDecoration: "none", color: '#888' }} href="/">
                         <Home size={14} />
                     </InertiaLink>
@@ -500,10 +500,11 @@ export default function Authenticated({ auth, header, children }) {
                 </Breadcrumbs>
                 {children}
 
-                <div className={classes.footer}>
-                    <Typography style={{ color: 'grey', fontSize: '12px' }}> © GROUPEKEMIA 2022</Typography>
-                </div>
+
             </div>
+            {/* <div className={classes.footer}>
+                <Typography style={{ color: 'grey', fontSize: '12px' }}> © GROUPEKEMIA 2022</Typography>
+            </div> */}
         </div>
     );
 }
