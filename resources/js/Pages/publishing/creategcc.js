@@ -133,7 +133,7 @@ const CreateGcc = (props) => {
     }
 
     const handleSubmit = (name) => {
-        post(route('publishingStore'));
+        post(route('publishingStore', { 'type': name }));
     }
 
     const handleSelectChange = (e, name) => {

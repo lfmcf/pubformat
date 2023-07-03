@@ -134,7 +134,7 @@ const CreateCh = (props) => {
     }
 
     const handleSubmit = (name) => {
-        post(route('publishingStorech'));
+        post(route('publishingStorech', { 'type': name }));
     }
 
     // let porductOptions = props.products.map(function (product) {

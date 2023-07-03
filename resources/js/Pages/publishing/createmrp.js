@@ -138,7 +138,7 @@ const Createmrp = (props) => {
         return { label: mp.country, value: mp.country }
     })
     const handleSubmit = (name) => {
-        post(route('publishingStoremrp'));
+        post(route('publishingStoremrp', { 'type': name }));
     }
 
     const handleChange = (e) => {

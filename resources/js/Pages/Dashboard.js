@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Authenticated from '@/Layouts/Authenticated';
 import { Head } from '@inertiajs/inertia-react';
 import { Card, CardContent, Paper, Typography, TableCell, Table, TableHead, TableRow, TableBody, IconButton, Collapse, Box, Grid, InputLabel, CardHeader, TextField } from '@material-ui/core';
@@ -13,7 +13,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import DownloadIcon from '@mui/icons-material/Download';
 import NestedMenuItem from "material-ui-nested-menu-item";
-import { Chart, Interval, LineAdvance, Tooltip, Axis, Coordinate, getTheme} from 'bizcharts';
+import { Chart, Interval, LineAdvance, Tooltip, Axis, Coordinate, getTheme } from 'bizcharts';
 import moment from 'moment';
 // import { MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
 // import MomentUtils from '@date-io/moment';
@@ -24,6 +24,8 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import ReactCountryFlag from "react-country-flag";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const groupBy = (items, key) => items.reduce(
     (result, item) => ({
@@ -73,21 +75,21 @@ function Row(props) {
                             <Table size="small" aria-label="purchases">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell style={{fontWeight:'bold', color:"#6B6B6B"}}>Country</TableCell>
-                                        <TableCell style={{fontWeight:'bold', color:"#6B6B6B"}}>Nom dossier</TableCell>
-                                        <TableCell style={{fontWeight:'bold', color:"#6B6B6B"}}>Sequence</TableCell>
-                                        <TableCell style={{fontWeight:'bold', color:"#6B6B6B"}}>Nombre</TableCell>
+                                        <TableCell style={{ fontWeight: 'bold', color: "#6B6B6B" }}>Country</TableCell>
+                                        <TableCell style={{ fontWeight: 'bold', color: "#6B6B6B" }}>Nom dossier</TableCell>
+                                        <TableCell style={{ fontWeight: 'bold', color: "#6B6B6B" }}>Sequence</TableCell>
+                                        <TableCell style={{ fontWeight: 'bold', color: "#6B6B6B" }}>Nombre</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {Object.keys(grow).map((key, index) => (
                                         <TableRow key={key}>
-                                            <TableCell>{<ReactCountryFlag 
-                                                countryCode={grow[key][0].country} 
-                                                svg title={grow[key][0].country} 
-                                                style={{width: '1.8em',height: '1.8em',}} 
-                                                />
-                                                }
+                                            <TableCell>{<ReactCountryFlag
+                                                countryCode={grow[key][0].country}
+                                                svg title={grow[key][0].country}
+                                                style={{ width: '1.8em', height: '1.8em', }}
+                                            />
+                                            }
                                             </TableCell>
                                             <TableCell >
                                                 <ul>
@@ -148,7 +150,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '0',
         boxShadow: '0 1px 20px 0 rgb(69 90 100 / 8%)'
     },
-    cHeader : {
+    cHeader: {
         borderBottom: '1px solid #f1f1f1',
         '& .MuiCardHeader-title': {
             fontSize: '17px',
@@ -171,6 +173,10 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const theme = getTheme();
 const colors = theme.colors10;
 
@@ -182,15 +188,16 @@ const yearoption = [
 ]
 export default function Dashboard(props) {
 
-    const data  = props.allItems;
+    const data = props.allItems;
+    console.log(props)
 
     const [anchor, setAnchor] = React.useState(null);
-    const [menuPosition, setMenuPosition] =  React.useState(false);
+    const [menuPosition, setMenuPosition] = React.useState(false);
     const [selectedIndex1, setSelectedIndex1] = React.useState(0);
     const [chartIns, setChartIns] = React.useState(null);
     const [Finaldata, setFinaldata] = React.useState([]);
     const [year, setYear] = React.useState(2022);
-    
+
     const [action, setAction] = React.useState("Publishing");
     const [tablevalues, setTableValues] = React.useState({});
     var x = new Date();
@@ -198,6 +205,7 @@ export default function Dashboard(props) {
     const [au, setAu] = React.useState(new Date());
     var char = [[], [], [], [], [], [], [], [], [], [], [], []];
     const tblref = useRef(null)
+    const [openAlert, setOpenAlert] = React.useState(false);
 
     const classes = useStyles();
 
@@ -224,7 +232,7 @@ export default function Dashboard(props) {
     useEffect(() => {
         foldersByDate(year);
         tableau();
-    }, [data]); 
+    }, [data]);
 
     function foldersByDate(year) {
         setFinaldata([])
@@ -287,36 +295,36 @@ export default function Dashboard(props) {
     }
 
     function downLoadCsv() {
-        
+
         var arr = new Array();
         const workbook = new Excel.Workbook();
         const worksheet = workbook.addWorksheet("My Sheet");
-       
+
         worksheet.columns = [
-            {header: 'Type', key: 'type', width: 10},
-            {header: 'Nombre', key: 'nombre', width: 32},
+            { header: 'Type', key: 'type', width: 10 },
+            { header: 'Nombre', key: 'nombre', width: 32 },
         ];
 
         worksheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center' };
         worksheet.getCell('B1').alignment = { vertical: 'middle', horizontal: 'center' };
 
         Object.keys(tablevalues).map(function (key, index) {
-            
-            worksheet.addRow({type: key, nombre: tablevalues[key].length});
+
+            worksheet.addRow({ type: key, nombre: tablevalues[key].length });
             var rn = worksheet.lastRow.number;
-            
+
             worksheet.getCell('A' + rn).fill = {
                 type: "pattern",
                 pattern: "solid",
-                fgColor: { argb:'FFFF0000' }
+                fgColor: { argb: 'FFFF0000' }
             }
             worksheet.getCell('B' + rn).fill = {
                 type: "pattern",
                 pattern: "solid",
-                fgColor: { argb:'FFFF0000' }
+                fgColor: { argb: 'FFFF0000' }
             }
-           
-           // worksheet.lastRow.outlineLevel = tablevalues[key].length;
+
+            // worksheet.lastRow.outlineLevel = tablevalues[key].length;
             tablevalues[key].forEach(val => {
                 worksheet.addRow();
                 worksheet.lastRow.outlineLevel = tablevalues[key].length;
@@ -324,11 +332,11 @@ export default function Dashboard(props) {
                 worksheet.getCell('A' + rowNumber).value = val.country;
                 worksheet.getCell('B' + rowNumber).value = val.dossierName;
                 worksheet.getCell('C' + rowNumber).value = val.sequence;
-               
+
             });
-            
+
         });
-       
+
         workbook.xlsx.writeBuffer().then((buf) => {
             saveAs(new Blob([buf]), 'total_action.xlsx');
         });
@@ -366,10 +374,21 @@ export default function Dashboard(props) {
         }
 
         var res = groupBy(tempdata, "type");
-        
+
         setTableValues(res);
-        
+
     }
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenAlert(false);
+    };
+
+    React.useEffect(() => {
+        props.flash.message ? setOpenAlert(true) : setOpenAlert(false)
+    }, []);
 
     return (
         <Authenticated
@@ -377,6 +396,11 @@ export default function Dashboard(props) {
             errors={props.errors}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>}
         >
+            <Snackbar open={openAlert} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                    {props.flash.message}
+                </Alert>
+            </Snackbar>
             <Head title="Dashboard" />
             <div className={classes.wrapper}>
                 <Grid container spacing={2}>
@@ -395,7 +419,7 @@ export default function Dashboard(props) {
                                                 <Typography style={{ color: 'white', fontSize: '16px' }} variant="h6" component="h6">
                                                     {/* {recyear == 0 ? data.length : data.filter(row => moment(row.receptiondate).year() == recyear).length} */}
                                                     {props.all}
-                                                    
+
                                                 </Typography>
                                                 <Typography style={{ color: 'white', fontSize: '12px' }} variant="h6" component="p">
                                                     Total Dossiers
@@ -492,10 +516,10 @@ export default function Dashboard(props) {
                                 </NestedMenuItem>
                             </Menu>
                             <CardContent>
-                                <Chart height={300} 
-                                    padding={[30, 20, 60, 40]}  
+                                <Chart height={300}
+                                    padding={[30, 20, 60, 40]}
                                     scale={scale}
-                                    data={Finaldata} 
+                                    data={Finaldata}
                                     autoFit
                                     onGetG2Instance={chartns => {
                                         setChartIns(chartns)
@@ -521,38 +545,38 @@ export default function Dashboard(props) {
                     </Grid>
 
                     <Grid item md={12} xs={12} sm={12}>
-                    
-                    <Card className={classes.cCard}>
-                        <CardHeader action={
-                            <IconButton onClick={downLoadCsv} aria-label="settings">
-                                <DownloadIcon />
-                            </IconButton>
-                            
-                        } title="Total Dossiers per Action" className={classes.cHeader} />
-                        <CardContent>
-                            {/* <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils} locale="fr"> */}
-                                <div  className={classes.actions}>
+
+                        <Card className={classes.cCard}>
+                            <CardHeader action={
+                                <IconButton onClick={downLoadCsv} aria-label="settings">
+                                    <DownloadIcon />
+                                </IconButton>
+
+                            } title="Total Dossiers per Action" className={classes.cHeader} />
+                            <CardContent>
+                                {/* <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils} locale="fr"> */}
+                                <div className={classes.actions}>
                                     <div>
-                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                        <DesktopDatePicker
-                                            label="Du"
-                                            inputFormat="MM/dd/yyyy"
-                                            value={du}
-                                            onChange={handleDuChange}
-                                            renderInput={(params) => <TextField  name="deadline" fullWidth {...params} />}
-                                        />
-                                    </LocalizationProvider>
+                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                            <DesktopDatePicker
+                                                label="Du"
+                                                inputFormat="MM/dd/yyyy"
+                                                value={du}
+                                                onChange={handleDuChange}
+                                                renderInput={(params) => <TextField name="deadline" fullWidth {...params} />}
+                                            />
+                                        </LocalizationProvider>
                                     </div>
                                     <div>
-                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                        <DesktopDatePicker
-                                            label="Au"
-                                            inputFormat="MM/dd/yyyy"
-                                            value={au}
-                                            onChange={handleAuChange}
-                                            renderInput={(params) => <TextField  name="deadline" fullWidth {...params} />}
-                                        />
-                                    </LocalizationProvider>
+                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                            <DesktopDatePicker
+                                                label="Au"
+                                                inputFormat="MM/dd/yyyy"
+                                                value={au}
+                                                onChange={handleAuChange}
+                                                renderInput={(params) => <TextField name="deadline" fullWidth {...params} />}
+                                            />
+                                        </LocalizationProvider>
                                     </div>
                                     {/* <KeyboardDatePicker
                                         disableToolbar
@@ -585,7 +609,7 @@ export default function Dashboard(props) {
                                     <div>
                                         <InputLabel shrink>
                                             Action
-                                    </InputLabel>
+                                        </InputLabel>
                                         <Select onChange={handleActionChange} value={action}>
                                             <MenuItem value="Formatting">Formatting</MenuItem>
                                             <MenuItem value="Publishing">Publishing</MenuItem>
@@ -593,26 +617,26 @@ export default function Dashboard(props) {
                                         </Select>
                                     </div>
                                 </div>
-                            {/* </MuiPickersUtilsProvider> */}
-                            <Table className="mt-2" ref={tblref}>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell></TableCell>
-                                        <TableCell style={{ fontWeight: 600 }}>type</TableCell>
-                                        <TableCell style={{ fontWeight: 600 }}>Nombres</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {Object.keys(tablevalues).map(function (key, index) {
-                                        return (
-                                            <Row key={index} row={tablevalues[key]} />
-                                        )
-                                    })}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
-                </Grid>
+                                {/* </MuiPickersUtilsProvider> */}
+                                <Table className="mt-2" ref={tblref}>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell></TableCell>
+                                            <TableCell style={{ fontWeight: 600 }}>type</TableCell>
+                                            <TableCell style={{ fontWeight: 600 }}>Nombres</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {Object.keys(tablevalues).map(function (key, index) {
+                                            return (
+                                                <Row key={index} row={tablevalues[key]} />
+                                            )
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                        </Card>
+                    </Grid>
 
                 </Grid>
             </div>

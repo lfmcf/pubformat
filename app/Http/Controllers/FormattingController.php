@@ -74,10 +74,16 @@ class FormattingController extends Controller
         $formatting->request_date = date('Y-m-d H:i:s', strtotime(Carbon::now()));
         $formatting->deadline = date('Y-m-d H:i:s', strtotime($request->deadline));
         $formatting->status = 'initiated';
+        $formatting->type = $request->query('type');
         $formatting->save();
-        $user = User::where('current_team_id', 2)->get();
-        Notification::sendNow($user, new CaNewRequest('hello'));
-        return redirect('/dashboard');
+
+        if ($request->query('type') == 'submit') {
+            $user = User::where('current_team_id', 2)->get();
+            Notification::sendNow($user, new CaNewRequest('hello'));
+            return redirect('/dashboard')->with('message', 'Your form has been successfully submitted');
+        } else {
+            return redirect('/dashboard')->with('message', 'Your form has been successfully saved');
+        }
     }
 
     /**

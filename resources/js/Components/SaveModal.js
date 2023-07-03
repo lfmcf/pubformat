@@ -22,7 +22,7 @@ const SaveModal = ({ show, handleClose, handleSubmited, name }) => {
                 aria-describedby="alert-dialog-slide-description"
             >
                 <DialogTitle>
-                    {name == 'submit' ? 'Do you want to Submit your eForm?' : 'Do you want to Save your eForm?'}
+                    {name == 'submit' ? 'Do you want to Submit your form?' : 'Do you want to Save your form?'}
 
                 </DialogTitle>
                 <DialogActions>
