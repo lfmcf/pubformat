@@ -34,23 +34,33 @@ export default function ForgotPassword({ status }) {
             <ValidationErrors errors={errors} />
 
             <form onSubmit={submit}>
-                <Input
+                {/* <Input
                     type="text"
                     name="email"
                     value={data.email}
                     className="w-full text-lg py-2 border-b border-gray-300 focus:outline-none focus:border-indigo-500"
                     isFocused={true}
                     handleChange={onHandleChange}
-                />
+                /> */}
+                <div className="mb-3">
+                    <label className="mb-2 text-muted" htmlFor="email">E-Mail Address</label>
+                    <input id="email" type="email" className="form-control" name="email" value={data.email} onChange={onHandleChange} required autoFocus />
+                    <div className="invalid-feedback">
+                        Email is invalid
+                    </div>
+                </div>
+                <button type="submit" className="btn btn-primary ms-auto">
+                    Email Password Reset Link
+                </button>
 
-                <div className="flex items-center justify-end mt-8">
+                {/* <div className="flex items-center justify-end mt-8">
                     <button
                         type='submit'
                         className="text-center bg-indigo-500 block text-gray-100 p-4 w-full rounded-full tracking-wide font-semibold font-display
                              focus:outline-none focus:shadow-outline hover:bg-indigo-600 shadow-lg" processing={processing}>
                         Email Password Reset Link
                     </button>
-                </div>
+                </div> */}
             </form>
         </Guest>
     );
