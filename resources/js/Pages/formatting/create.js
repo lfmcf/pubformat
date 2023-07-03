@@ -16,6 +16,7 @@ import { styled } from '@mui/material/styles';
 import { Form, Tabs, Tab, Button } from "react-bootstrap";
 import SaveModal from "@/Components/SaveModal";
 
+
 const useStyles = makeStyles((theme) => ({
     wrapper: {
         marginTop: '16px'
@@ -54,6 +55,8 @@ const useStyles = makeStyles((theme) => ({
     },
 
 }));
+
+
 
 const Create = (props) => {
 
@@ -95,6 +98,8 @@ const Create = (props) => {
         status: '',
     });
 
+   
+
     let contries = props.countries.map(function (country) {
         return { value: country, label: country };
     })
@@ -110,7 +115,7 @@ const Create = (props) => {
     };
 
     const handleSubmit = (name) => {
-        post(route('formattingStore'));
+        post(route('formattingStore', { 'type': name }));
     }
 
     const handleSaveModalConfirm = (name) => {
@@ -165,7 +170,7 @@ const Create = (props) => {
 
     return (
         <Authenticated auth={props.auth} header={"Form - Create " + data.form + " " + data.region}>
-
+            
             <form onSubmit={handleSubmit}>
                 <Tabs activeKey={activeStep} fill onSelect={(e) => setActiveStep(e)}>
                     <Tab eventKey={0} title="General information" style={{ height: 'calc(100vh - 220px)' }}>

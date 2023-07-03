@@ -427,10 +427,10 @@ export default function Authenticated({ auth, header, children }) {
                             >
                                 {/* <Box sx={{ width: '100%', maxWidth: 500, bgcolor: 'background.paper' }}>
                                     <nav aria-label="main mailbox folders"> */}
-                                <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                <List sx={{ width: '100%', maxWidth: 400, bgcolor: 'background.paper' }}>
                                     {notCount.map((not) => {
                                         return (
-                                            <ListItem key={not.id} alignItems="flex-start" secondaryAction={<div>{moment(not.created_at).format('yyy/m/d HH:ss')}</div>} disableGutters={true} disablePadding>
+                                            <ListItem key={not.id} alignItems="flex-start" disableGutters={true} disablePadding>
                                                 <ListItemButton dense>
                                                     <ListItemText
                                                         primary="Formatting form"

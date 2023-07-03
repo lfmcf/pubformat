@@ -165,10 +165,16 @@ class PublishingController extends Controller
         $pub->request_date = date('Y-m-d H:i:s', strtotime(Carbon::now()));
         $pub->deadline = date('Y-m-d H:i:s', strtotime($request->deadline));
         $pub->status = 'initiated';
+        $pub->type = $request->query('type');
         $pub->save();
-        $user = User::where('current_team_id', 2)->get();
-        Notification::sendNow($user, new CaNewRequest('hello'));
-        return redirect('/dashboard');
+
+        if ($request->query('type') == 'submit') {
+            $user = User::where('current_team_id', 2)->get();
+            Notification::sendNow($user, new CaNewRequest('hello'));
+            return redirect('/dashboard')->with('message', 'Your form has been successfully submitted');
+        } else {
+            return redirect('/dashboard')->with('message', 'Your form has been successfully saved');
+        }
     }
 
     public function storeCh(Request $request)
@@ -219,10 +225,15 @@ class PublishingController extends Controller
         $pub->tpa = $request->tpa;
         $pub->application_type = $request->application_type;
         $pub->drug_product_manufacturer = $request->drug_product_manufacturer;
+        $pub->type = $request->query('type');
         $pub->save();
-        $user = User::where('current_team_id', 2)->get();
-        Notification::sendNow($user, new CaNewRequest('hello'));
-        return redirect('/dashboard');
+        if ($request->query('type') == 'submit') {
+            $user = User::where('current_team_id', 2)->get();
+            Notification::sendNow($user, new CaNewRequest('hello'));
+            return redirect('/dashboard')->with('message', 'Your form has been successfully submitted');
+        } else {
+            return redirect('/dashboard')->with('message', 'Your form has been successfully saved');
+        }
     }
 
     public function storeMrp(Request $request)
@@ -249,9 +260,15 @@ class PublishingController extends Controller
         $pub->docremarks = $request->docremarks;
         $pub->deadline = $request->deadline;
         $pub->request_date = $request->request_date;
+        $pub->type = $request->query('type');
         $pub->save();
-        $user = User::where('current_team_id', 2)->get();
-        Notification::sendNow($user, new CaNewRequest('hello'));
-        return redirect('/dashboard');
+
+        if ($request->query('type') == 'submit') {
+            $user = User::where('current_team_id', 2)->get();
+            Notification::sendNow($user, new CaNewRequest('hello'));
+            return redirect('/dashboard')->with('message', 'Your form has been successfully submitted');
+        } else {
+            return redirect('/dashboard')->with('message', 'Your form has been successfully saved');
+        }
     }
 }
