@@ -336,7 +336,10 @@ const List = (props) => {
                 filter: true,
                 filterType: 'multiselect',
                 customBodyRender: (value) => {
-                    return value.value
+                    if (value) {
+                        return value.value
+                    }
+
                 }
             }
         },
@@ -345,7 +348,9 @@ const List = (props) => {
             label: "Country",
             options: {
                 customBodyRender: (value) => {
-                    return value.value
+                    if (value) {
+                        return value.value
+                    }
                 }
             }
             // options: {
