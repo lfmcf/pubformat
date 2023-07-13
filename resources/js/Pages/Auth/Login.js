@@ -37,14 +37,10 @@ export default function Login({ status, canResetPassword, canRegister }) {
             {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
 
             <ValidationErrors errors={errors} />
-             <div className="mt-10 mx-auto max-w-md">
-                    <h2 className="text-center text-4xl text-indigo-900 font-display font-semibold lg:text-center xl:text-6xl
-                    xl:text-bold">Log in</h2>
-                    <div className="mt-12"></div>
-             </div>
+            <h1 className="fs-4 card-title fw-bold mb-4">Login</h1>
 
             <form onSubmit={submit}>
-                <div>
+                {/* <div>
                     <Label className="mb-2 text-sm font-bold text-gray-700 tracking-wide" forInput="email" value="Email Address" />
 
                     <Input
@@ -56,9 +52,37 @@ export default function Login({ status, canResetPassword, canRegister }) {
                         isFocused={true}
                         handleChange={onHandleChange}
                     />
+                </div> */}
+                <div className="mb-3">
+                    <label className="mb-2 text-muted" htmlFor="email">E-Mail Address</label>
+                    <input id="email" type="email" className="form-control" name="email" value={data.email} onChange={onHandleChange} required autoFocus />
+                    <div className="invalid-feedback">
+                        Email is invalid
+                    </div>
+                </div>
+                <div className="mb-3">
+                    <div className="mb-2 w-100">
+                        <label className="text-muted" htmlFor="password">Password</label>
+                        <a href={route('password.request')} className="float-end">
+                            Forgot Password?
+                        </a>
+                    </div>
+                    <input id="password" type="password" className="form-control" name="password" onChange={onHandleChange} required />
+                    <div className="invalid-feedback">
+                        Password is required
+                    </div>
+                </div>
+                <div className="d-flex align-items-center">
+                    <div className="form-check">
+                        <input type="checkbox" name="remember" id="remember" className="form-check-input" value={data.remember} onChange={onHandleChange} />
+                        <label htmlFor="remember" className="form-check-label">Remember Me</label>
+                    </div>
+                    <button type="submit" className="btn btn-primary ms-auto">
+                        Login
+                    </button>
                 </div>
 
-                <div className="mt-4">
+                {/* <div className="mt-4">
                     <Label className="mb-2 text-sm font-bold text-gray-700 tracking-wide" forInput="password" value="Password" />
 
                     <Input
@@ -70,9 +94,9 @@ export default function Login({ status, canResetPassword, canRegister }) {
                         handleChange={onHandleChange}
                     />
 
-                </div>
+                </div> */}
 
-                <div className="flex justify-between my-4">
+                {/* <div className="flex justify-between my-4">
                     <label className="flex items-center">
                         <Checkbox name="remember" value={data.remember} handleChange={onHandleChange} />
 
@@ -80,36 +104,26 @@ export default function Login({ status, canResetPassword, canRegister }) {
                     </label>
 
                     <div className="flex items-center justify-between my-4">
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="text-xs font-display font-semibold text-indigo-600 hover:text-indigo-800 cursor-pointer"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
+                        {canResetPassword && (
+                            <Link
+                                href={route('password.request')}
+                                className="text-xs font-display font-semibold text-indigo-600 hover:text-indigo-800 cursor-pointer"
+                            >
+                                Forgot your password?
+                            </Link>
+                        )}
                     </div>
                 </div>
 
                 <div>
                     <button
-                    type='submit'
-                    className="text-center bg-indigo-500 block text-gray-100 p-4 w-full rounded-full tracking-wide font-semibold font-display
+                        type='submit'
+                        className="text-center bg-indigo-500 block text-gray-100 p-4 w-full rounded-full tracking-wide font-semibold font-display
                              focus:outline-none focus:shadow-outline hover:bg-indigo-600 shadow-lg">
                         Login
                     </button>
-                </div>
-
-                {/* <div className="mt-12 text-sm font-display font-semibold text-gray-700 text-center">
-                            Don't have an account ?
-                    {canRegister =(
-
-                        <Link
-                         href={route('register')}
-                         className="cursor-pointer text-indigo-600 hover:text-indigo-800">Sign up</Link>
-                    )} 
                 </div> */}
             </form>
-        </Guest>
+        </Guest >
     );
 }
