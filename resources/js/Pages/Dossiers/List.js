@@ -40,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
         marginTop: '16px',
         '& .css-1ex1afd-MuiTableCell-root': {
             position: "relative"
+        },
+        '& .MuiTable-root tr, td': {
+            padding: '0 !important'
         }
     },
 
@@ -149,8 +152,8 @@ const List = (props) => {
             setData({ ...data, 'product': '', 'country': '' })
         } else {
             setData(name, e)
-            setProductList(eunatproduct)
-            setCountryList(eunatcountry)
+            // setProductList(eunatproduct)
+            // setCountryList(eunatcountry)
         }
     }
 
@@ -178,32 +181,39 @@ const List = (props) => {
     }
 
     const thememui = () => createTheme({
-
-        overrides: {
+        components: {
+            MuiToolbar: {
+                styleOverrides: {
+                    root: {
+                        minHeight: '60px !important'
+                    }
+                }
+            },
             MUIDataTableHeadCell: {
-                data: {
-                    fontWeight: '600',
-                    fontSize: '13px',
-                    color: '#111'
+                styleOverrides: {
+                    root: {
+                        fontWeight: '600',
+                        fontSize: '0.79rem',
+                        color: '#111',
+                        // padding: '0'
+                    }
+
                 }
             },
-            MuiTableCell: {
-                root: {
-                    position: "relative",
-                    padding: '2px',
-                    fontSize: '12px',
+            MUIDataTableBodyCell: {
+                styleOverrides: {
+                    root: {
+                        fontSize: '0.7rem !important',
+                        // padding: '0 !important'
+                    },
+
                 }
             },
-            MUIDataTable: {
-                paper: {
-                    backgroundColor: 'transparent',
-                    boxShadow: 'unset'
-                }
-            }
         }
     });
 
     const handleNavigate = () => {
+
         if (data.form && data.form.value == "Formatting") {
             Inertia.visit('/formatting', {
                 method: 'get',
@@ -211,7 +221,6 @@ const List = (props) => {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
-
             })
         } else if (data.form && data.form.value == "Publishing") {
             Inertia.visit('/publishing', {
@@ -239,7 +248,6 @@ const List = (props) => {
         onRowsDelete: (rowsDeleted, dataRows) => {
             const idsToDelete = rowsDeleted.data.map(d => props.list[d.dataIndex]);
             idsToDelete.map(row => {
-
                 if (row.formtype === 'ch') {
 
                 }
@@ -250,7 +258,6 @@ const List = (props) => {
             // console.log(props.auth.user.current_team_id)
             if (props.auth.user.current_team_id == 1 || props.auth.user.current_team_id == 2) {
                 return (
-
                     <Tooltip title={"Add New Record"}>
                         <IconButton id="basic-button"
                             aria-controls={open ? 'basic-menu' : undefined}
@@ -336,8 +343,11 @@ const List = (props) => {
                 filter: true,
                 filterType: 'multiselect',
                 customBodyRender: (value) => {
-                    if (value) {
+
+                    if (value && typeof value === 'object') {
                         return value.value
+                    } else {
+                        return value
                     }
 
                 }
@@ -348,27 +358,15 @@ const List = (props) => {
             label: "Country",
             options: {
                 customBodyRender: (value) => {
-                    if (value) {
+                    if (value && typeof value === 'object') {
                         return value.value
+                    } else {
+                        return value
                     }
+
                 }
             }
-            // options: {
-            //     customBodyRender: value => {
-            //         const region = new Intl.DisplayNames(['en'], {type: 'region'});
-            //         let title = "";
-            //         if(value && value.length == 2) {
-            //             title = region.of(value.toUpperCase());
-            //         }
 
-            //         return(
-            //             <ReactCountryFlag countryCode={value} svg aria-label={value} title={title} style={{
-            //                 width: '1.8em',
-            //                 height: '1.8em',
-            //             }} />
-            //         )
-            //     }
-            // }
         },
         {
             name: "sequence",
@@ -376,7 +374,6 @@ const List = (props) => {
             options: {
                 filter: true,
                 filterType: 'multiselect',
-                // sort: false
             }
         },
         // {
@@ -470,7 +467,7 @@ const List = (props) => {
         setData({ ...data, 'procedure': '', 'product': '', 'country': '' })
         if (data.form && data.form.value === 'Publishing') {
             if (data.region && data.region.value == 'GCC') {
-                setData('procedure', [{ label: 'Nationale', value: 'Nationale' }]);
+                setData('procedure', { label: 'Nationale', value: 'Nationale' });
                 setProductList(gccproduct);
                 setCountryList(gcccountry);
             } else if (data.region && data.region.value == 'CH') {
@@ -504,30 +501,26 @@ const List = (props) => {
 
 
     return (
-        <Authenticated auth={props.auth} header="ALL FORMS">
+        <Authenticated auth={props.auth} header="List">
             <div className={classes.wrapper}>
-                <Card className={classes.cCard}>
+                <ThemeProvider theme={thememui()}>
+                    <MUIDataTable
+                        title="List"
+                        data={Object.values(props.list)}
+                        columns={columns}
+                        options={options}
+                    />
+                </ThemeProvider>
+                {/* <Card className={classes.cCard}>
                     <CardHeader title="Requests List" className={classes.cHeader} />
                     <CardContent>
-                        <ThemeProvider theme={thememui()}>
-                            <MUIDataTable
-                                data={Object.values(props.list)}
-                                columns={columns}
-                                options={options}
-                            />
-                        </ThemeProvider>
+                        
                     </CardContent>
-
-                    {/* <Backdrop className={classes.backdrop} open={open} onClick={() => setOpen(false)}>
-                        <CircularProgress color="inherit" />
-                    </Backdrop> */}
-                    {/* <Snackbar open={openalert} autoHideDuration={6000} onClose={handleClose}>
-                        <Alert onClose={handleClose} severity={severity}>
-                            {message}
-                        </Alert>
-                    </Snackbar> */}
-                </Card>
+                </Card> */}
             </div>
+
+
+
             <Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
                 <DialogTitle>New Request</DialogTitle>
                 <DialogContent>

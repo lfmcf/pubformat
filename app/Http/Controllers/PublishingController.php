@@ -24,6 +24,7 @@ class PublishingController extends Controller
         $region = $request->query('region');
 
         $procedure = $request->query('procedure');
+
         $country = $request->query('country');
         $product = $request->query('product');
         if ($region == "EU") {
@@ -269,6 +270,26 @@ class PublishingController extends Controller
             return redirect('/dashboard')->with('message', 'Your form has been successfully submitted');
         } else {
             return redirect('/dashboard')->with('message', 'Your form has been successfully saved');
+        }
+    }
+
+    public function edit(Request $request)
+    {
+        $id = $request->id;
+        $pub = Publishing::where('_id', $id)->first();
+
+        if ($request->region == 'CH') {
+            return Inertia::render('publishing/editch', [
+                'pub' => $pub
+            ]);
+        } elseif ($request->region == 'EU') {
+            return Inertia::render('publishing/edit', [
+                'pub' => $pub
+            ]);
+        } else if ($request->region == 'GCC') {
+            return Inertia::render('publishing/editgcc', [
+                'pub' => $pub
+            ]);
         }
     }
 }

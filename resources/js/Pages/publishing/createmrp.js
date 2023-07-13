@@ -1,7 +1,7 @@
 import Authenticated from "@/Layouts/Authenticated";
 import React, { useState, useEffect } from "react";
 import { useForm } from '@inertiajs/inertia-react';
-import { Tooltip, TextField, Button, IconButton, Box } from '@material-ui/core';
+import { Tooltip, TextField, IconButton, Box } from '@material-ui/core';
 import Select from 'react-select';
 import moment from "moment";
 import { makeStyles } from '@material-ui/core/styles';
@@ -16,7 +16,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { components } from "react-select";
 import MySelect from '@/Components/Myselect';
 import makeAnimated from "react-select/animated";
-import { Form, Tabs, Tab } from "react-bootstrap";
+import { Form, Tabs, Tab, Button } from "react-bootstrap";
 import { publishingMrpSubmissionType } from '@/Components/MetaDataList';
 import { Tabs as Mtabs, Tab as Mtab } from '@mui/material';
 import Speed from "@/Components/Speed";
@@ -215,9 +215,9 @@ const Createmrp = (props) => {
 
     return (
         <Authenticated auth={props.auth} header={"Form - Create " + data.form + " " + data.region}>
-            <form onSubmit={handleSubmit}>
-                <Tabs activeKey={activeStep} fill onSelect={(e) => setActiveStep(e)}>
-                    <Tab eventKey={0} title="General information" style={{ border: '1px solid #dee2e6', height: 'calc(100vh - 220px)' }}>
+            <form onSubmit={handleSubmit} >
+                <Tabs activeKey={activeStep} onSelect={(e) => setActiveStep(e)} >
+                    <Tab eventKey={0} title="General information" style={{ border: '1px solid #dee2e6', minHeight: 'calc(100vh - 210px)' }}>
                         <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px' }}>
                             <div className="container">
                                 <div className="row">
@@ -252,8 +252,8 @@ const Createmrp = (props) => {
                                                 placeholder=''
                                                 isClearable
                                                 value={data.country}
-                                                menuPortalTarget={document.body}
-                                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                            // menuPortalTarget={document.body}
+                                            // styles={{ menuPortal: base => ({ ...base, zIndex: 9999, fontSize: '0.8rem' }) }}
                                             />
                                         </Form.Group>
                                     </div>
@@ -275,8 +275,10 @@ const Createmrp = (props) => {
                                                 onChange={(e) => handleSelectChange(e, 'dossier_type')}
                                                 placeholder=''
                                                 isClearable
-                                                menuPortalTarget={document.body}
-                                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                                className="basic"
+                                                classNamePrefix="basic"
+                                            // menuPortalTarget={document.body}
+                                            // styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                             />
                                         </Form.Group>
                                     </div>
@@ -294,12 +296,12 @@ const Createmrp = (props) => {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                                    <Button onClick={() => setActiveStep(1)} style={{ width: '100px' }} variant="outlined" size="small">Next</Button>
+                                    <Button onClick={() => setActiveStep(1)} style={{ width: '100px' }} variant="outline-primary" size="sm">Next</Button>
                                 </div>
                             </div>
                         </Box>
                     </Tab>
-                    <Tab eventKey={1} title="Submission metadata" style={{ border: '1px solid #dee2e6', height: 'calc(100vh - 220px)' }}>
+                    <Tab eventKey={1} title="Submission metadata" style={{ border: '1px solid #dee2e6', overflow: 'scroll', minHeight: 'calc(100vh - 210px)' }}>
                         <div style={{ display: 'flex', justifyContent: 'end', padding: '10px 10px 0', backgroundColor: 'white' }}>
                             <IconButton size="small" onClick={handleOpen}>
                                 <ModeEditIcon />
@@ -312,10 +314,10 @@ const Createmrp = (props) => {
                                 value={value}
                                 onChange={handleMChange}
                                 aria-label="Vertical tabs example"
-                                sx={{ borderRight: 1, borderColor: 'divider' }}
+                                sx={{ borderRight: 1, borderColor: 'divider', height: 'calc(100vh - 180px)' }}
                             >
                                 {data.mt.map((md, i) => (
-                                    <Mtab key={i} label={md.country} {...a11yProps(i)} />
+                                    <Mtab key={i} label={md.country} {...a11yProps(i)} style={{ fontSize: '0.7rem' }} />
                                 ))}
                             </Mtabs>
                             {data.mt.map((md, i) =>
@@ -450,8 +452,8 @@ const Createmrp = (props) => {
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                                        <Button onClick={() => setActiveStep(0)} style={{ width: '100px', marginRight: '10px' }} variant="outlined" size="small">Previous</Button>
-                                        <Button onClick={() => setActiveStep(2)} style={{ width: '100px' }} variant="outlined" size="small">Next</Button>
+                                        <Button onClick={() => setActiveStep(0)} style={{ width: '100px', marginRight: '10px' }} variant="outline-primary" size="sm">Previous</Button>
+                                        <Button onClick={() => setActiveStep(2)} style={{ width: '100px' }} variant="outline-primary" size="sm">Next</Button>
                                     </div>
                                 </div>
                             )}
@@ -459,7 +461,7 @@ const Createmrp = (props) => {
 
                         </Box>
                     </Tab>
-                    <Tab eventKey={2} title="Product Metadata" style={{ border: '1px solid #dee2e6', height: 'calc(100vh - 220px)' }}>
+                    <Tab eventKey={2} title="Product Metadata" style={{ border: '1px solid #dee2e6', minHeight: 'calc(100vh - 210px)' }}>
                         <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px' }}>
                             <div className="container">
                                 <div className="row">
@@ -553,20 +555,20 @@ const Createmrp = (props) => {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                                    <Button onClick={() => setActiveStep(1)} style={{ width: '100px', marginRight: '10px' }} variant="outlined" size="small">Previous</Button>
-                                    <Button onClick={() => setActiveStep(3)} style={{ width: '100px' }} variant="outlined" size="small">Next</Button>
+                                    <Button onClick={() => setActiveStep(1)} style={{ width: '100px', marginRight: '10px' }} variant="outline-primary" size="sm">Previous</Button>
+                                    <Button onClick={() => setActiveStep(3)} style={{ width: '100px' }} variant="outline-primary" size="sm">Next</Button>
                                 </div>
                             </div>
                         </Box>
                     </Tab>
-                    <Tab eventKey={3} title="Documents" style={{ border: '1px solid #dee2e6', height: 'calc(100vh - 220px)' }}>
+                    <Tab eventKey={3} title="Documents" style={{ border: '1px solid #dee2e6', height: 'calc(100vh - 210px)' }}>
                         <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px' }}>
                             <div className="container">
                                 <div className="row">
                                     <div className="col-6">
                                         <Form.Group className="mb-3">
                                             <Form.Label className="form_group_label">Attached document</Form.Label>
-                                            <Form.Control type="file" name="doc" onChange={handleChange} />
+                                            <Form.Control type="file" multiple name="doc" onChange={handleChange} />
                                         </Form.Group>
                                     </div>
                                     <div className="col-12">
@@ -577,13 +579,13 @@ const Createmrp = (props) => {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                                    <Button onClick={() => setActiveStep(2)} style={{ width: '100px', marginRight: '10px' }} variant="outlined" size="small">Previous</Button>
-                                    <Button onClick={() => setActiveStep(4)} style={{ width: '100px' }} variant="outlined" size="small">Next</Button>
+                                    <Button onClick={() => setActiveStep(2)} style={{ width: '100px', marginRight: '10px' }} variant="outline-primary" size="sm">Previous</Button>
+                                    <Button onClick={() => setActiveStep(4)} style={{ width: '100px' }} variant="outline-primary" size="sm">Next</Button>
                                 </div>
                             </div>
                         </Box>
                     </Tab>
-                    <Tab eventKey={4} title="Delivery details" style={{ border: '1px solid #dee2e6', height: 'calc(100vh - 220px)' }}>
+                    <Tab eventKey={4} title="Delivery details" style={{ border: '1px solid #dee2e6', height: 'calc(100vh - 210px)' }}>
                         <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px' }}>
                             <div className="container">
                                 <div className="row">
@@ -613,7 +615,7 @@ const Createmrp = (props) => {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                                    <Button onClick={() => setActiveStep(3)} style={{ width: '100px', marginRight: '10px' }} variant="outlined" size="small">Previous</Button>
+                                    <Button onClick={() => setActiveStep(3)} style={{ width: '100px' }} variant="outline-primary" size="sm">Previous</Button>
                                 </div>
                             </div>
                         </Box>

@@ -18,8 +18,11 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import ListSubheader from '@mui/material/ListSubheader';
 import moment from 'moment';
 import Divider from '@mui/material/Divider';
+// import { router } from '@inertiajs/react'
+import { Inertia } from '@inertiajs/inertia';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -36,8 +39,8 @@ const useStyles = makeStyles((theme) => ({
     themeWrapper: {
         flexGrow: 1,
         height: 'inherit',
-        padding: '20px 20px 0',
-        marginLeft: '264px',
+        padding: '25px 20px 0',
+        marginLeft: '244px',
         // height: '100vh',
         backgroundColor: 'rgb(233, 237, 242)'
     },
@@ -45,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
         position: 'fixed',
         display: 'block',
         boxShadow: '1px 0 20px 0 #3f4d67',
-        width: '264px',
+        width: '244px',
         height: '100vh',
         top: '0',
         background: '#3f4d67',
@@ -65,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
         textAlign: 'center',
         marginRight: '0',
         padding: '10px 20px',
-        width: '264px',
+        width: '254px',
         boxSizing: 'border-box'
     },
     bBrand: {
@@ -154,12 +157,12 @@ const useStyles = makeStyles((theme) => ({
         zIndex: '1028',
         display: 'flex',
         padding: '0',
-        position: 'relative',
+        position: 'sticky',
         top: '0',
-        background: 'rgb(233, 237, 242)',
+        background: 'white',
         color: '#3f4d67',
-        width: 'calc(100% - 264px)',
-        marginLeft: '264px',
+        width: 'calc(100% - 244px)',
+        marginLeft: '244px',
     },
     navbarNav: {
         paddingLeft: '0',
@@ -251,14 +254,12 @@ export default function Authenticated({ auth, header, children }) {
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
-
-
-
-
     const [openMenu, setOpenMenu] = useState(false);
-    const [notCount, setNotCount] = useState(auth.notifications)
+    const [notCount, setNotCount] = useState(auth.notCount)
+    const [notification, setNotification] = useState(auth.notifications)
     const classes = useStyles(openMenu);
     const [anchorEl, setAnchorEl] = React.useState(null);
+
 
     const handleClickp = (event) => {
         setAnchorEl(event.currentTarget);
@@ -285,6 +286,9 @@ export default function Authenticated({ auth, header, children }) {
         });
     }, []);
 
+    const readNotification = (id) => {
+        Inertia.post('shownotification', { 'id': id })
+    }
 
 
     // window.Echo.private('App.Models.User.' + auth.user.id).listen('notification', (notification) => {
@@ -403,66 +407,161 @@ export default function Authenticated({ auth, header, children }) {
             </nav>
             <header className={classes.header}>
                 <div style={{ display: 'flex', flexGrow: '1', flexBasis: 'auto', alignItems: 'center' }}>
-                    <ul className={classes.navbarNav + ' ' + classes.mrRight}>
+                    <Breadcrumbs aria-label="breadcrumb" style={{ marginLeft: '20px' }}>
+                        <InertiaLink style={{ textDecoration: "none", color: '#3f4d67' }} href="/">
+                            <Home size={14} />
+                        </InertiaLink>
+                        <Typography style={{ color: '#3f4d67', fontWeight: '500', fontSize: '0.9rem' }}>{header}</Typography>
+                    </Breadcrumbs>
+                    {/* <ul className={classes.navbarNav + ' ' + classes.mrRight}>
                         <li></li>
-                    </ul>
+                    </ul> */}
                     <ul className={classes.navbarNav + ' ' + classes.mrLeftt}>
                         <li className="navbarlink">
-                            <div style={{ position: 'relative' }}>
-                                <IconButton className={classes.iconSettings} onClick={handleClickp}>
+                            <div style={{ position: 'relative' }} >
+                                <IconButton className={classes.iconSettings} onClick={handleClickp} >
                                     <Badge badgeContent={notCount.length} color="primary">
-                                        <NotificationsIcon size="15" />
+                                        <NotificationsIcon style={{ fontSize: '1.2rem' }} />
                                     </Badge>
                                 </IconButton>
+                                <Popover
+                                    id={id}
+                                    open={open}
+                                    anchorEl={anchorEl}
+                                    onClose={handleClose}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'right',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'right',
+                                    }}
+                                    PaperProps={{
+                                        style: { width: '25%' },
+                                    }}
+                                >
+                                    <Box sx={{ width: '100%' }}>
+
+                                        <List sx={{ bgcolor: 'background.paper' }} disablePadding subheader={
+                                            <ListSubheader component="div" id="nested-list-subheader">
+                                                Notifications
+                                            </ListSubheader>
+                                        }>
+                                            {notification.map((not) => {
+                                                if (not && !not.read_at) {
+                                                    return (
+                                                        <ListItem key={not.id} alignItems="flex-start" disableGutters={true} style={{ padding: '0' }} onClick={() => readNotification(not.id)}>
+                                                            <ListItemButton style={{ backgroundColor: '#d3d3d3' }}>
+                                                                <ListItemText
+                                                                    primary="Formatting form"
+                                                                    secondary={
+                                                                        <React.Fragment>
+                                                                            <Typography
+                                                                                sx={{ display: 'inline' }}
+                                                                                component="span"
+                                                                                variant="body2"
+                                                                            >
+                                                                                Ali Connors
+                                                                            </Typography>
+                                                                            {"some message here ..."}
+                                                                        </React.Fragment>
+                                                                    }
+                                                                />
+                                                                <div style={{ height: '10px', width: '10px', borderRadius: '50%', backgroundColor: '#04a9f5' }}></div>
+                                                            </ListItemButton>
+
+                                                        </ListItem>)
+                                                } else {
+                                                    return (
+                                                        <ListItem key={not.id} alignItems="flex-start" disableGutters={true} style={{ padding: '0' }}>
+                                                            <ListItemButton >
+                                                                <ListItemText
+                                                                    primary="Formatting form"
+                                                                    secondary={
+                                                                        <React.Fragment>
+                                                                            <Typography
+                                                                                sx={{ display: 'inline' }}
+                                                                                component="span"
+                                                                                variant="body2"
+                                                                            >
+                                                                                Ali Connors
+                                                                            </Typography>
+                                                                            {"some message here ..."}
+                                                                        </React.Fragment>
+                                                                    }
+                                                                />
+                                                                {/* <div style={{ height: '10px', width: '10px', borderRadius: '50%', backgroundColor: '#04a9f5' }}></div> */}
+                                                            </ListItemButton>
+
+                                                        </ListItem>)
+                                                }
+
+                                            })}
+                                        </List>
+                                        <Box sx={{
+                                            background: "white",
+                                            padding: "8px",
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                            position: 'sticky',
+                                            bottom: '0'
+                                        }}>
+                                            <Typography variant="h6" color="#fff">
+                                                Read all
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                    {/* <Box sx={{
+                                        background: "#666",
+                                        padding: "8px",
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center"
+                                    }}>
+                                        <Typography variant="h6" color="#fff">
+                                            Notification
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ bgcolor: 'background.paper' }}>
+                                        <List sx={{ bgcolor: 'background.paper' }}>
+                                            {notCount.map((not) => {
+                                                return (
+                                                    <ListItem key={not.id} alignItems="flex-start" disableGutters={true} disablePadding>
+                                                        <ListItemButton dense>
+                                                            <ListItemText
+                                                                primary="Formatting form"
+                                                                secondary={
+                                                                    <React.Fragment>
+                                                                        <Typography
+                                                                            sx={{ display: 'inline' }}
+                                                                            component="span"
+                                                                            variant="body2"
+                                                                        >
+                                                                            Ali Connors
+                                                                        </Typography>
+                                                                        {"some message here ..."}
+                                                                    </React.Fragment>
+                                                                }
+                                                            />
+                                                        </ListItemButton>
+                                                    </ListItem>)
+
+                                            })}
+
+                                        </List>
+                                    </Box> */}
+
+                                </Popover>
                             </div>
-                            <Popover
-                                id={id}
-                                open={open}
-                                anchorEl={anchorEl}
-                                onClose={handleClose}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'left',
-                                }}
-                            >
-                                {/* <Box sx={{ width: '100%', maxWidth: 500, bgcolor: 'background.paper' }}>
-                                    <nav aria-label="main mailbox folders"> */}
-                                <List sx={{ width: '100%', maxWidth: 400, bgcolor: 'background.paper' }}>
-                                    {notCount.map((not) => {
-                                        return (
-                                            <ListItem key={not.id} alignItems="flex-start" disableGutters={true} disablePadding>
-                                                <ListItemButton dense>
-                                                    <ListItemText
-                                                        primary="Formatting form"
-                                                        secondary={
-                                                            <React.Fragment>
-                                                                <Typography
-                                                                    sx={{ display: 'inline' }}
-                                                                    component="span"
-                                                                    variant="body2"
-                                                                >
-                                                                    Ali Connors
-                                                                </Typography>
-                                                                {"some message here ..."}
-                                                            </React.Fragment>
-                                                        }
-                                                    />
-                                                </ListItemButton>
-                                            </ListItem>)
-
-                                    })}
-
-                                </List>
-                                {/* </nav>
-                                </Box> */}
-                            </Popover>
-
                         </li>
+
                         <li className="navbarlink">
                             <div style={{ position: 'relative' }}>
                                 <IconButton className={classes.iconSettings} onClick={handleClick}>
-                                    <Settings size="15" />
-                                    <ChevronDown size="15" />
+                                    <Settings size={15} />
+                                    <ChevronDown size={16} />
                                 </IconButton>
 
                                 <div className={classes.menu}>
@@ -490,14 +589,9 @@ export default function Authenticated({ auth, header, children }) {
                         </li>
                     </ul>
                 </div>
-            </header>
+            </header >
             <div className={classes.themeWrapper}>
-                <Breadcrumbs aria-label="breadcrumb" style={{ marginBottom: '10px' }}>
-                    <InertiaLink style={{ textDecoration: "none", color: '#888' }} href="/">
-                        <Home size={14} />
-                    </InertiaLink>
-                    <Typography style={{ color: '#111', fontWeight: '600' }}>{header}</Typography>
-                </Breadcrumbs>
+
                 {children}
 
 
@@ -505,6 +599,6 @@ export default function Authenticated({ auth, header, children }) {
             {/* <div className={classes.footer}>
                 <Typography style={{ color: 'grey', fontSize: '12px' }}> © GROUPEKEMIA 2022</Typography>
             </div> */}
-        </div>
+        </div >
     );
 }

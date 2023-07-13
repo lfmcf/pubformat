@@ -91,7 +91,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/list', [ReportController::class, 'list'])->name('list');
     Route::get('/tasks', [ReportController::class, 'task'])->name('tasks');
 
+    Route::post('/shownotification', [ReportController::class, 'show'])->name('shownotification');
+
     Route::post('/getProductOrCountry', [ReportController::class, 'getProductOrCountry']);
+
+    Route::get('/editpublishing', [PublishingController::class, 'edit']);
 
 
     // Route::get('/attach', function() {

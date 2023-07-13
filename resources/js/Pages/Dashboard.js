@@ -189,7 +189,6 @@ const yearoption = [
 export default function Dashboard(props) {
 
     const data = props.allItems;
-    console.log(props)
 
     const [anchor, setAnchor] = React.useState(null);
     const [menuPosition, setMenuPosition] = React.useState(false);
@@ -394,7 +393,7 @@ export default function Dashboard(props) {
         <Authenticated
             auth={props.auth}
             errors={props.errors}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>}
+            header='Dashboard'
         >
             <Snackbar open={openAlert} autoHideDuration={3000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
                 <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Card, Table, TableHead, TableRow, TableCell, Paper, makeStyles, IconButton, TableContainer, TableBody, MuiThemeProvider} from '@material-ui/core';
+import { Card, Table, TableHead, TableRow, TableCell, Paper, makeStyles, IconButton, TableContainer, TableBody, MuiThemeProvider } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 //import CreateIcon from '@material-ui/icons/Create';
@@ -32,9 +32,12 @@ import Checkbox from '@mui/material/Checkbox';
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
-        marginTop:'16px',
+        marginTop: '16px',
         '& .css-1ex1afd-MuiTableCell-root': {
             position: "relative"
+        },
+        '& .MuiTable-root tr, td': {
+            padding: '0 !important'
         }
     },
 
@@ -46,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: '0',
         boxShadow: '0 1px 20px 0 rgb(69 90 100 / 8%)'
     },
-    cHeader : {
+    cHeader: {
         borderBottom: '1px solid #f1f1f1',
         '& .MuiCardHeader-title': {
             fontSize: '17px',
@@ -70,10 +73,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Tasks = (props) => {
+    console.log(props)
 
-    
     const classes = useStyles();
-    const [display,setDisplay] = useState(false);
+    const [display, setDisplay] = useState(false);
     const [open, setOpen] = useState(false);
     const [region, setRegion] = useState();
     const [coreDoc, setCoreDoc] = useState(false);
@@ -90,28 +93,34 @@ const Tasks = (props) => {
     };
 
     const thememui = () => createTheme({
-        
-        overrides: {
+        components: {
+            MuiToolbar: {
+                styleOverrides: {
+                    root: {
+                        minHeight: '55px !important'
+                    }
+                }
+            },
             MUIDataTableHeadCell: {
-                data: {
-                    fontWeight: '600',
-                    fontSize: '13px',
-                    color: '#111'
+                styleOverrides: {
+                    root: {
+                        fontWeight: '600',
+                        fontSize: '0.79rem',
+                        color: '#111',
+                        // padding: '0'
+                    }
+
                 }
             },
-            MuiTableCell: {
-                root: {
-                    position: "relative",
-                    padding: '2px',
-                    fontSize: '12px',
+            MUIDataTableBodyCell: {
+                styleOverrides: {
+                    root: {
+                        fontSize: '0.7rem !important',
+                        // padding: '0 !important'
+                    },
+
                 }
             },
-            MUIDataTable: {
-                paper: {
-                    backgroundColor:'transparent',
-                    boxShadow:'unset'
-                }
-            }
         }
     });
 
@@ -119,47 +128,33 @@ const Tasks = (props) => {
         if (form && form.value == "Formatting") {
             Inertia.visit('/formatting', {
                 method: 'get',
-                data: {form : form.value, region: region.value, coreDoc: coreDoc},
+                data: { form: form.value, region: region.value, coreDoc: coreDoc },
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
 
             })
-        }else if(form && form.value == "Publishing") {
+        } else if (form && form.value == "Publishing") {
             Inertia.visit('/publishing', {
                 method: 'get',
-                data: {form : form.value, region: region.value, procedure: procedure.value},
+                data: { form: form.value, region: region.value, procedure: procedure.value },
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 }
             })
         }
-        // var data;
-        // switch (from.value)
-        // {
-        //     case "Formatting":
-        //         data = {from : from.value};
-        //         break;
-        //     case "Publishing":
-        //         data = {from: from.value, region: region.value};
-        //         break;
-        //     case "Submission":
-        //         data = {from: from.value, type: type.value};
-        //         break;
-        // }
-        
-        // Inertia.visit('/ch', {
-        //     method: 'get',
-        //     data: data,
-        //     headers: {
-        //         'Content-Type': 'application/x-www-form-urlencoded',
-        //     }
-            
-        // })
+    }
+
+    const handleRedirect = (row) => {
+        if (row[1] == 'Formatting') {
+            Inertia.get('editformatting', { id: row[0] })
+        } else {
+            Inertia.get('editpublishing', { id: row[0], region: row[2] })
+        }
     }
 
     const options = {
-        rowsPerPageOptions: [5,10,15, 50, 100],
+        rowsPerPageOptions: [5, 10, 15, 50, 100],
         rowsPerPage: 10,
         responsive: 'vertical',
         enableNestedDataAccess: '.',
@@ -173,37 +168,37 @@ const Tasks = (props) => {
         onRowsDelete: (rowsDeleted, dataRows) => {
             const idsToDelete = rowsDeleted.data.map(d => props.list[d.dataIndex]);
             idsToDelete.map(row => {
-                
-                if(row.formtype === 'ch') {
+
+                if (row.formtype === 'ch') {
 
                 }
-        })
-            
+            })
+
         },
         customToolbar: () => {
             // console.log(props.auth.user.current_team_id)
-            if(props.auth.user.current_team_id == 1 ){
-            return(
-                
-                <Tooltip title={"Add New Record"}>
-                    <IconButton id="basic-button"
-                        aria-controls={open ? 'basic-menu' : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? 'true' : undefined}
-                        onClick={handleClickOpen}>
-                        <AddIcon />
-                    </IconButton>
-                </Tooltip>
-            )
+            if (props.auth.user.current_team_id == 1) {
+                return (
+
+                    <Tooltip title={"Add New Record"}>
+                        <IconButton id="basic-button"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            onClick={handleClickOpen}>
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                )
             }
         },
-       
+
 
     }
 
     const columns = [
         {
-            name: 'id',
+            name: '_id',
             options: {
                 filter: false,
                 viewColumns: false,
@@ -212,27 +207,45 @@ const Tasks = (props) => {
             }
         },
         {
-           
+            name: 'form',
+            options: {
+                filter: false,
+                viewColumns: false,
+                sort: false,
+                display: false,
+            }
+        },
+        {
+            name: 'region',
+            options: {
+                filter: false,
+                viewColumns: false,
+                sort: false,
+                display: false,
+            }
+        },
+        {
+
             name: "",
             label: '',
             options: {
                 customBodyRender: (value, row) => {
                     //console.log(row)
                     var link;
-                    if(row.rowData[2] == "ch"){
-                        link = 'ch/'+row.rowData[0]+'/edit';
-                    }else if(row.rowData[2] == "eu") {
-                        link = 'eu/'+row.rowData[0]+'/edit';
-                    }else if(row.rowData[2] == "gcc") {
-                        link = 'gcc/'+row.rowData[0]+'/edit';
+                    if (row.rowData[2] == "ch") {
+                        link = 'ch/' + row.rowData[0] + '/edit';
+                    } else if (row.rowData[2] == "eu") {
+                        link = 'eu/' + row.rowData[0] + '/edit';
+                    } else if (row.rowData[2] == "gcc") {
+                        link = 'gcc/' + row.rowData[0] + '/edit';
                     }
                     return (
-                        <IconButton onClick={() => Inertia.get('formatting/'+row.rowData[0]+'/edit')} as="button">
+                        <IconButton onClick={() => handleRedirect(row.rowData)} as="button">
                             <EditIcon />
                         </IconButton>
                     );
                 },
-                download : false,
+                download: false,
                 filter: false,
                 sort: false,
                 display: true,
@@ -265,36 +278,39 @@ const Tasks = (props) => {
         //     }
         // },
         {
-            name:"ProductNameFini",
+            name: "product_name",
             label: "Product",
             options: {
                 filter: true,
                 filterType: 'multiselect',
-                // sort: false
+                customBodyRender: (value) => {
+
+                    if (value && typeof value === 'object') {
+                        return value.value
+                    } else {
+                        return value
+                    }
+
+                }
             }
         },
         {
-            name:"country",
+            name: "country",
             label: "Country",
-            // options: {
-            //     customBodyRender: value => {
-            //         const region = new Intl.DisplayNames(['en'], {type: 'region'});
-            //         let title = "";
-            //         if(value && value.length == 2) {
-            //             title = region.of(value.toUpperCase());
-            //         }
-                    
-            //         return(
-            //             <ReactCountryFlag countryCode={value} svg aria-label={value} title={title} style={{
-            //                 width: '1.8em',
-            //                 height: '1.8em',
-            //             }} />
-            //         )
-            //     }
-            // }
+            options: {
+                customBodyRender: (value) => {
+                    if (value && typeof value === 'object') {
+                        return value.value
+                    } else {
+                        return value
+                    }
+
+                }
+            }
+
         },
         {
-            name:"sequence",
+            name: "sequence",
             label: "Sequence",
             options: {
                 filter: true,
@@ -302,30 +318,17 @@ const Tasks = (props) => {
                 // sort: false
             }
         },
-        // {
-        //     name:"type",
-        //     label: "Type",
-        //     options: {
-        //         filter: true,
-        //         filterType: 'multiselect',
-        //         // sort: false
-        //     }
-        // },
-        // {
-        //     name: "action",
-        //     label: "Action"
-        // },
         {
-            name:"status",
+            name: "status",
             label: "Status",
             options: {
-                customBodyRender: (value ,row) => {
+                customBodyRender: (value, row) => {
                     let bgc = "";
-                    if(value === "initiated") {
+                    if (value === "initiated") {
                         bgc = "#00e676"
-                    }else if(value == "En cours") {
+                    } else if (value == "En cours") {
                         bgc = "#2196f3"
-                    }else if (value == "En attente"){
+                    } else if (value == "En attente") {
                         bgc = "#ffeb3b"
                     }
                     // }else {
@@ -335,9 +338,9 @@ const Tasks = (props) => {
                     const id = row.rowData[0];
 
                     return (
-                        <div style={{display:'flex',alignItems:'center',justifyContent:'center',position:'absolute',top:'0',left:'0',bottom:'0',right:'0',backgroundColor:bgc}}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'absolute', top: '0', left: '0', bottom: '0', right: '0', backgroundColor: bgc }}>
                             {display && id === rowid ? (
-                                 <TextField  variant='standard' select name="status" value={value} onChange={(e) =>
+                                <TextField variant='standard' select name="status" value={value} onChange={(e) =>
                                     instantUpdate(row.rowData[0], e)
                                 }>
                                     <MenuItem value="Delivred">Delivred</MenuItem>
@@ -346,19 +349,19 @@ const Tasks = (props) => {
                                     <MenuItem value="To Do">To Do</MenuItem>
                                 </TextField>
                             ) : (
-                                    <div id={row.rowIndex} onClick={() => { handleDisplay(id) }} style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-                                        <div>{value}</div>
-                                        {/* <span style={{ height: '9px', width: '9px', backgroundColor: bgc, borderRadius: '50%'}}></span> */}
-                                    </div>
-                                )}
+                                <div id={row.rowIndex} onClick={() => { handleDisplay(id) }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <div>{value}</div>
+                                    {/* <span style={{ height: '9px', width: '9px', backgroundColor: bgc, borderRadius: '50%'}}></span> */}
+                                </div>
+                            )}
                         </div>
                     )
                 }
-                
+
             }
         },
         {
-            name:"request_date",
+            name: "request_date",
             label: "Request date",
             options: {
                 filter: true,
@@ -368,7 +371,7 @@ const Tasks = (props) => {
             }
         },
         {
-            name:"deadline",
+            name: "deadline",
             label: "Dead Line",
             options: {
                 filter: true,
@@ -390,29 +393,16 @@ const Tasks = (props) => {
     ]
 
     return (
-        <Authenticated auth={props.auth} header="ALL FORMS">
+        <Authenticated auth={props.auth} header="Tasks">
             <div className={classes.wrapper}>
-                <Card className={classes.cCard}>
-                    <CardHeader title="Requests List" className={classes.cHeader} />
-                    <CardContent>
-                        <ThemeProvider theme={thememui()}>
-                            <MUIDataTable
-                                data={Object.values(props.list)}
-                                columns={columns}
-                                options={options}
-                            />
-                        </ThemeProvider>
-                    </CardContent>
-
-                    {/* <Backdrop className={classes.backdrop} open={open} onClick={() => setOpen(false)}>
-                        <CircularProgress color="inherit" />
-                    </Backdrop> */}
-                    {/* <Snackbar open={openalert} autoHideDuration={6000} onClose={handleClose}>
-                        <Alert onClose={handleClose} severity={severity}>
-                            {message}
-                        </Alert>
-                    </Snackbar> */}
-                </Card>
+                <ThemeProvider theme={thememui()}>
+                    <MUIDataTable
+                        title='Tasks'
+                        data={Object.values(props.list)}
+                        columns={columns}
+                        options={options}
+                    />
+                </ThemeProvider>
             </div>
             <Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth={true}>
                 <DialogTitle>New Request</DialogTitle>
@@ -432,11 +422,11 @@ const Tasks = (props) => {
                             placeholder='Form'
                             isClearable
                             menuPortalTarget={document.body}
-                            styles={{ 
+                            styles={{
                                 menuPortal: base => ({ ...base, zIndex: 9999, }),
-                                container : base => ({width : '100%'})
+                                container: base => ({ width: '100%' })
                             }}
-                            
+
                         />
                     </div>
                     <div className='modal_form'>
@@ -454,10 +444,10 @@ const Tasks = (props) => {
                             placeholder='Region'
                             isClearable
                             menuPortalTarget={document.body}
-                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container : base => ({width : '100%'}) }}
+                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container: base => ({ width: '100%' }) }}
                         />
                     </div>
-                    <div className='modal_form' style={{display: form && form.value == 'Publishing' ? 'flex' : 'none'}}>
+                    <div className='modal_form' style={{ display: form && form.value == 'Publishing' ? 'flex' : 'none' }}>
                         <label className='modal_label'>Procedure type</label>
                         <Select options={[
                             { label: 'Nationale', value: 'Nationale' },
@@ -470,16 +460,16 @@ const Tasks = (props) => {
                             placeholder='Procedure type'
                             isClearable
                             menuPortalTarget={document.body}
-                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container : base => ({width : '100%'}) }}
+                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container: base => ({ width: '100%' }) }}
                         />
                     </div>
-                    <div className='modal_form' style={{display: form && form.value == 'Formatting' ? 'flex' : 'none'}}>
+                    <div className='modal_form' style={{ display: form && form.value == 'Formatting' ? 'flex' : 'none' }}>
                         <label className='modal_label'>Core doc</label>
                         {/* <FormControlLabel control={} label="Core doc" labelPlacement="start" /> */}
                         <Checkbox onChange={(e) => setCoreDoc(e.target.checked)} />
                     </div>
-                    <div style={{ display: form && form.value == 'Submission' ? 'flex' : 'none' , alignItems: 'center' }}>
-                        <label style={{ marginRight: '10px',  width:'15%' }}>Type</label>
+                    <div style={{ display: form && form.value == 'Submission' ? 'flex' : 'none', alignItems: 'center' }}>
+                        <label style={{ marginRight: '10px', width: '15%' }}>Type</label>
                         <Select options={[
                             { label: 'PSUR', value: 'PSUR' },
                             { label: 'CESP', value: 'CESP' },
@@ -491,7 +481,7 @@ const Tasks = (props) => {
                             placeholder='Type'
                             isClearable
                             menuPortalTarget={document.body}
-                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container : base => ({width : '100%'}) }}
+                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }), container: base => ({ width: '100%' }) }}
                         />
                     </div>
                 </DialogContent>
