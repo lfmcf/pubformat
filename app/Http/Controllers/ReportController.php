@@ -8,6 +8,7 @@ use App\Models\Eu;
 use App\Models\Gcc;
 use App\Models\Ch;
 use App\Models\MetaData;
+use App\Models\Publishing;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Writer\Ods\Meta;
@@ -20,15 +21,12 @@ class ReportController extends Controller
 
         if ($user->current_team_id == 1) {
             $formattings = Formatting::where('status', 'initiated')->orWhere('status', 'submitted')->get();
-            // $formattings = Formatting::raw(function ($collection) {
-            //     return $collection->aggregate(
-            //         [
-            //             ['$match' => ['status' => 'initiated']],
-            //         ]
-            //     );
-            // });
+            $publishing = Publishing::where('status', 'initiated')->orWhere('status', 'submitted')->get();
+
+            $allItems = collect($formattings)->merge($publishing)->sortByDesc('created_at');
+            $allItems = $allItems->values();
             return Inertia::render('Dossiers/List', [
-                'list' => $formattings
+                'list' => $allItems
             ]);
         } else if ($user->current_team_id == 2) {
             $formattings = Formatting::where('status', 'submitted')->orWhere('status', 'pending')->get();
@@ -47,8 +45,7 @@ class ReportController extends Controller
         // $eu = Eu::all();
         // $gcc = Gcc::all();
 
-        //$allItems = collect($ch)->merge($eu)->merge($gcc)->sortByDesc('created_at');
-        //$allItems = $allItems->values();
+
 
 
     }
@@ -60,8 +57,11 @@ class ReportController extends Controller
 
         if ($user->current_team_id == 2) {
             $formattings = Formatting::where('status', 'initiated')->orWhere('status', 'pending')->get();
+            $publishing = Publishing::where('status', 'initiated')->orWhere('status', 'submitted')->get();
+            $allItems = collect($formattings)->merge($publishing)->sortByDesc('created_at');
+            $allItems = $allItems->values();
             return Inertia::render('Dossiers/Tasks', [
-                'list' => $formattings
+                'list' => $allItems
             ]);
         } else if ($user->current_team_id == 3) {
             $formattings = Formatting::where('status', 'submitted')->orWhere('status', 'pending')->get();
@@ -127,6 +127,16 @@ class ReportController extends Controller
             $product = MetaData::where('country', $request->country)->where('procedure', $request->procedure)
                 ->get('Product');
             return $product;
+        }
+    }
+
+    public function show(Request $request)
+    {
+
+        $notification = auth()->user()->notifications()->where('id', $request->id)->first();
+        if ($notification) {
+            $notification->markAsRead();
+            return redirect('tasks');
         }
     }
 }

@@ -2,7 +2,7 @@ import Authenticated from "@/Layouts/Authenticated";
 import React, { useState, useEffect } from "react";
 import { useForm } from '@inertiajs/inertia-react';
 import Card from '@material-ui/core/Card';
-import { CardHeader, Tooltip, Grid, TextField, CardContent, Paper, Button, Box } from '@material-ui/core';
+import { CardHeader, Tooltip, Grid, TextField, CardContent, Paper, Box } from '@material-ui/core';
 import Select from 'react-select';
 import moment from "moment";
 import { makeStyles } from '@material-ui/core/styles';
@@ -16,7 +16,7 @@ import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
-import { Form, Tabs, Tab } from "react-bootstrap";
+import { Form, Tabs, Tab, Button } from "react-bootstrap";
 import { gcccountry } from '@/Components/MetaDataList';
 import Speed from "@/Components/Speed";
 import SaveModal from "@/Components/SaveModal";
@@ -184,8 +184,8 @@ const CreateGcc = (props) => {
     return (
         <Authenticated auth={props.auth} header={"Form - Create " + data.form + " " + data.region}>
             <form onSubmit={handleSubmit}>
-                <Tabs activeKey={activeStep} fill onSelect={(e) => setActiveStep(e)}>
-                    <Tab eventKey={0} title="General information" style={{ height: 'calc(100vh - 220px)' }}>
+                <Tabs activeKey={activeStep} onSelect={(e) => setActiveStep(e)}>
+                    <Tab eventKey={0} title="General information" style={{ minHeight: 'calc(100vh - 210px)' }}>
                         <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px' }}>
                             <div className="container">
                                 <div className="row">
@@ -263,8 +263,8 @@ const CreateGcc = (props) => {
                             </div>
                         </Box>
                     </Tab>
-                    <Tab eventKey={1} title="Submission Metadata" style={{ height: 'calc(100vh - 220px)' }}>
-                        <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px' }}>
+                    <Tab eventKey={1} title="Submission Metadata" style={{ minHeight: 'calc(100vh - 210px)' }}>
+                        <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px', overflowY: 'scroll' }}>
                             <div className="container">
                                 <div className="row">
                                     <div className="col-4">
@@ -414,7 +414,7 @@ const CreateGcc = (props) => {
                             </div>
                         </Box>
                     </Tab>
-                    <Tab eventKey={2} title="Product Metadata" style={{ height: 'calc(100vh - 220px)' }}>
+                    <Tab eventKey={2} title="Product Metadata" style={{ minHeight: 'calc(100vh - 210px)' }}>
                         <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px' }}>
                             <div className="container">
                                 <div className="row">
@@ -539,14 +539,14 @@ const CreateGcc = (props) => {
 
                         </Box>
                     </Tab>
-                    <Tab eventKey={3} title="Documents" style={{ height: 'calc(100vh - 200px)' }}>
+                    <Tab eventKey={3} title="Documents" style={{ minHeight: 'calc(100vh - 210px)' }}>
                         <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px' }}>
                             <div className="container">
                                 <div className="row">
                                     <div className="col-6">
                                         <Form.Group className="mb-3">
                                             <Form.Label className="form_group_label">Attached document</Form.Label>
-                                            <Form.Control type="file" name="doc" onChange={handleChange} />
+                                            <Form.Control type="file" multiple name="doc" onChange={handleChange} />
                                         </Form.Group>
                                     </div>
                                     <div className="col-12">
@@ -563,7 +563,7 @@ const CreateGcc = (props) => {
                             </div>
                         </Box>
                     </Tab>
-                    <Tab eventKey={4} title="Delivery details" style={{ height: 'calc(100vh - 200px)' }}>
+                    <Tab eventKey={4} title="Delivery details" style={{ minHeight: 'calc(100vh - 210px)' }}>
                         <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px' }}>
                             <div className="container">
                                 <div className="row">
@@ -593,7 +593,7 @@ const CreateGcc = (props) => {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                                    <Button onClick={() => setActiveStep(3)} style={{ width: '100px', marginRight: '10px' }} variant="outlined" size="small">Previous</Button>
+                                    <Button onClick={() => setActiveStep(3)} style={{ width: '100px' }} variant="outline-primary" size="sm">Previous</Button>
                                 </div>
                             </div>
                         </Box>

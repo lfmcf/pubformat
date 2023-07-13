@@ -1,112 +1,69 @@
 import Authenticated from "@/Layouts/Authenticated";
 import React, { useState, useEffect } from "react";
 import { useForm } from '@inertiajs/inertia-react';
-import Card from '@material-ui/core/Card';
+import { Form, Tabs, Tab, Button } from "react-bootstrap";
 import { CardHeader, Tooltip, Grid, TextField, CardContent, Paper, Box } from '@material-ui/core';
 import Select from 'react-select';
-import moment from "moment";
-import { makeStyles } from '@material-ui/core/styles';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { Form, Tabs, Tab, Button } from "react-bootstrap";
 import SaveModal from "@/Components/SaveModal";
 import Speed from "@/Components/Speed";
 
-const useStyles = makeStyles((theme) => ({
-    wrapper: {
-        marginTop: '16px'
-    },
-    formulaire: {
-        '& .MuiPaper-root': {
-            marginBottom: "15px",
-        },
-        '& .MuiInputBase-root': {
-            fontFamily: '"Open Sans", sans-serif !important',
-        }
-    },
-    cCard: {
-        borderRadius: '0',
-        boxShadow: '0 1px 20px 0 rgb(69 90 100 / 8%)'
-    },
-    cHeader: {
-        borderBottom: '1px solid #f1f1f1',
-        '& .MuiCardHeader-title': {
-            fontSize: '17px',
-            display: 'inline-block',
-            lineHeight: '1.1',
-            marginRight: '10px',
-            fontFamily: '"Open Sans", sans-serif',
-            position: 'relative'
-        },
-        '& .MuiCardHeader-title:after': {
-            content: '""',
-            backgroundColor: '#04a9f5',
-            position: 'absolute',
-            top: '0',
-            width: '4px',
-            height: '20px',
-            left: '-16px'
-        },
-    },
+const Edit = (props) => {
 
-}));
-
-const Create = (props) => {
-    var params = new URLSearchParams(window.location.search);
-    // console.log(params.get('form'))
-    const classes = useStyles();
-    const [tnoptions, setTnoptions] = useState();
-    const [expanded, setExpanded] = React.useState('panel1');
+    const { pub } = props;
     const [activeStep, setActiveStep] = useState(0);
     const [showsavemodal, setSavemodal] = useState({ show: false, name: '' });
-    const { metadata } = props;
+
     const { data, setData, post, processing, errors, clearErrors, reset } = useForm({
-        form: params.get('form'),
-        region: params.get('region'),
-        procedure: params.get('procedure'),
-        productName: params.get('product'),
-        dossier_contact: '',
-        object: '',
-        country: metadata.country,
-        dossier_type: '',
-        dossier_count: '',
-        remarks: '',
-        uuid: metadata.uuid,
-        submission_type: '',
-        submission_mode: '',
-        tracking: '',
-        submission_unit: '',
-        applicant: metadata.applicant,
-        agency_code: metadata.agencyCode,
-        inn: metadata.inn,
-        sequence: '',
-        r_sequence: '',
-        submission_description: '',
-        mtremarks: '',
-        indication: '',
-        manufacturer: '',
-        drug_substance: '',
-        drug_substance_manufacturer: '',
-        drug_product: '',
-        drug_product_manufacturer: '',
-        dosage_form: '',
-        excipient: '',
+        form: pub.form,
+        region: pub.region,
+        procedure: pub.procedure,
+        productName: pub.productName,
+        dossier_contact: pub.dossier_contact,
+        object: pub.object,
+        country: pub.country,
+        dossier_type: pub.dossier_type,
+        dossier_count: pub.dossier_count,
+        remarks: pub.remarks,
+        uuid: pub.uuid,
+        submission_type: pub.submission_type,
+        submission_mode: pub.submission_mode,
+        tracking: pub.tracking,
+        submission_unit: pub.submission_unit,
+        applicant: pub.applicant,
+        agency_code: pub.agency_code,
+        inn: pub.inn,
+        sequence: pub.sequence,
+        r_sequence: pub.r_sequence,
+        submission_description: pub.submission_description,
+        mtremarks: pub.mtremarks,
+        indication: pub.indication,
+        manufacturer: pub.manufacturer,
+        drug_substance: pub.drug_substance,
+        drug_substance_manufacturer: pub.drug_substance_manufacturer,
+        drug_product: pub.drug_product,
+        drug_product_manufacturer: pub.drug_product_manufacturer,
+        dosage_form: pub.dosage_form,
+        excipient: pub.excipient,
         doc: '',
-        docremarks: '',
-        request_date: moment(new Date),
-        deadline: moment(new Date),
-    })
+        docremarks: pub.docremarks,
+        request_date: pub.request_date,
+        deadline: pub.deadline,
+        ajusted_deadline: new Date(),
+    });
+
 
     const handleChange = (e) => {
         setData(e.target.name, e.target.value)
     }
 
-    const handleSubmit = (name) => {
-        post(route('publishingStore', { 'type': name }));
+    const handleSelectChange = (e, name) => {
+        setData(name, e)
     }
 
-    const handleSelectChange = (e, name) => {
+    let handleDateChange = (name, e) => {
         setData(name, e)
     }
 
@@ -133,93 +90,12 @@ const Create = (props) => {
         handleSubmit(name);
     }
 
-    let tn = metadata.trackingNumber
-    tn = tn.split(/\r?\n/)
-    let tno = [];
-    if (tn.length > 1) {
-        tno = tn.map((val) => {
-            return { label: val, value: val }
-        })
-
-    } else {
-        tno = tn.map((val) => {
-            return { label: val, value: val }
-        })
+    const handleSubmit = (name) => {
+        post(route('publishingStore', { 'type': name }));
     }
 
-    // useEffect(() => {
-    //     let tn = metadata.trackingNumber
-    //     tn = tn.split(/\r?\n/)
-    //     let pdata = { ...data };
-    //     if (tn.length > 1) {
-    //         let tno = tn.map((val) => {
-    //             return { label: val, value: val }
-    //         })
-    //         pdata.tracking = ''
-    //         setTnoptions(tno)
-    //     } else {
-    //         let tno = tn.map((val) => {
-    //             return { label: val, value: val }
-    //         })
-    //         setTnoptions(tno)
-    //         pdata.tracking = { label: tn[0], value: tn[0] }
-    //     }
-    //     setData(pdata)
-    // }, [])
-
-
-    // useEffect(() => {
-    //     if(data.country && data.ProductName) {
-    //         axios.post('/getmd', { produit: data.ProductName, country: data.country.value, procedure: data.procedure }).then(res => {
-    //             let pdata = { ...data };
-    //             pdata.applicant = res.data.applicant;
-    //             pdata.inn = res.data.inn;
-    //             pdata.uuid = res.data.uuid;
-    //             pdata.agency_code = res.data.agencyCode;
-    //             let tn = res.data.trackingNumber
-    //             tn = tn.split(/\r?\n/)
-    //             if (tn.length > 1) {
-    //                 let tno = tn.map((val) => {
-    //                     return { label: val, value: val }
-    //                 })
-    //                 pdata.tracking = ''
-    //                 setTnoptions(tno)
-    //             } else {
-    //                 let tno = tn.map((val) => {
-    //                     return { label: val, value: val }
-    //                 })
-    //                 setTnoptions(tno)
-    //                 pdata.tracking = { label: tn[0], value: tn[0] }
-    //             }
-    //             setData(pdata)
-    //         })
-    //     }
-    // },[ data.country])
-
-    useEffect(() => {
-        let date = new Date();
-        let hour = date.getHours();
-        let delai = data.dossier_type.delai;
-        let deadline;
-
-        if (delai) {
-            if (hour < 12) {
-                deadline = date.setDate(date.getDate() + delai)
-            } else {
-                deadline = date.setDate(date.getDate() + delai + 1)
-            }
-            setData('deadline', moment(deadline).format('YYYY-MM-DD HH:mm:ss'));
-        }
-
-    }, [data.dossier_type]);
-
-    const handleChangeac = (panel) => (event, newExpanded) => {
-        setExpanded(newExpanded ? panel : false);
-    };
-
     return (
-        <Authenticated auth={props.auth} header={"Form - Create " + data.form + " " + data.region}>
-            {/* <Paper style={{padding:'10px'}}> */}
+        <Authenticated auth={props.auth}>
             <form onSubmit={handleSubmit}>
                 <Tabs activeKey={activeStep} onSelect={(e) => setActiveStep(e)}>
                     <Tab eventKey={0} title="General information" style={{ border: '1px solid #dee2e6', minHeight: 'calc(100vh - 210px)' }}>
@@ -294,7 +170,7 @@ const Create = (props) => {
                             </div>
                         </Box>
                     </Tab>
-                    <Tab eventKey={1} title="Submission Metadata" style={{ border: '1px solid #dee2e6', height: 'calc(100vh - 220px)' }}>
+                    <Tab eventKey={1} title="Submission Metadata" style={{ border: '1px solid #dee2e6', minHeight: 'calc(100vh - 210px)' }}>
                         <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px', overflowY: 'scroll' }}>
                             <div className="container">
                                 <div className="row">
@@ -396,7 +272,7 @@ const Create = (props) => {
                                     <div className="col-4">
                                         <Form.Group className="mb-3">
                                             <Form.Label className="form_group_label">Procedure Tracking N°</Form.Label>
-                                            <Select options={tno}
+                                            <Select options={[]}
                                                 name='tracking'
                                                 onChange={(e) => handleSelectChange(e, 'tracking')}
                                                 className="basic"
@@ -627,7 +503,7 @@ const Create = (props) => {
                                     <div className="col-6">
                                         <Form.Group className="mb-3">
                                             <Form.Label className="form_group_label">Attached document</Form.Label>
-                                            <Form.Control type="file" multiple name="doc" onChange={handleChange} />
+                                            <Form.Control type="file" name="doc" onChange={handleChange} />
                                         </Form.Group>
                                     </div>
                                     <div className="col-12">
@@ -674,18 +550,41 @@ const Create = (props) => {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                                    <Button onClick={() => setActiveStep(3)} style={{ width: '100px' }} variant="outline-primary" size="sm">Previous</Button>
+                                    <Button onClick={() => setActiveStep(3)} style={{ width: '100px', marginRight: '10px' }} variant="outline-primary" size="sm">Previous</Button>
+                                    <Button onClick={() => setActiveStep(5)} style={{ width: '100px', marginRight: '10px' }} variant="outline-primary" size="sm">Next</Button>
                                 </div>
                             </div>
+                        </Box>
+                    </Tab>
+                    <Tab eventKey={5} title="Adjusted delivery" style={{ minHeight: 'calc(100vh - 210px)' }}>
+                        <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px' }}>
+                            <div className="container">
+                                <div className="row">
+                                    <div className="col-6">
+                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                            <DesktopDatePicker
+                                                label="Adjusted deadline"
+                                                inputFormat="dd-MMM-yyyy"
+                                                value={data.ajusted_deadline}
+                                                onChange={(val) => handleDateChange('ajusted_deadline', val)}
+                                                renderInput={(params) => <TextField name="ajusted_deadline" fullWidth {...params} />}
+                                            />
+                                        </LocalizationProvider>
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+                                    <Button onClick={() => setActiveStep(4)} style={{ width: '100px', marginRight: '10px' }} variant="outline-primary" size="sm">Previous</Button>
+                                </div>
+                            </div>
+
                         </Box>
                     </Tab>
                 </Tabs>
                 <Speed processing={processing} showsavemodel={showsavemodel} showdraftmodel={showdraftmodel} />
                 <SaveModal show={showsavemodal.show} handleClose={handleSaveModalClose} handleSubmited={handleSaveModalConfirm} name={showsavemodal.name} />
             </form>
-            {/* </Paper> */}
         </Authenticated>
     )
 }
 
-export default Create;
+export default Edit;

@@ -98,7 +98,7 @@ const Create = (props) => {
         status: '',
     });
 
-   
+
 
     let contries = props.countries.map(function (country) {
         return { value: country, label: country };
@@ -170,10 +170,10 @@ const Create = (props) => {
 
     return (
         <Authenticated auth={props.auth} header={"Form - Create " + data.form + " " + data.region}>
-            
+
             <form onSubmit={handleSubmit}>
-                <Tabs activeKey={activeStep} fill onSelect={(e) => setActiveStep(e)}>
-                    <Tab eventKey={0} title="General information" style={{ height: 'calc(100vh - 220px)' }}>
+                <Tabs activeKey={activeStep} onSelect={(e) => setActiveStep(e)}>
+                    <Tab eventKey={0} title="General information" style={{ minHeight: 'calc(100vh - 200px)' }} >
                         <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px' }}>
                             <div className="container">
                                 <div className="row">
@@ -278,14 +278,15 @@ const Create = (props) => {
                             </div>
                         </Box>
                     </Tab>
-                    <Tab eventKey={1} title="Documents" style={{ height: 'calc(100vh - 200px)' }}>
+                    <Tab eventKey={1} title="Documents" style={{ minHeight: 'calc(100vh - 200px)' }}>
                         <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px' }}>
                             <div className="container">
                                 <div className="row">
                                     <div className="col-6">
                                         <Form.Group className="mb-3">
                                             <Form.Label className="form_group_label">Attached document</Form.Label>
-                                            <Form.Control type="file" name="doc" onChange={handleChange} />
+                                            <Form.Control type="file" multiple name="doc" onChange={handleChange} placeholder="No file selected" className="fileInput" />
+
                                         </Form.Group>
                                     </div>
                                     <div className="col-12">
@@ -302,7 +303,7 @@ const Create = (props) => {
                             </div>
                         </Box>
                     </Tab>
-                    <Tab eventKey={2} title="Delivery details" style={{ height: 'calc(100vh - 200px)' }}>
+                    <Tab eventKey={2} title="Delivery details" style={{ minHeight: 'calc(100vh - 200px)' }}>
                         <Box sx={{ flexGrow: 1, bgcolor: 'background.paper', display: 'flex', height: '100%', padding: '20px' }}>
                             <div className="container">
                                 <div className="row">
@@ -332,7 +333,7 @@ const Create = (props) => {
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                                    <Button onClick={() => setActiveStep(1)} style={{ width: '100px', marginRight: '10px' }} variant="outlined" size="small">Previous</Button>
+                                    <Button onClick={() => setActiveStep(1)} style={{ width: '100px' }} variant="outline-primary" size="sm">Previous</Button>
                                 </div>
                             </div>
                         </Box>

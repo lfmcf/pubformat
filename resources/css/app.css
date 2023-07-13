@@ -9,6 +9,11 @@ body {
     font-family: "Open Sans", sans-serif !important;
 }
 
+p {
+    padding: 0;
+    margin: 0;
+}
+
 label,
 input,
 td,
@@ -26,8 +31,9 @@ tr td {
     padding: 8px 16px !important;
 }
 
-.basic__menu {
-    z-index: 10000;
+.basic {
+    /* z-index: 9999; */
+    font-size: 0.8rem;
 }
 
 /* @tailwind base;
@@ -51,6 +57,50 @@ tr td {
     margin-bottom: 5px;
 }
 
+
+
+/* .form_group_label::first-letter {
+    text-transform: uppercase;
+} */
+
+/* .fileInput::before {
+    content: "No file selected";
+    position: absolute;
+    z-index: 2;
+    display: block;
+    background-color: #eee;
+    width: 80px;
+} */
+
+/* .fileInput::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.fileInput::before {
+    content: 'your wording';
+} */
+
+
+/* Tabs style */
+
+.nav-tabs .nav-link.active {
+    background-color: #3f4d67;
+    color: white;
+}
+
+.nav-tabs .nav-link {
+    font-size: 0.83rem;
+    padding: 0.5rem 1.7rem;
+    color: #3f4d67;
+}
+
+/* Form control and inputs */
+
+.form-control {
+    font-size: 0.8rem;
+    /* color: #949BA0; */
+}
+
 .form_group_label {
     width: fit-content;
     color: #646777;
@@ -58,11 +108,6 @@ tr td {
     line-height: 18px;
     margin-bottom: 5px;
     font-weight: 100;
-    font-size: 12px;
-    /* text-transform: lowercase; */
+    font-size: 11px;
     display: inline-block;
 }
-
-/* .form_group_label::first-letter {
-    text-transform: uppercase;
-} */
